@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import nashtech.khanhdu.backend.data.entities.AuditEntity;
 import nashtech.khanhdu.backend.data.entities.User;
 
 @Getter

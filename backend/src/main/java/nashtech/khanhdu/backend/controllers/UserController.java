@@ -28,7 +28,8 @@ public class UserController {
     }
 
     @ExceptionHandler({UserNotFoundException.class})
-    protected ResponseEntity<ErrorResponse> handleUserNotFoundException (UserNotFoundException exception) {
+    protected ResponseEntity<ErrorResponse> handleUserNotFoundException (
+            UserNotFoundException exception) {
         var error = ErrorResponse.builder().code(HttpStatus.NOT_FOUND.value())
                 .message("User Not Found").build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);

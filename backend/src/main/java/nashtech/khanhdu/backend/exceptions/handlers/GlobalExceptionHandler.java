@@ -1,6 +1,7 @@
 package nashtech.khanhdu.backend.exceptions.handlers;
 
 import nashtech.khanhdu.backend.dto.response.ErrorResponse;
+import nashtech.khanhdu.backend.exceptions.ProductNotFoundException;
 import nashtech.khanhdu.backend.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
