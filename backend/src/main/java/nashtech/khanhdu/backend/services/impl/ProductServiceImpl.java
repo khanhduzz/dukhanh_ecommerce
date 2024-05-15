@@ -1,5 +1,6 @@
 package nashtech.khanhdu.backend.services.impl;
 
+import jakarta.transaction.Transactional;
 import nashtech.khanhdu.backend.data.entities.Product;
 import nashtech.khanhdu.backend.data.repositories.ProductRepository;
 import nashtech.khanhdu.backend.dto.request.CreateProductDto;
@@ -45,6 +46,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductDto updateProduct(Long id, UpdateProductDto dto) {
         return productRepository.findById(id)
                 .map(product -> {

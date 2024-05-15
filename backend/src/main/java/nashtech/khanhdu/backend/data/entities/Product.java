@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.accessibility.AccessibleRole;
 import java.util.List;
 
 @Entity
