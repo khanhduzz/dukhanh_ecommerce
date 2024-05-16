@@ -27,12 +27,12 @@ public class User{
     private String address;
     @Column(name = "phone_number")
     private String phoneNumber;
-    private String gender;
-    private String role;
-    @Column(name = "is_deleted")
+    private Gender gender;
+    private Role role;
+    @Column(name = "is_deleted", columnDefinition = "int default '0'")
     private int isDeleted = 0;
 
-    public User(String userName, String passWord, String email, String firstName, String lastName, String address, String phoneNumber, String gender, String role, int isDeleted) {
+    public User(String userName, String passWord, String email, String firstName, String lastName, String address, String phoneNumber, int isDeleted) {
         this.userName = userName;
         this.passWord = passWord;
         this.email = email;
@@ -40,8 +40,6 @@ public class User{
         this.lastName = lastName;
         this.address = address;
         this.phoneNumber = phoneNumber;
-        this.gender = gender;
-        this.role = role;
         this.isDeleted = isDeleted;
     }
 
@@ -49,12 +47,12 @@ public class User{
         this.userName = userName;
     }
 
-    //    public enum Gender {
-//        MALE, FEMALE, OTHER
-//    }
-//
-//    public enum Role {
-//        ROLE_ADMIN, ROLE_USER
-//    }
+    public enum Gender {
+        MALE, FEMALE, OTHER
+    }
+
+    public enum Role {
+        ROLE_ADMIN, ROLE_USER
+    }
 
 }

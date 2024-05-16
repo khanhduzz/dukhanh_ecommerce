@@ -1,11 +1,15 @@
 package nashtech.khanhdu.backend.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import nashtech.khanhdu.backend.data.entities.AuditEntity;
 import nashtech.khanhdu.backend.data.entities.User;
+import org.json.JSONObject;
 
 @Getter
 @Setter
@@ -24,8 +28,11 @@ public class CreateUserDto {
     private String lastName;
     private String address;
     private String phoneNumber;
-    private String gender;
-    private String role;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private User.Gender gender;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private User.Role role;
     private int isDeleted;
+
 
 }

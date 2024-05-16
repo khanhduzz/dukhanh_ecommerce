@@ -19,8 +19,8 @@ public class UserDto {
     private String lastName;
     private String address;
     private String phoneNumber;
-    private String gender;
-    private String role;
+    private User.Gender gender;
+    private User.Role role;
     private int isDeleted;
 
 }

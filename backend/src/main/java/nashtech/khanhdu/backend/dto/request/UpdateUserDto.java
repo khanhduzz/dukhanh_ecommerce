@@ -1,5 +1,6 @@
 package nashtech.khanhdu.backend.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,8 +25,10 @@ public class UpdateUserDto {
     private String lastName;
     private String address;
     private String phoneNumber;
-    private String gender;
-    private String role;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private User.Gender gender;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private User.Role role;
     private int isDeleted;
 
 }
