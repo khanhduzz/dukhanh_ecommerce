@@ -2,8 +2,10 @@ package nashtech.khanhdu.backend.data.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.context.annotation.Role;
 
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Getter
@@ -34,6 +36,10 @@ public class User{
     @Column(name = "is_deleted", columnDefinition = "int default '0'")
     private int isDeleted = 0;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @ManyToMany(mappedBy = "users_favorite")
+    private List<Product> favoriteProducts;
 
     public User(String userName, String passWord, String email, String firstName, String lastName, String address, String phoneNumber, int isDeleted) {
         this.userName = userName;

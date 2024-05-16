@@ -55,4 +55,14 @@ public class ProductServiceImpl implements ProductService {
                     return mapper.toDto(updateProduct);
                 }).orElseThrow(ProductNotFoundException::new);
     }
+
+    @Override
+    @Transactional
+    public Product deleteProduct (Long id) {
+        return productRepository.findById(id)
+                .map(product -> {
+                    productRepository.delete(product);
+                    return product;
+                }).orElseThrow(ProductNotFoundException::new);
+    }
 }

@@ -1,11 +1,7 @@
 package nashtech.khanhdu.backend.data.entities;
 
-import jakarta.persistence.Access;
-import jakarta.persistence.Entity;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.List;
 
@@ -23,6 +19,16 @@ public class Product extends AuditEntity<Long>{
     private int isFeatured;
     private int currentQuantity;
     private String category;
+
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "USERS_FAVORITE_PRODUCTS",
+            joinColumns = @JoinColumn(name = "USER_ID"),
+            inverseJoinColumns = @JoinColumn(name = "PRODUCT_ID")
+    )
+    private List<User> users_favorite;
 
 //    private List<Category> categoryList;
 

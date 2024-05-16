@@ -9,8 +9,10 @@ import nashtech.khanhdu.backend.dto.response.ProductDto;
 import nashtech.khanhdu.backend.exceptions.ProductNotFoundException;
 import nashtech.khanhdu.backend.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.ConditionalOnDefaultWebSecurity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+//import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -53,5 +55,11 @@ public class ProductController {
     @GetMapping
     public List<Product> getProducts () {
         return productService.getAllProducts();
+    }
+
+//    @Secured({"ROLE_ADMIN"})
+    @DeleteMapping("/{id}")
+    public Product deleteProduct(@PathVariable("id") Long id) {
+        return productService.deleteProduct(id);
     }
 }

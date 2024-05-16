@@ -58,6 +58,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User deleteUser(Long id) {
         return userRepository.findById(id)
                 .map(user -> {
