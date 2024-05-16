@@ -3,6 +3,8 @@ package nashtech.khanhdu.backend.data.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -31,6 +33,7 @@ public class User{
     private Role role;
     @Column(name = "is_deleted", columnDefinition = "int default '0'")
     private int isDeleted = 0;
+
 
     public User(String userName, String passWord, String email, String firstName, String lastName, String address, String phoneNumber, int isDeleted) {
         this.userName = userName;

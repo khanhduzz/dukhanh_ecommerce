@@ -56,4 +56,13 @@ public class UserServiceImpl implements UserService {
                     return mapper.toDto(updateUser);
                 }).orElseThrow(UserNotFoundException::new);
     }
+
+    @Override
+    public User deleteUser(Long id) {
+        return userRepository.findById(id)
+                .map(user -> {
+                    userRepository.delete(user);
+                    return user;
+                }).orElseThrow(UserNotFoundException::new);
+    }
 }
