@@ -1,6 +1,7 @@
 package nashtech.khanhdu.backend.controllers;
 
 import jakarta.validation.Valid;
+import nashtech.khanhdu.backend.data.entities.Category;
 import nashtech.khanhdu.backend.data.entities.Product;
 import nashtech.khanhdu.backend.dto.request.CreateProductDto;
 import nashtech.khanhdu.backend.dto.request.UpdateProductDto;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/products")
@@ -61,5 +63,16 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public Product deleteProduct(@PathVariable("id") Long id) {
         return productService.deleteProduct(id);
+    }
+
+    @GetMapping("/{productId}/category")
+    public Set<Category> getAllCategories (@PathVariable ("productId") Long productId) {
+        return productService.getAllCategories(productId);
+    }
+
+    @PutMapping("/{productId}/category/{categoryId}")
+    public ProductDto addCategory (@PathVariable ("productId") Long productId
+            , @PathVariable ("categoryId") Long categoryId) {
+        return productService.addCategory(productId, categoryId);
     }
 }

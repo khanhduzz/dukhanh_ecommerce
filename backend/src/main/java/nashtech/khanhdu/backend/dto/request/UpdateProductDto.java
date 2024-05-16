@@ -6,6 +6,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import nashtech.khanhdu.backend.data.entities.AuditEntity;
+import nashtech.khanhdu.backend.data.entities.Category;
+import nashtech.khanhdu.backend.data.entities.User;
+
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -22,6 +27,6 @@ public class UpdateProductDto extends AuditEntity<Long> {
     private int isFeatured;
     @NotNull(message = "Quantity is required")
     private int currentQuantity;
-    private String category;
-
+    private Set<User> usersFavorite;
+//    Set<Category> categories;
 }

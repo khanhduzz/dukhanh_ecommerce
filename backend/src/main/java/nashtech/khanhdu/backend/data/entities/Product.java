@@ -1,14 +1,17 @@
 package nashtech.khanhdu.backend.data.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "products")
 public class Product extends AuditEntity<Long>{
 
     private String name;
@@ -18,18 +21,25 @@ public class Product extends AuditEntity<Long>{
     private double rating;
     private int isFeatured;
     private int currentQuantity;
-    private String category;
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "USERS_FAVORITE_PRODUCTS",
             joinColumns = @JoinColumn(name = "USER_ID"),
             inverseJoinColumns = @JoinColumn(name = "PRODUCT_ID")
     )
-    private List<User> users_favorite;
+    Set<User> usersFavorite;
 
-//    private List<Category> categoryList;
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "PRODUCTS_CATEGORIES",
+            joinColumns = @JoinColumn(name = "CATEGORY_ID"),
+            inverseJoinColumns = @JoinColumn(name = "PRODUCT_ID")
+    )
+    Set<Category> categories;
 
 }

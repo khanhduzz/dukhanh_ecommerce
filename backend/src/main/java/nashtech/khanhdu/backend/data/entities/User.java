@@ -1,11 +1,14 @@
 package nashtech.khanhdu.backend.data.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.context.annotation.Role;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -38,8 +41,9 @@ public class User{
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @ManyToMany(mappedBy = "users_favorite")
-    private List<Product> favoriteProducts;
+    @ManyToMany(mappedBy = "usersFavorite")
+    @JsonIgnore
+    Set<Product> favoriteProducts;
 
     public User(String userName, String passWord, String email, String firstName, String lastName, String address, String phoneNumber, int isDeleted) {
         this.userName = userName;

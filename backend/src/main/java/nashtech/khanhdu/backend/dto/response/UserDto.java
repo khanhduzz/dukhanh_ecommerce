@@ -3,9 +3,11 @@ package nashtech.khanhdu.backend.dto.response;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import nashtech.khanhdu.backend.data.entities.Product;
 import nashtech.khanhdu.backend.data.entities.User;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,5 +24,4 @@ public class UserDto {
     private User.Gender gender;
     private User.Role role;
     private int isDeleted;
-
 }

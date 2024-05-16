@@ -1,29 +1,38 @@
 package nashtech.khanhdu.backend.services.impl;
 
 import jakarta.transaction.Transactional;
+import nashtech.khanhdu.backend.data.entities.Product;
 import nashtech.khanhdu.backend.data.entities.User;
+import nashtech.khanhdu.backend.data.repositories.ProductRepository;
 import nashtech.khanhdu.backend.data.repositories.UserRepository;
 import nashtech.khanhdu.backend.dto.request.CreateUserDto;
 import nashtech.khanhdu.backend.dto.request.UpdateUserDto;
+import nashtech.khanhdu.backend.dto.response.ProductDto;
 import nashtech.khanhdu.backend.dto.response.UserDto;
+import nashtech.khanhdu.backend.exceptions.ProductNotFoundException;
 import nashtech.khanhdu.backend.exceptions.UserNotFoundException;
 import nashtech.khanhdu.backend.mappers.UserMapper;
 import nashtech.khanhdu.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
     private UserMapper mapper;
+    private final ProductRepository productRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserMapper mapper) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper mapper,
+                           ProductRepository productRepository) {
         this.userRepository = userRepository;
         this.mapper = mapper;
+        this.productRepository = productRepository;
     }
 
     @Override
@@ -60,10 +69,30 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User deleteUser(Long id) {
-        return userRepository.findById(id)
-                .map(user -> {
-                    userRepository.delete(user);
-                    return user;
-                }).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        productRepository.findAll().forEach(product -> {
+            product.getUsersFavorite().remove(user);
+            productRepository.save(product);
+        });
+        return user;
     }
+
+    @Override
+    @Transactional
+    public UserDto addFavoriteProduct (Long id, Long productId) {
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        Product product = productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
+        product.getUsersFavorite().add(user);
+        product = productRepository.save(product);
+        return mapper.toDto(user);
+    }
+
+    @Override
+    @Transactional
+    public Set<Product> getAllFavoriteProducts (Long id) {
+        return userRepository.findById(id)
+                .map(User::getFavoriteProducts)
+                .orElseThrow(UserNotFoundException::new);
+    }
+
 }

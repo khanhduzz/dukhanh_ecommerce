@@ -48,3 +48,14 @@ INSERT INTO users (user_name, pass_word, email, first_name, last_name) VALUES ('
 INSERT INTO users (user_name, pass_word, email, first_name, last_name) VALUES ('David Malan1', '12345', 'david1@mail.com', 'david', 'malan');
 INSERT INTO users (user_name, pass_word, email, first_name, last_name) VALUES ('David Malan2', '12345', 'david2@mail.com', 'david', 'malan');
 INSERT INTO users (user_name, pass_word, email, first_name, last_name) VALUES ('David Malan3', '12345', 'david3@mail.com', 'david', 'malan');
+
+
+INSERT INTO products (id, name, description, price, image, rating, is_featured, current_quantity) VALUES (1,'pro1','des1',45.5,'just a image',4.5,1,10);
+INSERT INTO products (id, name, description, price, image, rating, is_featured, current_quantity) VALUES (2,'pro2','des1',45.5,'just a image',4.5,1,10);
+INSERT INTO products (id, name, description, price, image, rating, is_featured, current_quantity) VALUES (3,'pro3','des1',45.5,'just a image',4.5,1,10);
+INSERT INTO products (id, name, description, price, image, rating, is_featured, current_quantity) VALUES (4,'pro4','des1',45.5,'just a image',4.5,1,10);
+
+INSERT INTO categories (id, name, description) VALUES (1,'cate1','des1');
+INSERT INTO categories (id, name, description) VALUES (2,'cate2','des1');
+INSERT INTO categories (id, name, description) VALUES (3,'cate3','des1');
+INSERT INTO categories (id, name, description) VALUES (4,'cate4','des1');

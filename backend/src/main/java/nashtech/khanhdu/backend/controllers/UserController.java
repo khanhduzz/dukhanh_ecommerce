@@ -1,6 +1,7 @@
 package nashtech.khanhdu.backend.controllers;
 
 import jakarta.validation.Valid;
+import nashtech.khanhdu.backend.data.entities.Product;
 import nashtech.khanhdu.backend.data.entities.User;
 import nashtech.khanhdu.backend.dto.request.CreateUserDto;
 import nashtech.khanhdu.backend.dto.request.UpdateUserDto;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
@@ -60,5 +62,16 @@ public class UserController {
     @DeleteMapping("/{id}")
     public User deleteUser(@PathVariable("id") Long id) {
         return userService.deleteUser(id);
+    }
+
+    @GetMapping("/{userId}/favorite")
+    public Set<Product> getAllFavoriteProducts (@PathVariable("userId") Long userId) {
+        return userService.getAllFavoriteProducts(userId);
+    }
+
+    @PutMapping("/{userId}/favorite/{productId}")
+    public UserDto addFavoriteProduct(@PathVariable("userId") Long userId
+            , @PathVariable("productId") Long productId) {
+        return userService.addFavoriteProduct(userId, productId);
     }
 }

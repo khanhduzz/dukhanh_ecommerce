@@ -8,8 +8,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import nashtech.khanhdu.backend.data.entities.AuditEntity;
+import nashtech.khanhdu.backend.data.entities.Product;
 import nashtech.khanhdu.backend.data.entities.User;
 import org.json.JSONObject;
+
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -33,6 +37,6 @@ public class CreateUserDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private User.Role role;
     private int isDeleted;
-
+    private Set<Product> favoriteProducts;
 
 }
