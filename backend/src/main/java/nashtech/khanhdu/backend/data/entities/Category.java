@@ -1,6 +1,7 @@
 package nashtech.khanhdu.backend.data.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
@@ -20,7 +21,7 @@ public class Category extends AuditEntity<Long>{
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @ManyToMany(mappedBy = "categories")
+    @ManyToMany(mappedBy = "categories", cascade = CascadeType.REFRESH)
     @JsonIgnore
     Set<Product> products;
 

@@ -10,6 +10,7 @@ import nashtech.khanhdu.backend.dto.request.UpdateUserDto;
 import nashtech.khanhdu.backend.dto.response.ProductDto;
 import nashtech.khanhdu.backend.dto.response.UserDto;
 import nashtech.khanhdu.backend.exceptions.ProductNotFoundException;
+import nashtech.khanhdu.backend.exceptions.UserAlreadyExistedException;
 import nashtech.khanhdu.backend.exceptions.UserNotFoundException;
 import nashtech.khanhdu.backend.mappers.UserMapper;
 import nashtech.khanhdu.backend.services.UserService;
@@ -50,6 +51,16 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto createUser(CreateUserDto dto) {
+        List<User> users = userRepository.findByUserName(dto.getUserName());
+        users.forEach(user -> {
+            if (user.getUserName().equals(dto.getUserName())) throw new UserAlreadyExistedException();
+        });
+
+        users = userRepository.findByEmail(dto.getEmail());
+        users.forEach(user -> {
+            if (user.getEmail().equals(dto.getEmail())) throw new UserAlreadyExistedException();
+        });
+
         User user = mapper.toEntity(dto);
         user = userRepository.save(user);
         return mapper.toDto(user);
@@ -94,5 +105,15 @@ public class UserServiceImpl implements UserService {
                 .map(User::getFavoriteProducts)
                 .orElseThrow(UserNotFoundException::new);
     }
+
+//    @Override
+//    public UserDto ratingProduct(Long productId, Long userId, int rate) {
+//        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+//        Product product = productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
+//        user.getRatingProducts().add(product);
+//        user.getRatings().put(product, rate);
+//        user = userRepository.save(user);
+//        return mapper.toDto(user);
+//    }
 
 }

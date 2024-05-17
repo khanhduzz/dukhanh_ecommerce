@@ -8,6 +8,7 @@ import nashtech.khanhdu.backend.data.repositories.ProductRepository;
 import nashtech.khanhdu.backend.dto.request.CreateCategoryDto;
 import nashtech.khanhdu.backend.dto.request.UpdateCategoryDto;
 import nashtech.khanhdu.backend.dto.response.CategoryDto;
+import nashtech.khanhdu.backend.exceptions.CategoryAlreadyExistedException;
 import nashtech.khanhdu.backend.exceptions.CategoryNotFoundException;
 import nashtech.khanhdu.backend.mappers.CategoryMapper;
 import nashtech.khanhdu.backend.services.CategoryService;
@@ -44,7 +45,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryDto createCategory(CreateCategoryDto dto) {
+        List<Category> categories = categoryRepository.findByNameLike(dto.getName());
+        categories.forEach(category -> {
+            if (category.getName().equals(dto.getName())) throw new CategoryAlreadyExistedException();
+        });
         Category category = mapper.toEntity(dto);
         category = categoryRepository.save(category);
         return mapper.toDto(category);
@@ -65,9 +71,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public Category deleteCategory(Long id) {
         Category category = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
-        productRepository.findAll().forEach(product -> {
+        category.getProducts().forEach(product -> {
             product.getCategories().remove(category);
         });
+        categoryRepository.delete(category);
         return category;
     }
 }

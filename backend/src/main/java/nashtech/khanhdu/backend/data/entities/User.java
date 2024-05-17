@@ -5,10 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.context.annotation.Role;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -44,6 +41,10 @@ public class User{
     @ManyToMany(mappedBy = "usersFavorite")
     @JsonIgnore
     Set<Product> favoriteProducts;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private Set<UserProductRating> productRatings = new HashSet<>();
 
     public User(String userName, String passWord, String email, String firstName, String lastName, String address, String phoneNumber, int isDeleted) {
         this.userName = userName;

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,7 +36,7 @@ public class Product extends AuditEntity<Long>{
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinTable(
             name = "PRODUCTS_CATEGORIES",
             joinColumns = @JoinColumn(name = "CATEGORY_ID"),
@@ -42,4 +44,7 @@ public class Product extends AuditEntity<Long>{
     )
     Set<Category> categories;
 
+    @OneToMany(mappedBy = "product")
+    @JsonIgnore
+    private Set<UserProductRating> productRatings = new HashSet<>();
 }

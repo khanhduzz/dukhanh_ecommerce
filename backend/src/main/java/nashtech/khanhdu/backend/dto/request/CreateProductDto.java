@@ -28,5 +28,5 @@ public class CreateProductDto extends AuditEntity<Long> {
     @NotNull(message = "Quantity is required")
     private int currentQuantity;
     private Set<User> usersFavorite;
-//    Set<Category> categories;
+    private Set<Category> categories;
 }

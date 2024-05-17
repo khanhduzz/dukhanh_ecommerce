@@ -27,4 +27,10 @@ public interface ProductService {
 
     Set<Category> getAllCategories (Long id);
 
+    List<Product> findProductByName (String name);
+
+    Set<Product> findProductByCategory (String categoryName);
+
+    List<Product> findFeatureProduct();
+
 }

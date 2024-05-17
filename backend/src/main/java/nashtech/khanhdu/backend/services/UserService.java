@@ -4,6 +4,7 @@ import nashtech.khanhdu.backend.data.entities.Product;
 import nashtech.khanhdu.backend.data.entities.User;
 import nashtech.khanhdu.backend.dto.request.CreateUserDto;
 import nashtech.khanhdu.backend.dto.request.UpdateUserDto;
+import nashtech.khanhdu.backend.dto.response.ProductDto;
 import nashtech.khanhdu.backend.dto.response.UserDto;
 import org.springframework.stereotype.Service;
 
@@ -27,4 +28,5 @@ public interface UserService {
 
     Set<Product> getAllFavoriteProducts(Long id);
 
+//    UserDto ratingProduct(Long productId, Long userId, int rate);
 }

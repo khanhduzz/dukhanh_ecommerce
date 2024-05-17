@@ -7,6 +7,9 @@ import nashtech.khanhdu.backend.dto.request.CreateProductDto;
 import nashtech.khanhdu.backend.dto.request.UpdateProductDto;
 import nashtech.khanhdu.backend.dto.response.ErrorResponse;
 import nashtech.khanhdu.backend.dto.response.ProductDto;
+import nashtech.khanhdu.backend.exceptions.CategoryAlreadyExistedException;
+import nashtech.khanhdu.backend.exceptions.CategoryNotFoundException;
+import nashtech.khanhdu.backend.exceptions.ProductAlreadyExistedException;
 import nashtech.khanhdu.backend.exceptions.ProductNotFoundException;
 import nashtech.khanhdu.backend.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +38,22 @@ public class ProductController {
             ProductNotFoundException exception) {
         var error = ErrorResponse.builder().code(HttpStatus.NOT_FOUND.value())
                 .message("Product not found").build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler({ProductAlreadyExistedException.class})
+    protected ResponseEntity<ErrorResponse> handleProductAlreadyExistedException (
+            ProductAlreadyExistedException exception) {
+        var error = ErrorResponse.builder().code(HttpStatus.FOUND.value())
+                .message("Product name is already exists").build();
+        return ResponseEntity.status(HttpStatus.FOUND).body(error);
+    }
+
+    @ExceptionHandler({CategoryNotFoundException.class})
+    protected ResponseEntity<ErrorResponse> handleCategoryNotFoundException(
+            CategoryNotFoundException exception) {
+        var error = ErrorResponse.builder().code(HttpStatus.NOT_FOUND.value())
+                .message("Category not found").build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
@@ -74,5 +93,20 @@ public class ProductController {
     public ProductDto addCategory (@PathVariable ("productId") Long productId
             , @PathVariable ("categoryId") Long categoryId) {
         return productService.addCategory(productId, categoryId);
+    }
+
+    @GetMapping("/find/{productName}")
+    public List<Product> findProductByName (@PathVariable("productName") String productName) {
+        return productService.findProductByName(productName);
+    }
+
+    @GetMapping("/find/category/{categoryName}")
+    public Set<Product> findProductByCategory (@PathVariable("categoryName") String categoryName) {
+        return productService.findProductByCategory(categoryName);
+    }
+
+    @GetMapping("/featured")
+    public List<Product> findFeatureProduct () {
+        return productService.findFeatureProduct();
     }
 }

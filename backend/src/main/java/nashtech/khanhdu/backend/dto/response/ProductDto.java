@@ -24,4 +24,5 @@ public class ProductDto extends AuditEntity<Long> {
     private int currentQuantity;
     Set<User> usersFavorite;
     Set<Category> categories;
+
 }
