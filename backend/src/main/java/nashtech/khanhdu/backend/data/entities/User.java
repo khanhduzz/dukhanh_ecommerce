@@ -39,12 +39,15 @@ public class User{
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @ManyToMany(mappedBy = "usersFavorite")
-    @JsonIgnore
     Set<Product> favoriteProducts;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     @JsonIgnore
-    private Set<UserProductRating> productRatings = new HashSet<>();
+    private Set<UserProductRating> productRatings;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    private Set<Order> orders;
 
     public User(String userName, String passWord, String email, String firstName, String lastName, String address, String phoneNumber, int isDeleted) {
         this.userName = userName;

@@ -27,24 +27,30 @@ public class Product extends AuditEntity<Long>{
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JsonIgnore
     @JoinTable(
             name = "USERS_FAVORITE_PRODUCTS",
             joinColumns = @JoinColumn(name = "USER_ID"),
             inverseJoinColumns = @JoinColumn(name = "PRODUCT_ID")
     )
-    Set<User> usersFavorite;
+    private Set<User> usersFavorite;
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JsonIgnore
     @JoinTable(
             name = "PRODUCTS_CATEGORIES",
             joinColumns = @JoinColumn(name = "CATEGORY_ID"),
             inverseJoinColumns = @JoinColumn(name = "PRODUCT_ID")
     )
-    Set<Category> categories;
+    private Set<Category> categories;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
     @JsonIgnore
-    private Set<UserProductRating> productRatings = new HashSet<>();
+    private Set<UserProductRating> productRatings;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    private Set<Order> usersOrder;
 }

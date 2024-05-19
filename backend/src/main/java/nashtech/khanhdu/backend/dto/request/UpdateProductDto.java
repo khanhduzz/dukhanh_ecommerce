@@ -5,9 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import nashtech.khanhdu.backend.data.entities.AuditEntity;
-import nashtech.khanhdu.backend.data.entities.Category;
-import nashtech.khanhdu.backend.data.entities.User;
+import nashtech.khanhdu.backend.data.entities.*;
 
 import java.util.List;
 import java.util.Set;
@@ -28,5 +26,7 @@ public class UpdateProductDto extends AuditEntity<Long> {
     @NotNull(message = "Quantity is required")
     private int currentQuantity;
     private Set<User> usersFavorite;
+    private Set<UserProductRating> productRatings;
     private Set<Category> categories;
+    private Set<Order> usersOrder;
 }

@@ -36,7 +36,7 @@ public class UserProductRatingImpl implements UserProductRatingService {
     }
 
     @Override
-    @Transactional
+//    @Transactional
     public UserProductRating ratingProduct(Long userId, Long productId, CreateUserProductRatingDto dto) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Product product = productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
@@ -44,11 +44,21 @@ public class UserProductRatingImpl implements UserProductRatingService {
         UserProductRatingId id = new UserProductRatingId();
         id.setUserName(user.getUserName());
         id.setProductName(product.getName());
+
         userProductRating.setUserProductRatingId(id);
         userProductRating.setUser(user);
         userProductRating.setProduct(product);
         userProductRating.setRating(dto.getRating());
+
         userProductRatingRepository.save(userProductRating);
+
+        double avg = 0;
+        for (UserProductRating productRating : product.getProductRatings()) {
+            avg += productRating.getRating();
+        }
+        product.setRating (avg / product.getProductRatings().size());
+        productRepository.save(product);
+
         return userProductRating;
     }
 }

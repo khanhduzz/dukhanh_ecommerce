@@ -22,7 +22,6 @@ public class Category extends AuditEntity<Long>{
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @ManyToMany(mappedBy = "categories", cascade = CascadeType.REFRESH)
-    @JsonIgnore
     Set<Product> products;
 
 }

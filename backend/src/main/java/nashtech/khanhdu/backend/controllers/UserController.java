@@ -83,4 +83,6 @@ public class UserController {
             , @PathVariable("productId") Long productId) {
         return userService.addFavoriteProduct(userId, productId);
     }
+
+
 }

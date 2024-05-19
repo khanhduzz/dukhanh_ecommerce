@@ -81,10 +81,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User deleteUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        productRepository.findAll().forEach(product -> {
+        user.getFavoriteProducts().forEach(product -> {
             product.getUsersFavorite().remove(user);
             productRepository.save(product);
         });
+        userRepository.delete(user);
         return user;
     }
 
@@ -94,7 +95,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         Product product = productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
         product.getUsersFavorite().add(user);
-        product = productRepository.save(product);
+        productRepository.save(product);
         return mapper.toDto(user);
     }
 

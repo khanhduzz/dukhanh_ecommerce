@@ -6,6 +6,7 @@ import nashtech.khanhdu.backend.data.entities.Product;
 import nashtech.khanhdu.backend.data.entities.User;
 import nashtech.khanhdu.backend.data.repositories.CategoryRepository;
 import nashtech.khanhdu.backend.data.repositories.ProductRepository;
+import nashtech.khanhdu.backend.data.repositories.UserRepository;
 import nashtech.khanhdu.backend.dto.request.CreateProductDto;
 import nashtech.khanhdu.backend.dto.request.UpdateProductDto;
 import nashtech.khanhdu.backend.dto.response.ProductDto;
@@ -27,13 +28,16 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
     private ProductMapper mapper;
     private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public ProductServiceImpl(ProductRepository productRepository, ProductMapper mapper,
-                              CategoryRepository categoryRepository) {
+                              CategoryRepository categoryRepository,
+                              UserRepository userRepository) {
         this.productRepository = productRepository;
         this.mapper = mapper;
         this.categoryRepository = categoryRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -72,13 +76,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
     public Product deleteProduct (Long id) {
-        return productRepository.findById(id)
-                .map(product -> {
-                    productRepository.delete(product);
-                    return product;
-                }).orElseThrow(ProductNotFoundException::new);
+        Product product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
+//        product.getUsersFavorite().forEach(user -> {
+//            user.getFavoriteProducts().remove(product);
+//            userRepository.save(user);
+//        });
+        productRepository.delete(product);
+        return product;
     }
 
     @Override

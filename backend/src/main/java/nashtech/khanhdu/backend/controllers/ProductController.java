@@ -1,5 +1,6 @@
 package nashtech.khanhdu.backend.controllers;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import nashtech.khanhdu.backend.data.entities.Category;
 import nashtech.khanhdu.backend.data.entities.Product;
@@ -80,6 +81,7 @@ public class ProductController {
 
 //    @Secured({"ROLE_ADMIN"})
     @DeleteMapping("/{id}")
+    @Transactional
     public Product deleteProduct(@PathVariable("id") Long id) {
         return productService.deleteProduct(id);
     }

@@ -3,9 +3,7 @@ package nashtech.khanhdu.backend.dto.response;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import nashtech.khanhdu.backend.data.entities.AuditEntity;
-import nashtech.khanhdu.backend.data.entities.Category;
-import nashtech.khanhdu.backend.data.entities.User;
+import nashtech.khanhdu.backend.data.entities.*;
 
 import java.util.List;
 import java.util.Set;
@@ -22,7 +20,9 @@ public class ProductDto extends AuditEntity<Long> {
     private double rating;
     private int isFeatured;
     private int currentQuantity;
-    Set<User> usersFavorite;
-    Set<Category> categories;
+    private Set<UserProductRating> productRatings;
+    private Set<User> usersFavorite;
+    private Set<Category> categories;
+    private Set<Order> usersOrder;
 
 }
