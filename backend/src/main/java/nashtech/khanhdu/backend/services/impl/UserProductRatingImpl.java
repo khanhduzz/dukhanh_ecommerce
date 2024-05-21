@@ -42,7 +42,7 @@ public class UserProductRatingImpl implements UserProductRatingService {
         Product product = productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
         UserProductRating userProductRating = new UserProductRating();
         UserProductRatingId id = new UserProductRatingId();
-        id.setUserName(user.getUserName());
+        id.setUserName(user.getUsername());
         id.setProductName(product.getName());
 
         userProductRating.setUserProductRatingId(id);

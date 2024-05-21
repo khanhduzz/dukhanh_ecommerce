@@ -84,5 +84,4 @@ public class UserController {
         return userService.addFavoriteProduct(userId, productId);
     }
 
-
 }

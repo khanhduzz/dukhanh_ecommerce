@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 import nashtech.khanhdu.backend.data.entities.*;
 import org.json.JSONObject;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 import java.util.Set;
@@ -16,12 +17,12 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-public class CreateUserDto {
+public class CreateUserDto extends AuditEntity<Long>{
 
     @NotBlank(message = "Username is required")
-    private String userName;
+    private String username;
     @NotBlank(message = "Password is required")
-    private String passWord;
+    private String password;
     @NotBlank(message = "Email is required")
     private String email;
     @NotBlank(message = "First name is required")
@@ -33,10 +34,10 @@ public class CreateUserDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private User.Gender gender;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private User.Role role;
+    private Set<String> role;
     private int isDeleted;
-    private Set<UserProductRating> productRatings;
-    private Set<Product> favoriteProducts;
-    private Set<Order> orders;
+    private Set<String> productRatings;
+    private Set<String> favoriteProducts;
+    private Set<String> orders;
 
 }

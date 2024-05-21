@@ -1,0 +1,13 @@
+security:
+  jwt:
+    token:
+      secret-key: this is a secret
+admin:
+  default:
+    pass: apass
+  server:
+    servlet:
+      context-path: /api
+springdoc:
+  api-docs:
+    path: /api-docs

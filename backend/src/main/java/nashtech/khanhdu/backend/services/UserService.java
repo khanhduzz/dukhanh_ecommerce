@@ -6,13 +6,15 @@ import nashtech.khanhdu.backend.dto.request.CreateUserDto;
 import nashtech.khanhdu.backend.dto.request.UpdateUserDto;
 import nashtech.khanhdu.backend.dto.response.ProductDto;
 import nashtech.khanhdu.backend.dto.response.UserDto;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
 
 @Service
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
     List<User> getAllUsers();
 
@@ -28,5 +30,4 @@ public interface UserService {
 
     Set<Product> getAllFavoriteProducts(Long id);
 
-//    UserDto ratingProduct(Long productId, Long userId, int rate);
 }

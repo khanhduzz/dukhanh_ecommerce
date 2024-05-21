@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import nashtech.khanhdu.backend.data.entities.Product;
 import nashtech.khanhdu.backend.data.entities.User;
 import nashtech.khanhdu.backend.data.repositories.ProductRepository;
+import nashtech.khanhdu.backend.data.repositories.RoleRepository;
 import nashtech.khanhdu.backend.data.repositories.UserRepository;
 import nashtech.khanhdu.backend.dto.request.CreateUserDto;
 import nashtech.khanhdu.backend.dto.request.UpdateUserDto;
@@ -15,9 +16,14 @@ import nashtech.khanhdu.backend.exceptions.UserNotFoundException;
 import nashtech.khanhdu.backend.mappers.UserMapper;
 import nashtech.khanhdu.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.management.relation.Role;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -25,15 +31,19 @@ import java.util.Set;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
     private UserMapper mapper;
     private final ProductRepository productRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, UserMapper mapper,
-                           ProductRepository productRepository) {
+                           ProductRepository productRepository,
+                           RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.mapper = mapper;
         this.productRepository = productRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -51,19 +61,24 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto createUser(CreateUserDto dto) {
-        List<User> users = userRepository.findByUserName(dto.getUserName());
-        users.forEach(user -> {
-            if (user.getUserName().equals(dto.getUserName())) throw new UserAlreadyExistedException();
-        });
+        var user = userRepository.findByUsername(dto.getUsername());
+        if (user.isPresent()) {
+            throw new UserAlreadyExistedException();
+        }
 
-        users = userRepository.findByEmail(dto.getEmail());
-        users.forEach(user -> {
-            if (user.getEmail().equals(dto.getEmail())) throw new UserAlreadyExistedException();
-        });
-
-        User user = mapper.toEntity(dto);
-        user = userRepository.save(user);
-        return mapper.toDto(user);
+        String encryptedPassword = passwordEncoder.encode(dto.getPassword());
+        var newUser = new User();
+        newUser = mapper.toEntity(dto);
+        newUser.setPassword(encryptedPassword);
+        if (!dto.getRole().isEmpty()) {
+            var userRole = roleRepository.findAllById(dto.getRole());
+            if (userRole.size() != dto.getRole().size()) {
+                throw new UserAlreadyExistedException("Role not found");
+            }
+            newUser.setRoles(new HashSet<>(userRole));
+        }
+        userRepository.save(newUser);
+        return mapper.toDto(newUser);
     }
 
     @Override
@@ -107,14 +122,9 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(UserNotFoundException::new);
     }
 
-//    @Override
-//    public UserDto ratingProduct(Long productId, Long userId, int rate) {
-//        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-//        Product product = productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
-//        user.getRatingProducts().add(product);
-//        user.getRatings().put(product, rate);
-//        user = userRepository.save(user);
-//        return mapper.toDto(user);
-//    }
-
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username).orElseThrow(
+                () -> new UserNotFoundException("User not found"));
+    }
 }

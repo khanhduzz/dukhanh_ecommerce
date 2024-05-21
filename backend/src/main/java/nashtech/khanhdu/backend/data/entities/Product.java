@@ -46,11 +46,11 @@ public class Product extends AuditEntity<Long>{
     )
     private Set<Category> categories;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "product")
     @JsonIgnore
     private Set<UserProductRating> productRatings;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "product")
     @JsonIgnore
     private Set<Order> usersOrder;
 }

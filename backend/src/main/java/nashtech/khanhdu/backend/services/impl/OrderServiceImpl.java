@@ -56,8 +56,8 @@ public class OrderServiceImpl implements OrderService {
         List<Order> orders = orderRepository.findByUserId(userId);
         orders.forEach(order -> {
             orderRepository.delete(order);
-            order.getUser().getOrders().remove(order);
-            order.getProduct().getUsersOrder().remove(order);
+//            order.getUser().getOrders().remove(order);
+//            order.getProduct().getUsersOrder().remove(order);
         });
     }
 }

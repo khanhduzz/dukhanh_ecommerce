@@ -3,7 +3,9 @@ package nashtech.khanhdu.backend.data.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.context.annotation.Role;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.*;
 
@@ -12,17 +14,18 @@ import java.util.*;
 @Setter
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode
 @Table(name = "users")
-public class User{
+public class User extends AuditEntity<Long> implements UserDetails {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
     @Column(name = "user_name")
-    private String userName;
+    private String username;
     @Column(name = "pass_word")
-    private String passWord;
+    private String password;
     private String email;
     @Column(name = "first_name")
     private String firstName;
@@ -32,44 +35,70 @@ public class User{
     @Column(name = "phone_number")
     private String phoneNumber;
     private Gender gender;
-    private Role role;
     @Column(name = "is_deleted", columnDefinition = "int default '0'")
     private int isDeleted = 0;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JoinTable(
+            name = "USERS_ROLES",
+            joinColumns = @JoinColumn(name = "USER_ID"),
+            inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
+    Set<Role> roles;
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @ManyToMany(mappedBy = "usersFavorite")
     Set<Product> favoriteProducts;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user")
     @JsonIgnore
     private Set<UserProductRating> productRatings;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user")
     @JsonIgnore
     private Set<Order> orders;
-
-    public User(String userName, String passWord, String email, String firstName, String lastName, String address, String phoneNumber, int isDeleted) {
-        this.userName = userName;
-        this.passWord = passWord;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
-        this.isDeleted = isDeleted;
-    }
-
-    public User(String userName) {
-        this.userName = userName;
-    }
 
     public enum Gender {
         MALE, FEMALE, OTHER
     }
 
-    public enum Role {
-        ROLE_ADMIN, ROLE_USER
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities () {
+        if ( this.roles != null ) {
+            return this.roles.stream().map(e -> new SimpleGrantedAuthority(e.getRoleName())).toList();
+        }
+        return Collections.emptyList();
     }
 
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
