@@ -13,12 +13,12 @@ public interface ProductMapper {
     ProductDto toDto (Product product);
 
     @Mapping(target = "categories", ignore = true)
-    @Mapping(target = "usersRating", ignore = true)
+    @Mapping(target = "ratings", ignore = true)
     @Mapping(target = "orders", ignore = true)
     Product toEntity (ProductDto dto);
 
     @Mapping(target = "categories", ignore = true)
-    @Mapping(target = "usersRating", ignore = true)
+    @Mapping(target = "ratings", ignore = true)
     @Mapping(target = "orders", ignore = true)
     Product updateProduct (@MappingTarget Product product, ProductDto dto);
 }

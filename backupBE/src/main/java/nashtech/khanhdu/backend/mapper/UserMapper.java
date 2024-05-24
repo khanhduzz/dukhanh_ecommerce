@@ -13,12 +13,12 @@ public interface UserMapper {
     UserDto toDto (User user);
 
     @Mapping(target = "roles", ignore = true)
-    @Mapping(target = "productsRating", ignore = true)
+    @Mapping(target = "ratings", ignore = true)
     @Mapping(target = "orders", ignore = true)
     User toEntity(UserDto dto);
 
     @Mapping(target = "roles", ignore = true)
-    @Mapping(target = "productsRating", ignore = true)
+    @Mapping(target = "ratings", ignore = true)
     @Mapping(target = "orders", ignore = true)
     User updateUser (@MappingTarget User user, UserDto dto);
 }
