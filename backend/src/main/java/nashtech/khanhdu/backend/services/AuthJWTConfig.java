@@ -70,7 +70,7 @@ public class AuthJWTConfig {
                                 ,"/api-docs/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/auth/*").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/v1/books").hasRole("ADMIN")
+//                        .requestMatchers(HttpMethod.POST, "/v1/books").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

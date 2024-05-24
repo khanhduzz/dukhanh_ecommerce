@@ -14,7 +14,7 @@ import java.util.*;
 @Setter
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 @EqualsAndHashCode
 @Table(name = "users")
 public class User extends AuditEntity<Long> implements UserDetails {
@@ -44,7 +44,7 @@ public class User extends AuditEntity<Long> implements UserDetails {
     @JoinTable(
             name = "USERS_ROLES",
             joinColumns = @JoinColumn(name = "USER_ID"),
-            inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
+            inverseJoinColumns = @JoinColumn(name = "ROLE_NAME"))
     Set<Role> roles;
 
     @EqualsAndHashCode.Exclude
@@ -54,11 +54,11 @@ public class User extends AuditEntity<Long> implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     @JsonIgnore
-    private Set<UserProductRating> productRatings;
+    Set<UserProductRating> productRatings;
 
     @OneToMany(mappedBy = "user")
     @JsonIgnore
-    private Set<Order> orders;
+    Set<Order> orders;
 
     public enum Gender {
         MALE, FEMALE, OTHER

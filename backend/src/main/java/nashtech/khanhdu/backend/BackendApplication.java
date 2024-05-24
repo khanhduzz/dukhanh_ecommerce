@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 @SpringBootApplication(scanBasePackages = "nashtech.khanhdu.backend")
 @EnableJpaAuditing
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 public class BackendApplication {
 
 	public static void main(String[] args) {

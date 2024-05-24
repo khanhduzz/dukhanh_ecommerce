@@ -2,10 +2,12 @@ package nashtech.khanhdu.backend.services;
 
 import nashtech.khanhdu.backend.data.entities.Product;
 import nashtech.khanhdu.backend.data.entities.User;
+import nashtech.khanhdu.backend.dto.SignUpDto;
 import nashtech.khanhdu.backend.dto.request.CreateUserDto;
 import nashtech.khanhdu.backend.dto.request.UpdateUserDto;
 import nashtech.khanhdu.backend.dto.response.ProductDto;
 import nashtech.khanhdu.backend.dto.response.UserDto;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,5 +31,7 @@ public interface UserService extends UserDetailsService {
     UserDto addFavoriteProduct (Long id, Long productId);
 
     Set<Product> getAllFavoriteProducts(Long id);
+
+    UserDetails signUp (SignUpDto data);
 
 }

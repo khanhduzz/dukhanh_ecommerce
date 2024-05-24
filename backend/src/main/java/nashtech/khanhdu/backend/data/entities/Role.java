@@ -13,7 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Role {
+public class Role{
     @Id
     @Column(name = "ROLE_NAME")
     String roleName;

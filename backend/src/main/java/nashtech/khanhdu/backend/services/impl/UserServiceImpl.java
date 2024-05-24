@@ -1,11 +1,12 @@
 package nashtech.khanhdu.backend.services.impl;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import nashtech.khanhdu.backend.data.entities.Product;
 import nashtech.khanhdu.backend.data.entities.User;
 import nashtech.khanhdu.backend.data.repositories.ProductRepository;
 import nashtech.khanhdu.backend.data.repositories.RoleRepository;
 import nashtech.khanhdu.backend.data.repositories.UserRepository;
+import nashtech.khanhdu.backend.dto.SignUpDto;
 import nashtech.khanhdu.backend.dto.request.CreateUserDto;
 import nashtech.khanhdu.backend.dto.request.UpdateUserDto;
 import nashtech.khanhdu.backend.dto.response.ProductDto;
@@ -79,6 +80,28 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.save(newUser);
         return mapper.toDto(newUser);
+    }
+
+    @Transactional
+    public UserDetails signUp (SignUpDto data) throws UserAlreadyExistedException {
+        var user = userRepository.findOneByUsername(data.username());
+        if ( user.isPresent() ) {
+            throw new UserAlreadyExistedException("Username already exists");
+        }
+
+        String encryptedPassword = passwordEncoder.encode(data.password());
+        var newUser = new User();
+        newUser.setPassword(encryptedPassword);
+        newUser.setUsername(data.username());
+        if ( !data.roles().isEmpty() ) {
+            var userRoles = roleRepository.findAllById(data.roles());
+            if ( userRoles.size() != data.roles().size() ) {
+                throw new UserAlreadyExistedException("Role not found");
+            }
+            newUser.setRoles(new HashSet<>(userRoles));
+        }
+
+        return userRepository.save(newUser);
     }
 
     @Override
