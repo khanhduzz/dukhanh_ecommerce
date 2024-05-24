@@ -1,6 +1,7 @@
 package nashtech.khanhdu.backend.services.impl;
 
 import nashtech.khanhdu.backend.dto.RatingDto;
+import nashtech.khanhdu.backend.entities.Product;
 import nashtech.khanhdu.backend.entities.Rating;
 import nashtech.khanhdu.backend.exceptions.ProductNotFoundException;
 import nashtech.khanhdu.backend.exceptions.UserExistException;
@@ -46,7 +47,12 @@ public class RatingServiceImpl implements RatingService {
         rating.setRate(dto.rate());
         rating.setUser(rating.getUserRating().getUsername());
         rating.setProduct(rating.getProductRating().getName());
+        Product product = rating.getProductRating();
+        double newRate = (product.getRating() + dto.rate()) / (product.getRatings().size() + 1);
+        product.setRating(newRate);
+        productRepository.save(product);
         ratingRepository.save(rating);
+
         return ResponseEntity.ok(rating);
     }
 

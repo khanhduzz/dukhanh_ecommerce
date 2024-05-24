@@ -23,6 +23,7 @@ public class Product {
     private String name;
     private double price;
     private String description;
+    private double rating;
     private int featured;
 
     @EqualsAndHashCode.Exclude

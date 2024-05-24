@@ -15,6 +15,7 @@ public class ProductDto {
     private String name;
     private double price;
     private String description;
+    private double rating;
     private int featured;
     private Set<String> categories;
 }

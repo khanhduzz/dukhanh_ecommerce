@@ -17,7 +17,7 @@ public class Rating {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RATING_ID")
     private Long id;
-    private int rate;
+    private double rate;
     private String user;
     private String product;
 
