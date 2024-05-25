@@ -3,7 +3,6 @@ import "../App.css";
 import Navbar from "../components/Navbar";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import { Button } from "@mui/material";
 import Table from "@mui/material/Table";
@@ -13,6 +12,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
+import Typography from "@mui/material/Typography";
+import Pagination from "@mui/material/Pagination";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -35,19 +36,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
-
-const AdminAllUsers = () => {
+const AdminAllProducts = () => {
   const [products, setProducts] = useState([]);
 
   const getData = async () => {
@@ -63,7 +52,19 @@ const AdminAllUsers = () => {
   return (
     <div className="App">
       <Navbar />
-      <h1 variant="h1">Administrator</h1>
+      <Box>
+        <Typography
+          variant="h1"
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            color: "secondary.main",
+            marginY: 5,
+          }}
+        >
+          All products
+        </Typography>
+      </Box>
       <Box
         sx={{
           flexGrow: 1,
@@ -164,15 +165,17 @@ const AdminAllUsers = () => {
             </Grid>
           </Grid>
           <Grid item xs={13}>
-            <TableContainer>
+            <TableContainer sx={{ borderRadius: 2 }}>
               <Table sx={{ minWidth: 700 }} aria-label="customized table">
                 <TableHead>
                   <TableRow>
                     <StyledTableCell>Product</StyledTableCell>
-                    <StyledTableCell align="right">Price</StyledTableCell>
-                    <StyledTableCell align="right">Rating</StyledTableCell>
-                    <StyledTableCell align="right">Description</StyledTableCell>
-                    <StyledTableCell align="right">Manage</StyledTableCell>
+                    <StyledTableCell align="center">Price</StyledTableCell>
+                    <StyledTableCell align="center">Rating</StyledTableCell>
+                    <StyledTableCell align="center">
+                      Description
+                    </StyledTableCell>
+                    <StyledTableCell align="center">Manage</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -184,7 +187,7 @@ const AdminAllUsers = () => {
                       <StyledTableCell align="right">
                         {product.price * 1000} VND
                       </StyledTableCell>
-                      <StyledTableCell align="right">
+                      <StyledTableCell align="center">
                         {product.rating}
                       </StyledTableCell>
                       <StyledTableCell align="right">
@@ -218,6 +221,7 @@ const AdminAllUsers = () => {
                 </TableBody>
               </Table>
             </TableContainer>
+            {/* <Pagination count={10} color="secondary" /> */}
           </Grid>
         </Grid>
       </Box>
@@ -225,4 +229,4 @@ const AdminAllUsers = () => {
   );
 };
 
-export default AdminAllUsers;
+export default AdminAllProducts;

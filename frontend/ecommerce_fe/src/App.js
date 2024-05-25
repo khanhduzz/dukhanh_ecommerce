@@ -2,7 +2,10 @@ import logo from "./logo.svg";
 import "./App.css";
 import Navbar from "./components/Navbar";
 import BodyWithAdmin from "./components/BodyWithAdmin";
-import AdminAllUsers from "./pages/AdminAllUsers";
+import AdminAllProducts from "./pages/AdminAllProducts";
+import Paging from "./components/Paging";
+import UserSignUp from "./pages/UserSignUp";
+import UserSignIn from "./pages/UserSignIn";
 
 function App() {
   return (
@@ -10,7 +13,10 @@ function App() {
       {/* <Navbar />
       <h1>Administrator</h1>
       <BodyWithAdmin /> */}
-      <AdminAllUsers />
+      {/* <AdminAllProducts /> */}
+      {/* <Paging /> */}
+      {/* < UserSignUp /> */}
+      <UserSignIn />
     </div>
   );
 }
