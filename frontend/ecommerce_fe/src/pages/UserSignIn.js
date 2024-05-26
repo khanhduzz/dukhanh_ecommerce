@@ -8,13 +8,62 @@ import {
   Button,
   Link,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { grey } from "@mui/material/colors";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
+import axios from "axios";
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
 const color = grey[50];
 
-const UserSignUp = () => {
+const UserSignIn = () => {
+  const [token, setToken] = useState("");
+  const [cookies, setCookie] = useCookies(["token"]);
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+
+  const signIn = async (event) => {
+    event.preventDefault();
+    try {
+      console.log("it run");
+      const getData = async () => {
+        const response = await axios.post(
+          `http://localhost:8080/api/auth/signin`,
+          {
+            username: username,
+            password: password,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setCookie("token", response.data.access_token);
+        navigate("/allproducts");
+      };
+      getData();
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        window.location.reload();
+      }
+    }
+  };
+
+  const handleUsername = (event) => {
+    setUsername(event.target.value);
+  };
+  console.log(username);
+
+  const handlePassword = (event) => {
+    setPassword(event.target.value);
+  };
+  console.log(password);
+
   return (
     <Box
       sx={{
@@ -29,7 +78,7 @@ const UserSignUp = () => {
     >
       <Box
         sx={{
-          position: "absolute",
+          // position: "r",
           top: "100px",
         }}
       >
@@ -46,6 +95,8 @@ const UserSignUp = () => {
           Welcome to GAlLéRY
         </Typography>
       </Box>
+
+      {/* Form */}
       <Box
         sx={{
           width: "500px",
@@ -54,6 +105,8 @@ const UserSignUp = () => {
           borderRadius: "15px",
           padding: "20px",
         }}
+        component="form"
+        onSubmit={signIn}
       >
         <Typography
           variant="h4"
@@ -65,6 +118,17 @@ const UserSignUp = () => {
           }}
         >
           Sign In
+        </Typography>
+        <Typography
+          variant="subtitle"
+          sx={{
+            justifyContent: "center",
+            color: "#fff",
+            fontWeight: 300,
+            display: "none",
+          }}
+        >
+          Your username or password not correct!
         </Typography>
         <FormControl
           sx={{
@@ -92,6 +156,8 @@ const UserSignUp = () => {
               fontSize: "20px",
               marginLeft: "15px",
             }}
+            value={username}
+            onChange={handleUsername}
           />
           <FormHelperText
             id="my-helper-text"
@@ -129,6 +195,8 @@ const UserSignUp = () => {
               fontSize: "20px",
               marginLeft: "15px",
             }}
+            value={password}
+            onChange={handlePassword}
           />
           <FormHelperText
             id="my-helper-text"
@@ -140,13 +208,30 @@ const UserSignUp = () => {
           </FormHelperText>
         </FormControl>
 
+        <Box
+          sx={{
+            display: "inline-flex",
+            gap: "10px",
+            marginTop: "20px",
+          }}
+        >
+          <Button
+            variant="contained"
+            color="success"
+            sx={{ padding: "10px 100px", borderRadius: 5 }}
+            type="submit"
+          >
+            Sign In
+          </Button>
+        </Box>
+
         <Typography
           sx={{
             marginTop: "20px",
             cursor: "pointer",
           }}
         >
-          You do not have an account, go to{" "}
+          You do not have any account, go to{" "}
           <Link
             sx={{
               textDecoration: "none",
@@ -161,7 +246,7 @@ const UserSignUp = () => {
         </Typography>
         <ColorLensIcon
           sx={{
-            width: "150px",
+            width: "120px",
             height: "auto",
             marginTop: "20px",
             color: "green",
@@ -188,4 +273,4 @@ const UserSignUp = () => {
   );
 };
 
-export default UserSignUp;
+export default UserSignIn;
