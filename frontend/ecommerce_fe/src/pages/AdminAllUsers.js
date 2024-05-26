@@ -221,7 +221,7 @@ const AdminAllUsers = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-            <Pagination count={10} color="secondary" />
+            {/* <Pagination count={10} color="secondary" /> */}
           </Grid>
         </Grid>
       </Box>

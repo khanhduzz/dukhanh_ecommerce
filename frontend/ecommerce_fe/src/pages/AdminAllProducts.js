@@ -13,7 +13,14 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
 import Typography from "@mui/material/Typography";
-import Pagination from "@mui/material/Pagination";
+import {
+  Pagination,
+  CircularProgress,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -37,17 +44,61 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const AdminAllProducts = () => {
-  const [products, setProducts] = useState([]);
+  // const [products, setProducts] = useState([]);
 
-  const getData = async () => {
-    const response = await axios.get("http://localhost:8080/api/products");
-    console.log(response.data);
-    setProducts(response.data);
+  // const getData = async () => {
+  //   const response = await axios.get("http://localhost:8080/api/products");
+  //   console.log(response.data);
+  //   setProducts(response.data);
+  // };
+
+  // useEffect(() => {
+  //   getData();
+  // }, []);
+
+  // PAGINATION
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [sortedBy, setSortedBy] = useState("name"); // Sorting field
+  const [direction, setDirection] = useState(-1); // Sorting direction
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      console.log("it run");
+      const getData = async () => {
+        const response = await axios.get(
+          `http://localhost:8080/api/products/page/${page}/2/${sortedBy}/${direction}`
+        );
+        console.log(response.data.content);
+        setProducts(response.data.content);
+        setTotalPages(response.data.totalPages);
+      };
+      getData();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
-    getData();
-  }, []);
+    fetchData();
+  }, [page, sortedBy, direction]);
+
+  const handlePageChange = (event, value) => {
+    setPage(value - 1);
+  };
+
+  const handleSortChange = (event) => {
+    setSortedBy(event.target.value);
+  };
+
+  const handleDirectionChange = (event) => {
+    setDirection(event.target.value);
+  };
+  // END PAGIND
 
   return (
     <div className="App">
@@ -75,7 +126,7 @@ const AdminAllProducts = () => {
         }}
       >
         <Grid container spacing={2} columns={16}>
-          <Grid item xs={3} sx={{ marginTop: 1 }}>
+          <Grid item xs={2} sx={{ marginTop: 1 }}>
             <Grid
               container
               spacing={1}
@@ -164,7 +215,7 @@ const AdminAllProducts = () => {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={13}>
+          <Grid item xs={12}>
             <TableContainer sx={{ borderRadius: 2 }}>
               <Table sx={{ minWidth: 700 }} aria-label="customized table">
                 <TableHead>
@@ -190,7 +241,7 @@ const AdminAllProducts = () => {
                       <StyledTableCell align="center">
                         {product.rating}
                       </StyledTableCell>
-                      <StyledTableCell align="right">
+                      <StyledTableCell align="left">
                         {product.description}
                       </StyledTableCell>
                       <StyledTableCell align="right">
@@ -221,9 +272,80 @@ const AdminAllProducts = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-            {/* <Pagination count={10} color="secondary" /> */}
+          </Grid>
+          <Grid xs={2} sx={{ marginTop: "20px" }}>
+            <FormControl
+              sx={{
+                marginBottom: 3,
+                width: "120px",
+                marginLeft: 2,
+              }}
+              color="success"
+            >
+              <InputLabel
+                color="success"
+                sx={{
+                  fontSize: "16px",
+                }}
+              >
+                Sort By
+              </InputLabel>
+              <Select
+                value={sortedBy}
+                onChange={handleSortChange}
+                sx={{
+                  marginTop: "10px",
+                }}
+              >
+                <MenuItem value={"name"}>Name</MenuItem>
+                <MenuItem value={"price"}>Price</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl
+              sx={{ marginBottom: 3, width: "120px", marginLeft: 2 }}
+            >
+              <InputLabel
+                color="success"
+                sx={{
+                  fontSize: "16px",
+                }}
+              >
+                Direction
+              </InputLabel>
+              <Select
+                value={direction}
+                onChange={handleDirectionChange}
+                sx={{
+                  marginTop: "10px",
+                }}
+              >
+                <MenuItem value={-1}>Ascending</MenuItem>
+                <MenuItem value={1}>Descending</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
         </Grid>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "40px",
+        }}
+      >
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <Box>
+            <Pagination
+              count={totalPages}
+              page={page + 1}
+              onChange={handlePageChange}
+              sx={{ marginTop: 2 }}
+              color="success"
+            />
+          </Box>
+        )}
       </Box>
     </div>
   );

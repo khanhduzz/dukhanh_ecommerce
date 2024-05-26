@@ -16,7 +16,7 @@ const PaginatedList = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const [number, setNumber] = useState(1); // Number of items per page
+  // const [number, setNumber] = useState(1); // Number of items per page
   const [sortedBy, setSortedBy] = useState("name"); // Sorting field
   const [direction, setDirection] = useState(-1); // Sorting direction
 
@@ -24,39 +24,16 @@ const PaginatedList = () => {
     setLoading(true);
     try {
       console.log("it run");
-    //   const response = await axios.request({
-    //     method: "GET",
-    //     url: "http://localhost:8080/api/products/page",
-    //     headers: {
-    //       "content-type": "application/json",
-    //       "X-Frame-Options": "DENY",
-    //     },
-    //     data: [
-    //       {
-    //         "page":page,
-    //         "number":number,
-    //         "sortedBy":sortedBy,
-    //         "direction":direction,
-    //       },
-    //     ],
-    //   });
-
-        const d = {
-            "page":0,
-            "number":1,
-            "sortedBy":"name",
-            "direction":1
-        }
-
-        const getData = async () => {
-            const response = await axios.get('http://localhost:8080/api/products/page', 
-            { params: d });
-            console.log(response);
-            setData(response.data);
-            setTotalPages(response.data.totalPages);
-        };
-
-    } catch (error) { 
+      const getData = async () => {
+        const response = await axios.get(
+          `http://localhost:8080/api/products/page/${page}/2/${sortedBy}/${direction}`
+        );
+        console.log(response.data.content);
+        setData(response.data.content);
+        setTotalPages(response.data.totalPages);
+      };
+      getData();
+    } catch (error) {
       console.error("Error fetching data:", error);
     }
     setLoading(false);
@@ -64,15 +41,15 @@ const PaginatedList = () => {
 
   useEffect(() => {
     fetchData();
-  }, [page, number, sortedBy, direction]);
+  }, [page, sortedBy, direction]);
 
   const handlePageChange = (event, value) => {
-    setPage(value);
+    setPage(value - 1);
   };
 
-  const handleNumberChange = (event) => {
-    setNumber(event.target.value);
-  };
+  // const handleNumberChange = (event) => {
+  //   setNumber(event.target.value);
+  // };
 
   const handleSortChange = (event) => {
     setSortedBy(event.target.value);
@@ -87,14 +64,14 @@ const PaginatedList = () => {
       <Typography variant="h4" sx={{ marginBottom: 2 }}>
         Paginated List
       </Typography>
-      <FormControl sx={{ marginBottom: 2, minWidth: 120 }}>
+      {/* <FormControl sx={{ marginBottom: 2, minWidth: 120 }}>
         <InputLabel>Items per page</InputLabel>
         <Select value={number} onChange={handleNumberChange}>
           <MenuItem value={1}>1</MenuItem>
           <MenuItem value={2}>2</MenuItem>
           <MenuItem value={3}>3</MenuItem>
         </Select>
-      </FormControl>
+      </FormControl> */}
       <FormControl sx={{ marginBottom: 2, minWidth: 120, marginLeft: 2 }}>
         <InputLabel>Sort By</InputLabel>
         <Select value={sortedBy} onChange={handleSortChange}>
@@ -120,9 +97,10 @@ const PaginatedList = () => {
           ))}
           <Pagination
             count={totalPages}
-            page={page}
+            page={page + 1}
             onChange={handlePageChange}
             sx={{ marginTop: 2 }}
+            color="secondary"
           />
         </Box>
       )}
