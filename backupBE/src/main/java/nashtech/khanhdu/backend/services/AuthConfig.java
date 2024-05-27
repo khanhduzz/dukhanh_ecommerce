@@ -69,6 +69,7 @@ public class AuthConfig {
                     ,"/swagger-ui/**"
                     ,"/api-docs/**"
                     ,"/products/**"
+                    ,"/products/page/*"
                     ,"/users/*"
                 ).permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/*").permitAll()

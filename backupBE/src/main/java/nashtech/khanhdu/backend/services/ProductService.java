@@ -26,4 +26,6 @@ public interface ProductService {
     List<Product> findFeaturedProduct();
 
     Page<Product> getAllProductSortedBy(SortedDto dto);
+
+    Page<Product> getAllProductsSortedParam(Integer page, Integer number, String sortedBy, Integer direction);
 }

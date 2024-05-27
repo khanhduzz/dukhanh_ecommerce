@@ -144,4 +144,20 @@ public class ProductServiceImpl implements ProductService {
         }
         return productRepository.findAll(sorted);
     }
+
+    @Override
+    public Page<Product> getAllProductsSortedParam(Integer page, Integer number, String sortedBy, Integer direction) {
+        int page1 = (page == null) ? 0 : page;
+        int number1 = number == null ? 20 : number;
+        int direction1 = direction == null ? 1 : direction;
+        Pageable sorted;
+        if (direction1 == -1) {
+            sorted = PageRequest.of(page1,number1, Sort.by(sortedBy).ascending());
+        } else {
+            sorted = PageRequest.of(page1,number1, Sort.by(sortedBy).descending());
+        }
+        return productRepository.findAll(sorted);
+    }
+
+
 }

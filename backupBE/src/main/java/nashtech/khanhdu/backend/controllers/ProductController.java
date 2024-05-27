@@ -71,4 +71,12 @@ public class ProductController {
     public Page<Product> getAllProductSortedBy(@RequestBody SortedDto dto) {
         return productService.getAllProductSortedBy(dto);
     }
+
+    @GetMapping("/page/{page}/{number}/{sortedBy}/{direction}")
+    public Page<Product> getAllProductsSortedParam(@PathVariable("page") Integer page,
+                                                   @PathVariable("number") Integer number,
+                                                   @PathVariable("sortedBy") String sortedBy,
+                                                   @PathVariable("direction") Integer direction) {
+        return productService.getAllProductsSortedParam(page, number, sortedBy, direction);
+    }
 }
