@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-undef */
 import React, { useEffect, useState } from "react";
 import "../App.css";
 import Navbar from "../components/Navbar";
@@ -13,7 +14,18 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
 import Typography from "@mui/material/Typography";
-import Pagination from "@mui/material/Pagination";
+import {
+  Pagination,
+  CircularProgress,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Link,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import AdminTab from "../components/AdminTab";
+import { useCookies } from "react-cookie";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -37,17 +49,66 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const AdminAllUsers = () => {
-  const [products, setProducts] = useState([]);
+  const [cookies, setCookie] = useCookies(["token"], ["user"], ["userId"]);
+  const navigate = useNavigate();
 
-  const getData = async () => {
-    const response = await axios.get("http://localhost:8080/api/products");
-    console.log(response.data);
-    setProducts(response.data);
+  const checkUser = async () => {
+    if (typeof cookies.token === "undefined" || cookies.user === "user") {
+      navigate("/error");
+    } else {
+      fetchData();
+    }
+  };
+
+  // PAGINATION
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [sortedBy, setSortedBy] = useState("name"); // Sorting field
+  const [direction, setDirection] = useState(-1); // Sorting direction
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const getData = async () => {
+        const response = await axios.get(`http://localhost:8080/api/users`, {
+          headers: {
+            Authorization: "Bearer " + cookies.token,
+          },
+        });
+        setUsers(response.data);
+        // setTotalPages(response.data.totalPages);
+      };
+      getData();
+    } catch (error) {
+      window.location.replace("/error");
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
-    getData();
-  }, []);
+    checkUser();
+  }, [page, sortedBy, direction]);
+
+  const handlePageChange = (event, value) => {
+    setPage(value - 1);
+  };
+
+  const handleSortChange = (event) => {
+    setSortedBy(event.target.value);
+  };
+
+  const handleDirectionChange = (event) => {
+    setDirection(event.target.value);
+  };
+  // END PAGING
+
+  const productDetail = (productId) => {
+    const link = "/admin/product/";
+    console.log(productId);
+    navigate(link + productId);
+  };
 
   return (
     <div className="App">
@@ -62,7 +123,7 @@ const AdminAllUsers = () => {
             marginY: 5,
           }}
         >
-          All products
+          All users
         </Typography>
       </Box>
       <Box
@@ -75,155 +136,145 @@ const AdminAllUsers = () => {
         }}
       >
         <Grid container spacing={2} columns={16}>
-          <Grid item xs={3} sx={{ marginTop: 1 }}>
-            <Grid
-              container
-              spacing={1}
-              columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-              gap={1.5}
-            >
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  Add new User
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  Add new Produt
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  Add new category
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  add new role
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  Show all users
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="contained"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  Show all products
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  Show all categories
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  Show all roles
-                </Button>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item xs={13}>
+          <AdminTab val={"allusers"} />
+          <Grid item xs={12}>
             <TableContainer sx={{ borderRadius: 2 }}>
               <Table sx={{ minWidth: 700 }} aria-label="customized table">
                 <TableHead>
                   <TableRow>
-                    <StyledTableCell>Product</StyledTableCell>
-                    <StyledTableCell align="center">Price</StyledTableCell>
-                    <StyledTableCell align="center">Rating</StyledTableCell>
-                    <StyledTableCell align="center">
-                      Description
-                    </StyledTableCell>
+                    <StyledTableCell>Username</StyledTableCell>
+                    <StyledTableCell align="center">Email</StyledTableCell>
+                    <StyledTableCell align="center">Role</StyledTableCell>
+                    <StyledTableCell align="center"></StyledTableCell>
                     <StyledTableCell align="center">Manage</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {products.map((product) => (
-                    <StyledTableRow key={product.name}>
-                      <StyledTableCell component="th" scope="row">
-                        {product.name}
-                      </StyledTableCell>
-                      <StyledTableCell align="right">
-                        {product.price * 1000} VND
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {product.rating}
-                      </StyledTableCell>
-                      <StyledTableCell align="right">
-                        {product.description}
-                      </StyledTableCell>
-                      <StyledTableCell align="right">
-                        <Button
-                          variant="outlined"
-                          color="secondary"
-                          sx={{ p: 0.3, borderRadius: 5, marginRight: 1 }}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          color="success"
-                          sx={{ p: 0.3, borderRadius: 5, marginRight: 1 }}
-                        >
-                          Detail
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          color="error"
-                          sx={{ p: 0.3, borderRadius: 5 }}
-                        >
-                          Delete
-                        </Button>
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  ))}
+                  {users.map((user) => {
+                    return (
+                      <StyledTableRow key={user.id}>
+                        <StyledTableCell component="th" scope="row">
+                          {user.username}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {user.email}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {user.authorities[0].authority.substring(5)}
+                        </StyledTableCell>
+                        <StyledTableCell align="left"></StyledTableCell>
+                        <StyledTableCell align="right">
+                          <Button
+                            variant="outlined"
+                            color="secondary"
+                            sx={{ p: 0.3, borderRadius: 5, marginRight: 1 }}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            color="success"
+                            sx={{ p: 0.3, borderRadius: 5, marginRight: 1 }}
+                          >
+                            <Link
+                              // to={{ "/admin/product/": `${product.id}` }}
+                              // params={{ productId: `${product.id}` }}
+                              onClick={() => productDetail(user.id)}
+                              sx={{
+                                textDecoration: "none",
+                              }}
+                            >
+                              Detail
+                            </Link>
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            color="error"
+                            sx={{ p: 0.3, borderRadius: 5 }}
+                          >
+                            Delete
+                          </Button>
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </TableContainer>
-            {/* <Pagination count={10} color="secondary" /> */}
+          </Grid>
+          <Grid xs={2} sx={{ marginTop: "20px" }}>
+            <FormControl
+              sx={{
+                marginBottom: 3,
+                width: "120px",
+                marginLeft: 2,
+              }}
+              color="success"
+            >
+              <InputLabel
+                color="success"
+                sx={{
+                  fontSize: "16px",
+                }}
+              >
+                Sort By
+              </InputLabel>
+              <Select
+                value={sortedBy}
+                onChange={handleSortChange}
+                sx={{
+                  marginTop: "10px",
+                }}
+              >
+                <MenuItem value={"name"}>Name</MenuItem>
+                <MenuItem value={"price"}>Price</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl
+              sx={{ marginBottom: 3, width: "120px", marginLeft: 2 }}
+            >
+              <InputLabel
+                color="success"
+                sx={{
+                  fontSize: "16px",
+                }}
+              >
+                Direction
+              </InputLabel>
+              <Select
+                value={direction}
+                onChange={handleDirectionChange}
+                sx={{
+                  marginTop: "10px",
+                }}
+              >
+                <MenuItem value={-1}>Ascending</MenuItem>
+                <MenuItem value={1}>Descending</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
         </Grid>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "40px",
+        }}
+      >
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <Box>
+            <Pagination
+              count={totalPages}
+              page={page + 1}
+              onChange={handlePageChange}
+              sx={{ marginTop: 2 }}
+              color="success"
+            />
+          </Box>
+        )}
       </Box>
     </div>
   );

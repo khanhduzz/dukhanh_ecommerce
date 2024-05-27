@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-undef */
 import React, { useEffect, useState } from "react";
 import "../App.css";
 import Navbar from "../components/Navbar";
@@ -20,7 +21,10 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Link,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import AdminTab from "../components/AdminTab";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -56,6 +60,7 @@ const AdminAllProducts = () => {
   //   getData();
   // }, []);
 
+  const navigate = useNavigate();
   // PAGINATION
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -98,7 +103,13 @@ const AdminAllProducts = () => {
   const handleDirectionChange = (event) => {
     setDirection(event.target.value);
   };
-  // END PAGIND
+  // END PAGING
+
+  const productDetail = (productId) => {
+    const link = "/admin/product/";
+    console.log(productId);
+    navigate(link + productId);
+  };
 
   return (
     <div className="App">
@@ -126,7 +137,7 @@ const AdminAllProducts = () => {
         }}
       >
         <Grid container spacing={2} columns={16}>
-          <Grid item xs={2} sx={{ marginTop: 1 }}>
+          {/* <Grid item xs={2} sx={{ marginTop: 1 }}>
             <Grid
               container
               spacing={1}
@@ -214,7 +225,8 @@ const AdminAllProducts = () => {
                 </Button>
               </Grid>
             </Grid>
-          </Grid>
+          </Grid> */}
+          <AdminTab val="allproducts" />
           <Grid item xs={12}>
             <TableContainer sx={{ borderRadius: 2 }}>
               <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -230,45 +242,65 @@ const AdminAllProducts = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {products.map((product) => (
-                    <StyledTableRow key={product.name}>
-                      <StyledTableCell component="th" scope="row">
-                        {product.name}
-                      </StyledTableCell>
-                      <StyledTableCell align="right">
-                        {product.price * 1000} VND
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {product.rating}
-                      </StyledTableCell>
-                      <StyledTableCell align="left">
-                        {product.description}
-                      </StyledTableCell>
-                      <StyledTableCell align="right">
-                        <Button
-                          variant="outlined"
-                          color="secondary"
-                          sx={{ p: 0.3, borderRadius: 5, marginRight: 1 }}
+                  {products.map((product) => {
+                    return (
+                      <StyledTableRow key={product.name}>
+                        <StyledTableCell component="th" scope="row">
+                          {product.name}
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          {product.price * 1000} VND
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {product.rating}
+                        </StyledTableCell>
+                        <StyledTableCell align="left">
+                          {product.description}
+                        </StyledTableCell>
+                        <StyledTableCell
+                          align="right"
+                          // sx={{
+                          //   display: "flex",
+                          //   flexWrap: "wrap",
+                          //   gap: "10px",
+                          //   justifyContent: "center",
+                          //   alignItems: "center",
+                          // }}
                         >
-                          Edit
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          color="success"
-                          sx={{ p: 0.3, borderRadius: 5, marginRight: 1 }}
-                        >
-                          Detail
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          color="error"
-                          sx={{ p: 0.3, borderRadius: 5 }}
-                        >
-                          Delete
-                        </Button>
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  ))}
+                          <Button
+                            variant="outlined"
+                            color="secondary"
+                            sx={{ p: 0.3, borderRadius: 5, marginRight: 1 }}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            color="success"
+                            sx={{ p: 0.3, borderRadius: 5, marginRight: 1 }}
+                          >
+                            <Link
+                              // to={{ "/admin/product/": `${product.id}` }}
+                              // params={{ productId: `${product.id}` }}
+                              onClick={() => productDetail(product.id)}
+                              sx={{
+                                textDecoration: "none",
+                              }}
+                            >
+                              Detail
+                            </Link>
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            color="error"
+                            sx={{ p: 0.3, borderRadius: 5 }}
+                          >
+                            Delete
+                          </Button>
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </TableContainer>

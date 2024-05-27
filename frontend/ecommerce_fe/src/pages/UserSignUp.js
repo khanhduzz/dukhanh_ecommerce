@@ -10,10 +10,79 @@ import {
 } from "@mui/material";
 import React from "react";
 import { grey } from "@mui/material/colors";
+import axios from "axios";
+import { useState } from "react";
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
 const color = grey[50];
 
 const UserSignUp = () => {
+  const [cookies, setCookie, removeCookie] = useCookies(
+    ["token"],
+    ["user"],
+    ["userId"]
+  );
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+
+  const navigate = useNavigate();
+
+  const signUp = async (event) => {
+    event.preventDefault();
+    try {
+      const sendData = async () => {
+        const response = await axios.post(
+          `http://localhost:8080/api/auth/signup`,
+          {
+            username: username,
+            password: password,
+            email: email,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (response.data !== "") {
+          navigate("/signin");
+        } else {
+          window.location.reload();
+        }
+      };
+      sendData();
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 403) {
+          console.error(
+            "Error 403: Forbidden - Invalid credentials or access denied."
+          );
+        } else {
+          console.error("Error:", error.response.status, error.response.data);
+        }
+      } else if (error.request) {
+        console.error("No response received:", error.request);
+      } else {
+        console.error("Error", error.message);
+      }
+    }
+  };
+
+  const handleUsername = (event) => {
+    setUsername(event.target.value);
+  };
+
+  const handlePassword = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handleEmail = (event) => {
+    setEmail(event.target.value);
+  };
+
   return (
     <Box
       sx={{
@@ -45,7 +114,11 @@ const UserSignUp = () => {
           Welcome to GAlLéRY
         </Typography>
       </Box>
+
+      {/* Login form */}
       <Box
+        component="form"
+        onSubmit={signUp}
         sx={{
           width: "500px",
           height: "500px",
@@ -91,6 +164,8 @@ const UserSignUp = () => {
               fontSize: "20px",
               marginLeft: "15px",
             }}
+            value={username}
+            onChange={handleUsername}
           />
           <FormHelperText
             id="my-helper-text"
@@ -128,6 +203,8 @@ const UserSignUp = () => {
               fontSize: "20px",
               marginLeft: "15px",
             }}
+            value={password}
+            onChange={handlePassword}
           />
           <FormHelperText
             id="my-helper-text"
@@ -165,6 +242,8 @@ const UserSignUp = () => {
               fontSize: "20px",
               marginLeft: "15px",
             }}
+            value={email}
+            onChange={handleEmail}
           />
           <FormHelperText
             id="my-helper-text"
@@ -183,6 +262,7 @@ const UserSignUp = () => {
           }}
         >
           <Button
+            type="submit"
             variant="contained"
             color="success"
             sx={{ padding: "10px 50px", borderRadius: 5 }}
@@ -194,7 +274,15 @@ const UserSignUp = () => {
             color="error"
             sx={{ padding: "10px 50px", borderRadius: 5 }}
           >
-            Cancel
+            <Link
+              href="/"
+              sx={{
+                textDecoration: "none",
+                color: "inherit",
+              }}
+            >
+              Cancel
+            </Link>
           </Button>
         </Box>
         <Typography
@@ -205,6 +293,7 @@ const UserSignUp = () => {
         >
           If you already have an account, go to{" "}
           <Link
+            href="/signin"
             sx={{
               textDecoration: "none",
               color: "#fff",

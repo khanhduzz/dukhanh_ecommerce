@@ -18,8 +18,7 @@ import { useNavigate } from "react-router-dom";
 const color = grey[50];
 
 const UserSignIn = () => {
-  const [token, setToken] = useState("");
-  const [cookies, setCookie] = useCookies(["token"]);
+  const [cookies, setCookie] = useCookies(["token"], ["user"], ["userId"]);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -29,7 +28,6 @@ const UserSignIn = () => {
   const signIn = async (event) => {
     event.preventDefault();
     try {
-      console.log("it run");
       const getData = async () => {
         const response = await axios.post(
           `http://localhost:8080/api/auth/signin`,
@@ -44,25 +42,58 @@ const UserSignIn = () => {
           }
         );
         setCookie("token", response.data.access_token);
-        navigate("/allproducts");
+        if (response.data.access_token !== "") {
+          getUser(response.data.access_token);
+          console.log(cookies.user);
+          console.log(cookies.userId);
+          navigate("/");
+        } else {
+          window.location.reload();
+        }
       };
       getData();
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        window.location.reload();
+      if (error.response) {
+        if (error.response.status === 403) {
+          console.error(
+            "Error 403: Forbidden - Invalid credentials or access denied."
+          );
+        } else {
+          console.error("Error:", error.response.status, error.response.data);
+        }
+      } else if (error.request) {
+        console.error("No response received:", error.request);
+      } else {
+        console.error("Error", error.message);
       }
+    }
+  };
+
+  const getUser = (e) => {
+    try {
+      const get = async () => {
+        const response = await axios.get(`http://localhost:8080/api/me`, {
+          headers: {
+            Authorization: "Bearer " + e,
+          },
+        });
+        console.log(response);
+        setCookie("user", response.data.substring(0, 5).trim());
+        setCookie("userId", response.data.substring(5).trim());
+      };
+      get();
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const handleUsername = (event) => {
     setUsername(event.target.value);
   };
-  console.log(username);
 
   const handlePassword = (event) => {
     setPassword(event.target.value);
   };
-  console.log(password);
 
   return (
     <Box
@@ -233,6 +264,7 @@ const UserSignIn = () => {
         >
           You do not have any account, go to{" "}
           <Link
+            href="/signup"
             sx={{
               textDecoration: "none",
               color: "#fff",

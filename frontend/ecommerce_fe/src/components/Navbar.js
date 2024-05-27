@@ -12,6 +12,8 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -19,6 +21,14 @@ const settings = ["Profile", "Account", "Dashboard", "Logout"];
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const [cookies, setCookie, removeCookie] = useCookies(
+    ["token"],
+    ["user"],
+    ["userId"]
+  );
+
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -33,6 +43,27 @@ function ResponsiveAppBar() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const signOut = () => {
+    removeCookie("token");
+    removeCookie("user");
+    removeCookie("userId");
+    navigate("/");
+  };
+
+  const signIn = () => {
+    removeCookie("token");
+    removeCookie("user");
+    removeCookie("userId");
+    navigate("/signin");
+  };
+
+  const signUp = () => {
+    removeCookie("token");
+    removeCookie("user");
+    removeCookie("userId");
+    navigate("/signin");
   };
 
   return (
@@ -94,6 +125,7 @@ function ResponsiveAppBar() {
               ))}
             </Menu>
           </Box>
+
           <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <Typography
             variant="h5"
@@ -123,6 +155,50 @@ function ResponsiveAppBar() {
                 {page}
               </Button>
             ))}
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              gap: "20px",
+              marginRight: "20px",
+              textTransform: "uppercase",
+            }}
+          >
+            <Button
+              onClick={signIn}
+              sx={{
+                fontSize: "14px",
+                fontWeight: 500,
+                textDecoration: "none",
+                color: "#fff",
+              }}
+            >
+              Sign in
+            </Button>
+            <Button
+              onClick={signUp}
+              sx={{
+                fontSize: "14px",
+                fontWeight: 500,
+                textDecoration: "none",
+                color: "#fff",
+              }}
+            >
+              Sign up
+            </Button>
+            <Button
+              onClick={signOut}
+              sx={{
+                fontSize: "14px",
+                fontWeight: 500,
+                textDecoration: "none",
+                color: "#fff",
+              }}
+            >
+              Sign out
+            </Button>
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
