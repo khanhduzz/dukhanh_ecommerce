@@ -17,5 +17,6 @@ public class ProductDto {
     private String description;
     private double rating;
     private int featured;
+    private String image;
     private Set<String> categories;
 }

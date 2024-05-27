@@ -71,6 +71,7 @@ public class AuthConfig {
                     ,"/products/**"
                     ,"/products/page/*"
                     ,"/users/*"
+                    ,"/upload/**"
                 ).permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/*").permitAll()
                 .requestMatchers(HttpMethod.POST ,"api/products/*").hasRole("ADMIN")

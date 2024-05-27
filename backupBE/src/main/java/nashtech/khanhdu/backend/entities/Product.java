@@ -25,6 +25,7 @@ public class Product {
     private String description;
     private double rating;
     private int featured;
+    private String image;
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
