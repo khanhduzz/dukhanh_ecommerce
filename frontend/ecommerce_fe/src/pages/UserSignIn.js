@@ -13,12 +13,21 @@ import { grey } from "@mui/material/colors";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
 import axios from "axios";
 import { useCookies } from "react-cookie";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import { useLocation } from "react-router-dom";
 
 const color = grey[50];
 
 const UserSignIn = () => {
-  const [cookies, setCookie] = useCookies(["token"], ["user"], ["userId"]);
+  const { state } = useLocation();
+
+  const [cookies, setCookie, removeCookie] = useCookies(
+    ["token"],
+    ["user"],
+    ["userId"]
+  );
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -44,10 +53,13 @@ const UserSignIn = () => {
         setCookie("token", response.data.access_token);
         if (response.data.access_token !== "") {
           getUser(response.data.access_token);
-          console.log(cookies.user);
-          console.log(cookies.userId);
-          navigate("/");
         } else {
+          removeCookie("token");
+          navigate("/signin", {
+            state: {
+              message: "Login failed",
+            },
+          });
           window.location.reload();
         }
       };
@@ -80,6 +92,11 @@ const UserSignIn = () => {
         console.log(response);
         setCookie("user", response.data.substring(0, 5).trim());
         setCookie("userId", response.data.substring(5).trim());
+        navigate("/", {
+          state: {
+            message: "Sign in successfully",
+          },
+        });
       };
       get();
     } catch (error) {
@@ -95,6 +112,20 @@ const UserSignIn = () => {
     setPassword(event.target.value);
   };
 
+  // This for nofication
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  React.useEffect(() => {
+    setOpen(state === null ? false : true);
+  }, []);
+
   return (
     <Box
       sx={{
@@ -105,8 +136,19 @@ const UserSignIn = () => {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
+        zIndex: "99",
       }}
     >
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%", zIndex: "100" }}
+        >
+          {state === null ? "" : state.message}
+        </Alert>
+      </Snackbar>
       <Box
         sx={{
           // position: "r",

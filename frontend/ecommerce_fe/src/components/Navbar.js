@@ -13,14 +13,20 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { useCookies } from "react-cookie";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
-const pages = ["Products", "Pricing", "Blog"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const pages = ["Products", "Users", "Admin Page"];
+const settings = ["Profile", "Logout"];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const { state } = useLocation();
+
+  const navigate = useNavigate();
 
   const [cookies, setCookie, removeCookie] = useCookies(
     ["token"],
@@ -28,7 +34,25 @@ function ResponsiveAppBar() {
     ["userId"]
   );
 
-  const navigate = useNavigate();
+  function checkUser() {
+    if (
+      !(
+        (typeof cookies["token"] !== "undefined" &&
+          typeof cookies["user"] !== "undefined" &&
+          typeof cookies["userId"] !== "undefined") ||
+        (typeof cookies["token"] === "undefined" &&
+          typeof cookies["user"] === "undefined" &&
+          typeof cookies["userId"] === "undefined")
+      )
+    ) {
+      signOut();
+    }
+  }
+
+  React.useEffect(() => {
+    checkUser();
+    setOpen(state === null ? false : true);
+  }, []);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -49,25 +73,57 @@ function ResponsiveAppBar() {
     removeCookie("token");
     removeCookie("user");
     removeCookie("userId");
-    navigate("/");
+    navigate("/signin", {
+      state: {
+        message: "Sign out successfully",
+      },
+    });
   };
 
   const signIn = () => {
     removeCookie("token");
     removeCookie("user");
     removeCookie("userId");
-    navigate("/signin");
+    navigate("/signin", {
+      state: {
+        message: "Sign out successfully",
+      },
+    });
   };
 
   const signUp = () => {
     removeCookie("token");
     removeCookie("user");
     removeCookie("userId");
-    navigate("/signin");
+    navigate("/signin", {
+      state: {
+        message: "Sign out successfully",
+      },
+    });
+  };
+
+  // This for nofication
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
   };
 
   return (
     <AppBar position="static" color="secondary">
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {state === null ? "" : state.message}
+        </Alert>
+      </Snackbar>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
@@ -173,6 +229,9 @@ function ResponsiveAppBar() {
                 fontWeight: 500,
                 textDecoration: "none",
                 color: "#fff",
+                display: `${
+                  typeof cookies.token === "undefined" ? "block" : "none"
+                }`,
               }}
             >
               Sign in
@@ -184,6 +243,9 @@ function ResponsiveAppBar() {
                 fontWeight: 500,
                 textDecoration: "none",
                 color: "#fff",
+                display: `${
+                  typeof cookies.token === "undefined" ? "block" : "none"
+                }`,
               }}
             >
               Sign up
@@ -195,13 +257,23 @@ function ResponsiveAppBar() {
                 fontWeight: 500,
                 textDecoration: "none",
                 color: "#fff",
+                display: `${
+                  typeof cookies.token === "undefined" ? "none" : "block"
+                }`,
               }}
             >
               Sign out
             </Button>
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
+          <Box
+            sx={{
+              flexGrow: 0,
+              display: `${
+                typeof cookies.token === "undefined" ? "none" : "block"
+              }`,
+            }}
+          >
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />

@@ -1,5 +1,6 @@
 import React from "react";
 import { useCookies } from "react-cookie";
+import Navbar from "../components/Navbar";
 
 const Home = () => {
   const [cookies, setCookie, removeCookie] = useCookies(
@@ -7,10 +8,11 @@ const Home = () => {
     ["user"],
     ["userId"]
   );
-  console.log(cookies["user"]);
+
   return (
-    <div>
-      <h1>This is Home, hello {cookies["user"]}</h1>
+    <div className="App">
+      <Navbar />
+      <h1>This is Home</h1>
     </div>
   );
 };

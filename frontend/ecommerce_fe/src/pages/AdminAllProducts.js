@@ -25,6 +25,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AdminTab from "../components/AdminTab";
+import { useCookies } from "react-cookie";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -75,7 +76,7 @@ const AdminAllProducts = () => {
       console.log("it run");
       const getData = async () => {
         const response = await axios.get(
-          `http://localhost:8080/api/products/page/${page}/2/${sortedBy}/${direction}`
+          `http://localhost:8080/api/products/page/${page}/4/${sortedBy}/${direction}`
         );
         console.log(response.data.content);
         setProducts(response.data.content);
@@ -105,11 +106,44 @@ const AdminAllProducts = () => {
   };
   // END PAGING
 
+  // GO TO PRODUCT DETAIL
   const productDetail = (productId) => {
     const link = "/admin/product/";
     console.log(productId);
     navigate(link + productId);
   };
+
+  // DELETE PRODUCT
+  const [cookies] = useCookies(["token"], ["user"], ["userId"]);
+
+  function deleteProduct(event) {
+    event.preventDefault();
+    axios
+      .delete(
+        `http://localhost:8080/api/products/delete/${event.target.value}`,
+        {
+          headers: {
+            Authorization: "Bearer " + cookies.token,
+          },
+        }
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          navigate("/admin", {
+            state: {
+              message: "Delete successfully",
+            },
+          });
+        }
+      })
+      .catch((error) => {
+        navigate("/admin", {
+          state: {
+            message: "Delete failed",
+          },
+        });
+      });
+  }
 
   return (
     <div className="App">
@@ -137,95 +171,6 @@ const AdminAllProducts = () => {
         }}
       >
         <Grid container spacing={2} columns={16}>
-          {/* <Grid item xs={2} sx={{ marginTop: 1 }}>
-            <Grid
-              container
-              spacing={1}
-              columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-              gap={1.5}
-            >
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  Add new User
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  Add new Produt
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  Add new category
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  add new role
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  Show all users
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="contained"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  Show all products
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  Show all categories
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  Show all roles
-                </Button>
-              </Grid>
-            </Grid>
-          </Grid> */}
           <AdminTab val="allproducts" />
           <Grid item xs={12}>
             <TableContainer sx={{ borderRadius: 2 }}>
@@ -257,16 +202,7 @@ const AdminAllProducts = () => {
                         <StyledTableCell align="left">
                           {product.description}
                         </StyledTableCell>
-                        <StyledTableCell
-                          align="right"
-                          // sx={{
-                          //   display: "flex",
-                          //   flexWrap: "wrap",
-                          //   gap: "10px",
-                          //   justifyContent: "center",
-                          //   alignItems: "center",
-                          // }}
-                        >
+                        <StyledTableCell align="right">
                           <Button
                             variant="outlined"
                             color="secondary"
@@ -280,8 +216,6 @@ const AdminAllProducts = () => {
                             sx={{ p: 0.3, borderRadius: 5, marginRight: 1 }}
                           >
                             <Link
-                              // to={{ "/admin/product/": `${product.id}` }}
-                              // params={{ productId: `${product.id}` }}
                               onClick={() => productDetail(product.id)}
                               sx={{
                                 textDecoration: "none",
@@ -294,6 +228,8 @@ const AdminAllProducts = () => {
                             variant="outlined"
                             color="error"
                             sx={{ p: 0.3, borderRadius: 5 }}
+                            value={product.id}
+                            onClick={(event) => deleteProduct(event)}
                           >
                             Delete
                           </Button>

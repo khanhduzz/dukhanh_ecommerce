@@ -9,13 +9,13 @@ import {
   Link,
 } from "@mui/material";
 import React from "react";
-import { grey } from "@mui/material/colors";
 import axios from "axios";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-
-const color = grey[50];
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import { useLocation } from "react-router-dom";
 
 const UserSignUp = () => {
   const [cookies, setCookie, removeCookie] = useCookies(
@@ -83,6 +83,21 @@ const UserSignUp = () => {
     setEmail(event.target.value);
   };
 
+  // This for nofication
+  const { state } = useLocation();
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  React.useEffect(() => {
+    setOpen(state === null ? false : true);
+  }, []);
+
   return (
     <Box
       sx={{
@@ -95,6 +110,16 @@ const UserSignUp = () => {
         alignItems: "center",
       }}
     >
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {state === null ? "" : state.message}
+        </Alert>
+      </Snackbar>
       <Box
         sx={{
           position: "absolute",

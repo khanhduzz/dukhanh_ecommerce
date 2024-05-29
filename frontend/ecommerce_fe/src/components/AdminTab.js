@@ -24,7 +24,8 @@ const AdminTab = (props) => {
         </Grid>
         <Grid xs={12}>
           <Button
-            variant="outlined"
+            href="/admin/addproduct"
+            variant={props.val === "addproduct" ? "contained" : "outlined"}
             color="success"
             fullWidth
             sx={{ p: 1.5, borderRadius: 2 }}
@@ -34,7 +35,8 @@ const AdminTab = (props) => {
         </Grid>
         <Grid xs={12}>
           <Button
-            variant="outlined"
+            variant={props.val === "addcategory" ? "contained" : "outlined"}
+            href="/admin/addcategory"
             color="success"
             fullWidth
             sx={{ p: 1.5, borderRadius: 2 }}
@@ -78,7 +80,7 @@ const AdminTab = (props) => {
             sx={{ p: 1.5, borderRadius: 2 }}
           >
             <Link
-              href="/allproducts"
+              href="/admin/allproducts"
               sx={{
                 textDecoration: "none",
                 color: "inherit",
@@ -90,12 +92,20 @@ const AdminTab = (props) => {
         </Grid>
         <Grid xs={12}>
           <Button
-            variant="outlined"
+            variant={props.val === "allcategories" ? "contained" : "outlined"}
             color="success"
             fullWidth
             sx={{ p: 1.5, borderRadius: 2 }}
           >
-            Show all categories
+            <Link
+              href="/admin/allcategories"
+              sx={{
+                textDecoration: "none",
+                color: "inherit",
+              }}
+            >
+              Show all categories
+            </Link>
           </Button>
         </Grid>
         <Grid xs={12}>

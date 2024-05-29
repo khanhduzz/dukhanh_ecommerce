@@ -82,7 +82,11 @@ const AdminAllUsers = () => {
       };
       getData();
     } catch (error) {
-      window.location.replace("/error");
+      navigate("/error", {
+        state: {
+          message: "Error loading users",
+        },
+      });
     }
     setLoading(false);
   };
