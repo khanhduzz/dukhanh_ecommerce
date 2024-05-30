@@ -2,7 +2,14 @@
 import React, { useEffect, useState } from "react";
 import "../App.css";
 import Navbar from "../components/Navbar";
-import { styled } from "@mui/material/styles";
+import {
+  styled,
+  Modal,
+  FormHelperText,
+  FormControl,
+  InputLabel,
+  Input,
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import { Button } from "@mui/material";
@@ -14,15 +21,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
 import Typography from "@mui/material/Typography";
-import {
-  Pagination,
-  CircularProgress,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Link,
-} from "@mui/material";
+import { Link } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AdminTab from "../components/AdminTab";
 import { useCookies } from "react-cookie";
@@ -61,7 +60,7 @@ const AdminAllCategories = () => {
     }
   };
 
-  // PAGINATION
+  // GET CATEGORIES
   const [categories, setCategories] = useState([]);
 
   const fetchData = async () => {
@@ -76,7 +75,6 @@ const AdminAllCategories = () => {
           }
         );
         setCategories(response.data);
-        // setTotalPages(response.data.totalPages);
       };
       getData();
     } catch (error) {
@@ -91,12 +89,6 @@ const AdminAllCategories = () => {
   useEffect(() => {
     checkUser();
   }, []);
-
-  const productDetail = (productId) => {
-    const link = "/admin/product/";
-    console.log(productId);
-    navigate(link + productId);
-  };
 
   // DELETE CATEGORY
   function deleteCategory(event) {
@@ -121,6 +113,73 @@ const AdminAllCategories = () => {
         navigate("/admin", {
           state: {
             message: "Delete category failed",
+          },
+        });
+      });
+  }
+
+  // SET OPEN CLOSE CATEGORY EDIT
+  const [open, setOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const handleOpenCategory = (category) => {
+    setSelectedCategory(category);
+    setOpen(true);
+  };
+
+  const handleCloseCategory = () => {
+    setOpen(false);
+    setSelectedCategory(null);
+  };
+
+  const style = {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
+
+  // MODIFY CATEGORY
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+
+  function updateCategory(event) {
+    event.preventDefault();
+    axios
+      .put(
+        `http://localhost:8080/api/categories/${selectedCategory.id}`,
+        {
+          name: name,
+          description: description,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + cookies.token,
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          navigate("/admin", {
+            state: {
+              message: "Update category successfully",
+            },
+          });
+        }
+      })
+      .catch((error) => {
+        navigate("/admin", {
+          state: {
+            message: "Update category failed",
           },
         });
       });
@@ -153,7 +212,7 @@ const AdminAllCategories = () => {
       >
         <Grid container spacing={2} columns={16}>
           <AdminTab val={"allcategories"} />
-          <Grid item xs={12}>
+          <Grid item xs={14}>
             <TableContainer sx={{ borderRadius: 2 }}>
               <Table sx={{ minWidth: 700 }} aria-label="customized table">
                 <TableHead>
@@ -184,10 +243,140 @@ const AdminAllCategories = () => {
                             variant="outlined"
                             color="secondary"
                             sx={{ p: 0.3, borderRadius: 5, marginRight: 1 }}
+                            onClick={() => handleOpenCategory(category)}
                           >
                             Edit
                           </Button>
-                          <Button
+                          <Modal
+                            open={open}
+                            onClose={handleCloseCategory}
+                            aria-labelledby="modal-modal-title"
+                            aria-describedby="modal-modal-description"
+                          >
+                            <Box sx={style}>
+                              <Box
+                                component="form"
+                                onSubmit={updateCategory}
+                                sx={{
+                                  width: "100%",
+                                  height: "400px",
+                                  border: "2px solid #fff",
+                                  borderRadius: "15px",
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Typography
+                                  variant="h4"
+                                  sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    fontWeight: 300,
+                                  }}
+                                >
+                                  Category information
+                                </Typography>
+                                {/* Name */}
+                                <FormControl
+                                  sx={{
+                                    width: "90%",
+                                    marginY: "15px",
+                                  }}
+                                >
+                                  <Input
+                                    id="name"
+                                    color="grey"
+                                    type="text"
+                                    aria-describedby="my-helper-text"
+                                    sx={{
+                                      fontSize: "20px",
+                                      marginLeft: "15px",
+                                    }}
+                                    placeholder={
+                                      selectedCategory
+                                        ? selectedCategory.name
+                                        : ""
+                                    }
+                                    onChange={(e) => setName(e.target.value)}
+                                  />
+                                  <FormHelperText id="my-helper-text" sx={{}}>
+                                    Enter category name
+                                  </FormHelperText>
+                                </FormControl>
+                                {/* Description */}
+                                <FormControl
+                                  sx={{
+                                    width: "90%",
+                                    marginY: "15px",
+                                  }}
+                                >
+                                  <Input
+                                    id="description"
+                                    color="grey"
+                                    type="text"
+                                    aria-describedby="my-helper-text"
+                                    sx={{
+                                      fontSize: "20px",
+                                      marginLeft: "15px",
+                                    }}
+                                    placeholder={
+                                      selectedCategory
+                                        ? selectedCategory.description
+                                        : ""
+                                    }
+                                    onChange={(e) =>
+                                      setDescription(e.target.value)
+                                    }
+                                  />
+                                  <FormHelperText id="my-helper-text" sx={{}}>
+                                    More information
+                                  </FormHelperText>
+                                </FormControl>
+
+                                {/* Button group */}
+                                <Box
+                                  sx={{
+                                    display: "inline-flex",
+                                    gap: "10px",
+                                    marginTop: "20px",
+                                  }}
+                                >
+                                  <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="success"
+                                    sx={{
+                                      padding: "10px 50px",
+                                      borderRadius: 5,
+                                    }}
+                                  >
+                                    Save
+                                  </Button>
+                                  <Button
+                                    variant="contained"
+                                    color="error"
+                                    sx={{
+                                      padding: "10px 50px",
+                                      borderRadius: 5,
+                                    }}
+                                  >
+                                    <Link
+                                      onClick={handleCloseCategory}
+                                      sx={{
+                                        textDecoration: "none",
+                                        color: "inherit",
+                                      }}
+                                    >
+                                      Cancel
+                                    </Link>
+                                  </Button>
+                                </Box>
+                              </Box>
+                            </Box>
+                          </Modal>
+                          {/* <Button
                             variant="outlined"
                             color="success"
                             sx={{ p: 0.3, borderRadius: 5, marginRight: 1 }}
@@ -200,7 +389,7 @@ const AdminAllCategories = () => {
                             >
                               Detail
                             </Link>
-                          </Button>
+                          </Button> */}
                           <Button
                             variant="outlined"
                             color="error"

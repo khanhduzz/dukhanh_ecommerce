@@ -90,8 +90,9 @@ const UserSignIn = () => {
           },
         });
         console.log(response);
-        setCookie("user", response.data.substring(0, 5).trim());
-        setCookie("userId", response.data.substring(5).trim());
+        var user = response.data.trim().split(" ");
+        setCookie("user", user[0]);
+        setCookie("userId", user[1]);
         navigate("/", {
           state: {
             message: "Sign in successfully",

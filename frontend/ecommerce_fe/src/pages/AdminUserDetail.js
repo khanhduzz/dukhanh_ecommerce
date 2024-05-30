@@ -1,125 +1,108 @@
+/* eslint-disable react/jsx-no-undef */
 import React, { useEffect, useState } from "react";
 import "../App.css";
+import Navbar from "../components/Navbar";
+import Grid from "@mui/material/Grid";
+import { Button } from "@mui/material";
+import axios from "axios";
+import Typography from "@mui/material/Typography";
 import {
   FormHelperText,
   FormControl,
-  FormControlLabel,
-  Checkbox,
   InputLabel,
   Input,
-  OutlinedInput,
-  Select,
-  MenuItem,
-  Chip,
-  Button,
   Link,
-  useTheme,
   Box,
-  Grid,
-  Typography,
 } from "@mui/material";
-
-import Navbar from "../components/Navbar";
-import AdminTab from "../components/AdminTab";
-import Footer from "../components/Footer";
-import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import AdminTab from "../components/AdminTab";
 import { useCookies } from "react-cookie";
+import Footer from "../components/Footer";
 
-const AdminProductDetail = () => {
+const AdminUserDetail = () => {
   const [cookies] = useCookies(["token"], ["user"], ["userId"]);
   const navigate = useNavigate();
-  let { productId } = useParams();
+  const { userId } = useParams();
+  const [user, setUser] = useState([]);
 
-  const [product, setProduct] = useState([]);
-  const [images, setImages] = useState([]);
-  const [categories, setCategories] = useState([]);
-
-  // GET ALL CATEGORIES IN DATABASE
-  const getCategory = async () => {
-    try {
-      const respone = await axios.get(`http://localhost:8080/api/categories`, {
-        headers: {
-          Authorization: "Bearer " + cookies.token,
-        },
-      });
-      setCategories(respone.data);
-    } catch (error) {
-      window.location.replace("/error");
-    }
-  };
-
+  // CHECK USER IS CORRECT OR NOT
   const checkUser = async () => {
     if (typeof cookies.token === "undefined" || cookies.user === "user") {
       navigate("/error");
-    } else {
-      getCategory();
     }
   };
 
-  //   SETUP SHOWING CATEGORIES
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 8;
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
-      },
-    },
-  };
+  useEffect(() => {
+    checkUser();
+    getUser();
+  }, []);
 
-  function getStyles(categories, personName, theme) {
-    return {
-      fontWeight:
-        personName.indexOf(categories) === -1
-          ? theme.typography.fontWeightRegular
-          : theme.typography.fontWeightMedium,
-    };
-  }
-
-  const theme = useTheme();
-  const [category, setCategory] = useState([]);
-
-  const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setCategory(typeof value === "string" ? value.split(",") : value);
-  };
-
-  // GET PRODUCT INFORMATION
-  function getProduct() {
+  // GET USER INFORMATION
+  function getUser() {
     axios
-      .get(`http://localhost:8080/api/products/${productId}`)
+      .get(`http://localhost:8080/api/users/${userId}`, {
+        headers: {
+          Authorization: "Bearer " + cookies.token,
+        },
+      })
       .then((response) => {
-        console.log(response);
-        setProduct(response.data);
-        setImages(response.data.image);
-        setFeatured(response.data.featured);
-        setCategory(response.data.categories);
+        setUser(response.data);
+        setImage(response.data.image);
       })
       .catch((error) => {
-        navigate("/error", {
+        navigate("/admin", {
           state: {
-            message: "Could not find product",
+            message: "Could not find user",
           },
         });
       });
   }
 
-  useEffect(() => {
-    checkUser();
-    getProduct();
-  }, []);
-
-  // SUBMIT IMAGES AND GET INFORMATION BEFORE MODIFY PRODUCT
+  // PREPARE FOR USER
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [image, setImage] = useState("");
   const [file, setFiles] = useState(null);
 
+  // ADD USER WITH IMAGES (FOR LATER)
+  const updateUser = async (output) => {
+    console.log(output.data[0]);
+    try {
+      const respone = await axios.put(
+        `http://localhost:8080/api/users/${userId}`,
+        {
+          username: username,
+          password: password,
+          email: email,
+          image: output.data[0],
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + cookies.token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      navigate("/admin", {
+        state: {
+          message: "Update user successfully",
+        },
+      });
+    } catch (error) {
+      navigate("/admin", {
+        state: {
+          message: "Update failed",
+        },
+      });
+    }
+  };
+
+  // SUBMIT IMAGES AND GET INFORMATION BEFORE UPDATE USERS
   function handleSubmitImage(event) {
     event.preventDefault();
     if (!file) {
-      updateProduct(images);
+      updateUser(image);
       return;
     }
 
@@ -136,7 +119,9 @@ const AdminProductDetail = () => {
         },
       })
       .then((response) => {
-        updateProduct(response.data);
+        console.log(response);
+        updateUser(response);
+        setImage(response.data[0]);
       })
       .catch((error) => {
         navigate("/error", {
@@ -146,46 +131,6 @@ const AdminProductDetail = () => {
         });
       });
   }
-
-  // ADD PRODUCT WITH IMAGES
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [description, setDescription] = useState("");
-  const [featured, setFeatured] = useState(1);
-
-  const updateProduct = async (output) => {
-    try {
-      const respone = await axios.put(
-        `http://localhost:8080/api/products/update/${productId}`,
-        {
-          name: name,
-          price: price,
-          description: description,
-          featured: featured,
-          image: output,
-          categories: category,
-        },
-        {
-          headers: {
-            Authorization: "Bearer " + cookies.token,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      navigate("/admin", {
-        state: {
-          message: "Update product successfully",
-        },
-      });
-    } catch (error) {
-      navigate("/error", {
-        state: {
-          message: "Update failed",
-        },
-      });
-      console.log(error);
-    }
-  };
 
   return (
     <div className="App">
@@ -200,7 +145,7 @@ const AdminProductDetail = () => {
             marginY: 5,
           }}
         >
-          {product.name}
+          {user.username}
         </Typography>
       </Box>
       <Box
@@ -236,17 +181,16 @@ const AdminProductDetail = () => {
                       fontWeight: 300,
                     }}
                   >
-                    Edit Product information
+                    User information
                   </Typography>
-
-                  {/* NAME + PRICE */}
+                  {/* Name + Password */}
                   <Box
                     sx={{
                       display: "inline-flex",
                       width: "90%",
                     }}
                   >
-                    {/* NAME */}
+                    {/* Name */}
                     <FormControl
                       sx={{
                         width: "90%",
@@ -260,26 +204,26 @@ const AdminProductDetail = () => {
                           fontSize: "20px",
                         }}
                       >
-                        {product.name}
+                        {user.username}
                       </InputLabel>
                       <Input
                         id="name"
                         color="grey"
                         type="text"
                         aria-describedby="my-helper-text"
-                        defaultValue={product.name}
                         sx={{
                           fontSize: "20px",
                           marginLeft: "15px",
                         }}
-                        onChange={(e) => setName(e.target.value)}
+                        defaultValue={user.username}
+                        onChange={(e) => setUsername(e.target.value)}
                       />
                       <FormHelperText id="my-helper-text" sx={{}}>
-                        Enter product name
+                        Enter user name
                       </FormHelperText>
                     </FormControl>
 
-                    {/* PRICE */}
+                    {/* PASSWORD */}
                     <FormControl
                       sx={{
                         width: "90%",
@@ -293,60 +237,60 @@ const AdminProductDetail = () => {
                           fontSize: "20px",
                         }}
                       >
-                        {product.price}
+                        User password
                       </InputLabel>
                       <Input
-                        id="price"
+                        id="password"
                         color="grey"
-                        type="number"
-                        step="any"
+                        type="password"
                         aria-describedby="my-helper-text"
                         sx={{
                           fontSize: "20px",
                           marginLeft: "15px",
                         }}
-                        defaultValue={product.price}
-                        onChange={(e) => setPrice(e.target.value)}
+                        defaultValue={user.password}
+                        onChange={(e) => setPassword(e.target.value)}
                       />
                       <FormHelperText id="my-helper-text" sx={{}}>
-                        Enter product name
+                        Enter password
                       </FormHelperText>
                     </FormControl>
 
-                    {/* FEATURE */}
-                    <FormControl
-                      sx={{
-                        width: "90%",
-                        marginY: "15px",
-                      }}
-                    >
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            // defaultChecked={
-                            //   product.featured === 1 ? true : false
-                            // }
-
-                            // is
-                            // {...(product.featured === 1
-                            //   ? `checked`
-                            //   : `unchecked`)}
-
-                            checked={featured === 1}
-                            onChange={(e) =>
-                              setFeatured(e.target.checked ? 1 : 0)
-                            }
-                          />
-                        }
-                        label="Feature"
-                      />
-                      <FormHelperText id="my-helper-text" sx={{}}>
-                        Select product is feature
-                      </FormHelperText>
-                    </FormControl>
+                    {/* Description */}
+                    {/* <FormControl
+                sx={{
+                  width: "90%",
+                  marginY: "15px",
+                }}
+              >
+                <InputLabel
+                  htmlFor="description"
+                  color="grey"
+                  sx={{
+                    fontSize: "20px",
+                  }}
+                >
+                  Product description
+                </InputLabel>
+                <Input
+                  id="description"
+                  color="grey"
+                  type="text"
+                  aria-describedby="my-helper-text"
+                  sx={{
+                    fontSize: "20px",
+                    marginLeft: "15px",
+                  }}
+                  //   value={password}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+                <FormHelperText id="my-helper-text" sx={{}}>
+                  More information
+                </FormHelperText>
+              </FormControl> */}
                   </Box>
 
-                  {/* DESCRIPTION */}
+                  {/* EMAIL */}
                   <FormControl
                     sx={{
                       width: "90%",
@@ -354,68 +298,29 @@ const AdminProductDetail = () => {
                     }}
                   >
                     <InputLabel
-                      htmlFor="description"
+                      htmlFor="email"
                       color="grey"
                       sx={{
                         fontSize: "20px",
                       }}
                     >
-                      {product.description}
+                      {user.email}
                     </InputLabel>
                     <Input
-                      id="description"
+                      id="email"
                       color="grey"
-                      type="text"
+                      type="email"
                       aria-describedby="my-helper-text"
                       sx={{
                         fontSize: "20px",
                         marginLeft: "15px",
                       }}
-                      defaultValue={product.description}
-                      onChange={(e) => setDescription(e.target.value)}
+                      defaultValue={user.email}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                     <FormHelperText id="my-helper-text" sx={{}}>
-                      More information
+                      Enter email
                     </FormHelperText>
-                  </FormControl>
-
-                  {/* CATEGORIES */}
-                  <FormControl
-                    sx={{ width: "90%", marginY: "15px", marginLeft: "20px" }}
-                  >
-                    <InputLabel id="demo-multiple-chip-label">
-                      Category
-                    </InputLabel>
-                    <Select
-                      labelId="demo-multiple-chip-label"
-                      id="demo-multiple-chip"
-                      multiple
-                      value={category}
-                      onChange={handleChange}
-                      input={
-                        <OutlinedInput id="select-multiple-chip" label="Chip" />
-                      }
-                      renderValue={(selected) => (
-                        <Box
-                          sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}
-                        >
-                          {selected.map((value) => (
-                            <Chip key={value} label={value} />
-                          ))}
-                        </Box>
-                      )}
-                      MenuProps={MenuProps}
-                    >
-                      {categories.map((name) => (
-                        <MenuItem
-                          key={name.id}
-                          value={name.name}
-                          style={getStyles(name.name, category, theme)}
-                        >
-                          {name.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
                   </FormControl>
 
                   {/* SHOW IMAGES */}
@@ -430,25 +335,24 @@ const AdminProductDetail = () => {
                         marginY: "20px",
                       }}
                     >
-                      {images && images.length > 0
-                        ? images.map((img, index) => (
-                            <img
-                              key={index} // Make sure to include a unique key for each element
-                              src={`http://localhost:8080/api/images/${img}`}
-                              alt={`Product ${index + 1}`}
-                              style={{
-                                width: "150px",
-                                objectFit: "cover",
-                                height: "150px",
-                              }}
-                            />
-                          ))
-                        : "You have no images yet"}
+                      {image !== "" ? (
+                        <img
+                          src={`http://localhost:8080/api/images/${image}`}
+                          alt={`User`}
+                          style={{
+                            width: "150px",
+                            objectFit: "cover",
+                            height: "150px",
+                          }}
+                        />
+                      ) : (
+                        "You have no profile image yet"
+                      )}
                     </Box>
                   </Grid>
                   {/* END SHOW IMAGES */}
 
-                  {/* IMAGES */}
+                  {/* Image */}
                   <FormControl
                     sx={{
                       width: "90%",
@@ -481,14 +385,6 @@ const AdminProductDetail = () => {
                     <FormHelperText id="my-helper-text" sx={{}}>
                       Upload image here
                     </FormHelperText>
-                    <Box
-                      component="img"
-                      src={""}
-                      sx={{
-                        width: "200px",
-                        height: "auto",
-                      }}
-                    ></Box>
                   </FormControl>
 
                   {/* Button group */}
@@ -522,8 +418,15 @@ const AdminProductDetail = () => {
                         Cancel
                       </Link>
                     </Button>
-                    {/* END BUTTON */}
                   </Box>
+                  <Typography
+                    sx={{
+                      marginTop: "20px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Just a sentence for space...
+                  </Typography>
                 </Box>
               </Grid>
             </Grid>
@@ -535,4 +438,4 @@ const AdminProductDetail = () => {
   );
 };
 
-export default AdminProductDetail;
+export default AdminUserDetail;

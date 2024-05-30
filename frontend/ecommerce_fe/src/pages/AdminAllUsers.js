@@ -55,18 +55,39 @@ const AdminAllUsers = () => {
   const checkUser = async () => {
     if (typeof cookies.token === "undefined" || cookies.user === "user") {
       navigate("/error");
-    } else {
-      fetchData();
     }
   };
+
+  function deleteUser(event) {
+    axios
+      .delete(`http://localhost:8080/api/users/${event}`, {
+        headers: {
+          Authorization: "Bearer " + cookies.token,
+        },
+      })
+      .then(() => {
+        navigate("/admin", {
+          state: {
+            message: "Delete user successfully",
+          },
+        });
+      })
+      .catch((error) => {
+        navigate("/admin", {
+          state: {
+            message: "Delete failed",
+          },
+        });
+      });
+  }
 
   // PAGINATION
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(1);
-  const [sortedBy, setSortedBy] = useState("name"); // Sorting field
-  const [direction, setDirection] = useState(-1); // Sorting direction
+  // const [page, setPage] = useState(0);
+  // const [totalPages, setTotalPages] = useState(1);
+  // const [sortedBy, setSortedBy] = useState("name"); // Sorting field
+  // const [direction, setDirection] = useState(-1); // Sorting direction
 
   const fetchData = async () => {
     setLoading(true);
@@ -93,25 +114,26 @@ const AdminAllUsers = () => {
 
   useEffect(() => {
     checkUser();
-  }, [page, sortedBy, direction]);
+    fetchData();
+  }, []);
 
-  const handlePageChange = (event, value) => {
-    setPage(value - 1);
-  };
+  // const handlePageChange = (event, value) => {
+  //   setPage(value - 1);
+  // };
 
-  const handleSortChange = (event) => {
-    setSortedBy(event.target.value);
-  };
+  // const handleSortChange = (event) => {
+  //   setSortedBy(event.target.value);
+  // };
 
-  const handleDirectionChange = (event) => {
-    setDirection(event.target.value);
-  };
+  // const handleDirectionChange = (event) => {
+  //   setDirection(event.target.value);
+  // };
   // END PAGING
 
-  const productDetail = (productId) => {
-    const link = "/admin/product/";
-    console.log(productId);
-    navigate(link + productId);
+  const userDetail = (userId) => {
+    const link = "/admin/user/";
+    console.log(userId);
+    navigate(link + userId);
   };
 
   return (
@@ -141,7 +163,7 @@ const AdminAllUsers = () => {
       >
         <Grid container spacing={2} columns={16}>
           <AdminTab val={"allusers"} />
-          <Grid item xs={12}>
+          <Grid item xs={14}>
             <TableContainer sx={{ borderRadius: 2 }}>
               <Table sx={{ minWidth: 700 }} aria-label="customized table">
                 <TableHead>
@@ -168,13 +190,13 @@ const AdminAllUsers = () => {
                         </StyledTableCell>
                         <StyledTableCell align="left"></StyledTableCell>
                         <StyledTableCell align="right">
-                          <Button
+                          {/* <Button
                             variant="outlined"
                             color="secondary"
                             sx={{ p: 0.3, borderRadius: 5, marginRight: 1 }}
                           >
                             Edit
-                          </Button>
+                          </Button> */}
                           <Button
                             variant="outlined"
                             color="success"
@@ -183,7 +205,7 @@ const AdminAllUsers = () => {
                             <Link
                               // to={{ "/admin/product/": `${product.id}` }}
                               // params={{ productId: `${product.id}` }}
-                              onClick={() => productDetail(user.id)}
+                              onClick={() => userDetail(user.id)}
                               sx={{
                                 textDecoration: "none",
                               }}
@@ -195,6 +217,8 @@ const AdminAllUsers = () => {
                             variant="outlined"
                             color="error"
                             sx={{ p: 0.3, borderRadius: 5 }}
+                            value={user.id}
+                            onClick={(e) => deleteUser(e.target.value)}
                           >
                             Delete
                           </Button>
@@ -206,7 +230,7 @@ const AdminAllUsers = () => {
               </Table>
             </TableContainer>
           </Grid>
-          <Grid xs={2} sx={{ marginTop: "20px" }}>
+          {/* <Grid xs={2} sx={{ marginTop: "20px" }}>
             <FormControl
               sx={{
                 marginBottom: 3,
@@ -256,10 +280,10 @@ const AdminAllUsers = () => {
                 <MenuItem value={1}>Descending</MenuItem>
               </Select>
             </FormControl>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Box>
-      <Box
+      {/* <Box
         sx={{
           display: "flex",
           justifyContent: "center",
@@ -279,7 +303,7 @@ const AdminAllUsers = () => {
             />
           </Box>
         )}
-      </Box>
+      </Box> */}
     </div>
   );
 };

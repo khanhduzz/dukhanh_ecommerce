@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import { Button } from "@mui/material";
+import { Button, Hidden } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -162,7 +162,7 @@ const AdminAllProducts = () => {
         <Grid container spacing={2} columns={16}>
           <AdminTab val="allproducts" />
           <Grid item xs={12}>
-            <TableContainer sx={{ borderRadius: 2 }}>
+            <TableContainer sx={{ borderRadius: 2, maxHeight: "60vh" }}>
               <Table sx={{ minWidth: 700 }} aria-label="customized table">
                 <TableHead>
                   <TableRow>
@@ -191,27 +191,23 @@ const AdminAllProducts = () => {
                         <StyledTableCell align="left">
                           {product.description}
                         </StyledTableCell>
-                        <StyledTableCell align="right">
-                          <Button
-                            variant="outlined"
-                            color="secondary"
-                            sx={{ p: 0.3, borderRadius: 5, marginRight: 1 }}
-                          >
-                            Edit
-                          </Button>
+                        <StyledTableCell
+                          align="center"
+                          sx={{
+                            display: "inline-flex",
+                            flexWrap: "wrap",
+                            gap: 1,
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
                           <Button
                             variant="outlined"
                             color="success"
                             sx={{ p: 0.3, borderRadius: 5, marginRight: 1 }}
+                            onClick={() => productDetail(product.id)}
                           >
-                            <Link
-                              onClick={() => productDetail(product.id)}
-                              sx={{
-                                textDecoration: "none",
-                              }}
-                            >
-                              Detail
-                            </Link>
+                            Detail
                           </Button>
                           <Button
                             variant="outlined"
@@ -281,6 +277,28 @@ const AdminAllProducts = () => {
               </Select>
             </FormControl>
           </Grid>
+          {/* <FormControl
+              sx={{ marginBottom: 3, width: "120px", marginLeft: 2 }}
+            >
+              <InputLabel
+                color="success"
+                sx={{
+                  fontSize: "16px",
+                }}
+              >
+                Direction
+              </InputLabel>
+              <Select
+                value={direction}
+                onChange={handleDirectionChange}
+                sx={{
+                  marginTop: "10px",
+                }}
+              >
+                <MenuItem value={-1}>Ascending</MenuItem>
+                <MenuItem value={1}>Descending</MenuItem>
+              </Select>
+            </FormControl> */}
         </Grid>
       </Box>
       <Box
@@ -288,6 +306,9 @@ const AdminAllProducts = () => {
           display: "flex",
           justifyContent: "center",
           marginTop: "40px",
+          position: "fixed",
+          left: "45vw",
+          top: "85vh",
         }}
       >
         {loading ? (

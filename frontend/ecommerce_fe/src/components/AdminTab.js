@@ -39,7 +39,8 @@ const AdminTab = (props) => {
       >
         <Grid xs={12}>
           <Button
-            variant="outlined"
+            href="/admin/adduser"
+            variant={props.val === "adduser" ? "contained" : "outlined"}
             color="success"
             fullWidth
             sx={{ p: 1.5, borderRadius: 2 }}

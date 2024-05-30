@@ -5,13 +5,14 @@ import UserSignUp from "./pages/UserSignUp";
 import UserSignIn from "./pages/UserSignIn";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AdminProductDetail from "./pages/AdminProductDetail.js";
+import AdminUserDetail from "./pages/AdminUserDetail.js";
 import Home from "./pages/Home.js";
 import Error from "./pages/Error.js";
 import AdminAddProduct from "./pages/AdminAddProduct.js";
+import AdminAddUser from "./pages/AdminAddUser.js";
 import AdminAddCategory from "./pages/AdminAddCategory.js";
 import AdminAllCategories from "./pages/AdminAllCategories.js";
 import Admin from "./pages/Admin.js";
-// import Image from '/Users/khanhdu/Desktop/NASH/ecommerce/BE_images'
 
 function App() {
   return (
@@ -24,11 +25,13 @@ function App() {
             path="/admin/product/:productId"
             element={<AdminProductDetail />}
           />
+          <Route path="/admin/user/:userId" element={<AdminUserDetail />} />
           <Route path="/admin/allproducts" element={<AdminAllProducts />} />
           <Route path="/admin/allcategories" element={<AdminAllCategories />} />
           <Route path="/admin/allusers" element={<AdminAllUsers />} />
           <Route path="/admin/addproduct" element={<AdminAddProduct />} />
           <Route path="/admin/addcategory" element={<AdminAddCategory />} />
+          <Route path="/admin/adduser" element={<AdminAddUser />} />
           <Route path="/signin" element={<UserSignIn />} />
           <Route path="/signup" element={<UserSignUp />} />
           <Route path="/error" element={<Error />} />
