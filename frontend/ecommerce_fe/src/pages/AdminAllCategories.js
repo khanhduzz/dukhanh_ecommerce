@@ -26,6 +26,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import AdminTab from "../components/AdminTab";
 import { useCookies } from "react-cookie";
+import Footer from "../components/Footer";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -219,6 +220,7 @@ const AdminAllCategories = () => {
           </Grid>
         </Grid>
       </Box>
+      <Footer />
     </div>
   );
 };

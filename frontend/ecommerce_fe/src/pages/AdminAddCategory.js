@@ -17,6 +17,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import AdminTab from "../components/AdminTab";
 import { useCookies } from "react-cookie";
+import Footer from "../components/Footer";
 
 const AdminAddCategory = () => {
   const [cookies] = useCookies(["token"], ["user"], ["userId"]);
@@ -229,6 +230,7 @@ const AdminAddCategory = () => {
           </Grid>
         </Grid>
       </Box>
+      <Footer />
     </div>
   );
 };

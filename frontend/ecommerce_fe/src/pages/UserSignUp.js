@@ -48,9 +48,17 @@ const UserSignUp = () => {
           }
         );
         if (response.data !== "") {
-          navigate("/signin");
+          navigate("/signin", {
+            state: {
+              message: "Sign up successfully",
+            },
+          });
         } else {
-          window.location.reload();
+          navigate("/signup", {
+            state: {
+              message: "Your username or email is already exists",
+            },
+          });
         }
       };
       sendData();

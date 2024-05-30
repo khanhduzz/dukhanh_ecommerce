@@ -1,48 +1,189 @@
 import React, { useEffect, useState } from "react";
 import "../App.css";
-import Navbar from "../components/Navbar";
-import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import { Button, Link } from "@mui/material";
-import axios from "axios";
-import Typography from "@mui/material/Typography";
-import { useParams } from "react-router-dom";
-import Paper from "@mui/material/Paper";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
+import {
+  FormHelperText,
+  FormControl,
+  FormControlLabel,
+  Checkbox,
+  InputLabel,
+  Input,
+  OutlinedInput,
+  Select,
+  MenuItem,
+  Chip,
+  Button,
+  Link,
+  useTheme,
+  Box,
+  Grid,
+  Typography,
+} from "@mui/material";
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
+import Navbar from "../components/Navbar";
+import AdminTab from "../components/AdminTab";
+import Footer from "../components/Footer";
+import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 const AdminProductDetail = () => {
-  const { productId } = useParams();
-  const [product, setProduct] = useState([]);
+  const [cookies] = useCookies(["token"], ["user"], ["userId"]);
+  const navigate = useNavigate();
+  let { productId } = useParams();
 
-  const fetchData = async () => {
+  const [product, setProduct] = useState([]);
+  const [images, setImages] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  // GET ALL CATEGORIES IN DATABASE
+  const getCategory = async () => {
     try {
-      const getData = async () => {
-        const response = await axios.get(
-          `http://localhost:8080/api/products/${productId}`
-        );
-        console.log(response.data.content);
-        setProduct(response.data);
-      };
-      getData();
+      const respone = await axios.get(`http://localhost:8080/api/categories`, {
+        headers: {
+          Authorization: "Bearer " + cookies.token,
+        },
+      });
+      setCategories(respone.data);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      window.location.replace("/error");
     }
   };
 
+  const checkUser = async () => {
+    if (typeof cookies.token === "undefined" || cookies.user === "user") {
+      navigate("/error");
+    } else {
+      getCategory();
+    }
+  };
+
+  //   SETUP SHOWING CATEGORIES
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
+
+  function getStyles(categories, personName, theme) {
+    return {
+      fontWeight:
+        personName.indexOf(categories) === -1
+          ? theme.typography.fontWeightRegular
+          : theme.typography.fontWeightMedium,
+    };
+  }
+
+  const theme = useTheme();
+  const [category, setCategory] = useState([]);
+
+  const handleChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setCategory(typeof value === "string" ? value.split(",") : value);
+  };
+
+  // GET PRODUCT INFORMATION
+  function getProduct() {
+    axios
+      .get(`http://localhost:8080/api/products/${productId}`)
+      .then((response) => {
+        console.log(response);
+        setProduct(response.data);
+        setImages(response.data.image);
+        setCategory(response.data.categories);
+      })
+      .catch((error) => {
+        navigate("/error", {
+          state: {
+            message: "Could not find product",
+          },
+        });
+      });
+  }
+
   useEffect(() => {
-    fetchData();
+    checkUser();
+    getProduct();
   }, []);
+
+  // SUBMIT IMAGES AND GET INFORMATION BEFORE MODIFY PRODUCT
+  const [file, setFiles] = useState(null);
+
+  function handleSubmitImage(event) {
+    event.preventDefault();
+    if (!file) {
+      return;
+    }
+
+    const form = new FormData();
+    for (let i = 0; i < file.length; i++) {
+      form.append(`file`, file[i]);
+      form.append(`fileName`, file[i].name);
+    }
+    axios
+      .post(`http://localhost:8080/api/upload`, form, {
+        headers: {
+          Authorization: "Bearer " + cookies.token,
+          "content-type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        updateProduct(response);
+      })
+      .catch((error) => {
+        navigate("/error", {
+          state: {
+            message: "Error when upload images",
+          },
+        });
+      });
+  }
+
+  // ADD PRODUCT WITH IMAGES
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
+  const [featured, setFeatured] = useState(1);
+
+  const updateProduct = async (output) => {
+    try {
+      const respone = await axios.put(
+        `http://localhost:8080/api/products/update/${productId}`,
+        {
+          name: name,
+          price: price,
+          description: description,
+          featured: featured,
+          image: output.data,
+          categories: category,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + cookies.token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      navigate("/admin", {
+        state: {
+          message: "Update product successfully",
+        },
+      });
+    } catch (error) {
+      navigate("/error", {
+        state: {
+          message: "Update failed",
+        },
+      });
+      console.log(error);
+    }
+  };
 
   return (
     <div className="App">
@@ -70,163 +211,314 @@ const AdminProductDetail = () => {
         }}
       >
         <Grid container spacing={2} columns={16}>
-          <Grid item xs={2} sx={{ marginTop: 1 }}>
-            <Grid
-              container
-              spacing={1}
-              columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-              gap={1.5}
-            >
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  Add new User
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  Add new Produt
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  Add new category
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  add new role
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  Show all users
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  <Link
-                    href="/allproducts"
-                    sx={{
-                      textDecoration: "none",
-                      color: "inherit",
-                    }}
-                  >
-                    Show all products
-                  </Link>
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  Show all categories
-                </Button>
-              </Grid>
-              <Grid xs={12}>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  fullWidth
-                  sx={{ p: 1.5, borderRadius: 2 }}
-                >
-                  Show all roles
-                </Button>
-              </Grid>
-            </Grid>
-          </Grid>
+          <AdminTab />
           <Grid item xs={14}>
             <Grid container spacing={2}>
-              <Grid item xs={8}>
+              <Grid item xs={12}>
                 <Box
-                  component="img"
-                  src="https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg"
+                  component="form"
+                  onSubmit={handleSubmitImage}
                   sx={{
-                    height: "auto",
-                    width: "700px",
-                    border: "1px solid black",
-                    borderRadius: "5px",
-                  }}
-                ></Box>
-              </Grid>
-              <Grid item xs={4}>
-                <Card
-                  sx={{
-                    minWidth: 275,
-                    border: "1px solid black",
-                    borderRadius: "5px",
+                    width: "100%",
+                    height: "500px",
+                    border: "2px solid #fff",
+                    borderRadius: "15px",
+                    marginX: "20px",
                   }}
                 >
-                  <CardContent>
-                    <Typography
-                      sx={{ fontSize: 14 }}
-                      color="text.secondary"
-                      gutterBottom
+                  <Typography
+                    variant="h4"
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      fontWeight: 300,
+                    }}
+                  >
+                    Edit Product information
+                  </Typography>
+
+                  {/* NAME + PRICE */}
+                  <Box
+                    sx={{
+                      display: "inline-flex",
+                      width: "90%",
+                    }}
+                  >
+                    {/* NAME */}
+                    <FormControl
+                      sx={{
+                        width: "90%",
+                        marginY: "15px",
+                      }}
                     >
-                      Word of the Day
-                    </Typography>
-                    <Typography variant="h3" component="div">
-                      {product.name}
-                    </Typography>
-                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                      Categories: {product.categories}
-                    </Typography>
-                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                      Price: {product.price * 1000} VND
-                    </Typography>
-                    <Typography variant="body2">
-                      Description: {product.description}
-                      <br />
-                      {'"a benevolent smile"'}
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button size="medium"></Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-              <Grid item xs={4}>
-                <Item>PRODUCT INFORMATION</Item>
-              </Grid>
-              <Grid item xs={8}>
-                <Item>PRODUCT INFORMATION</Item>
+                      <InputLabel
+                        htmlFor="username"
+                        color="grey"
+                        sx={{
+                          fontSize: "20px",
+                        }}
+                      >
+                        {product.name}
+                      </InputLabel>
+                      <Input
+                        id="name"
+                        color="grey"
+                        type="text"
+                        aria-describedby="my-helper-text"
+                        sx={{
+                          fontSize: "20px",
+                          marginLeft: "15px",
+                        }}
+                        //   value={username}
+                        onChange={(e) => setName(e.target.value)}
+                      />
+                      <FormHelperText id="my-helper-text" sx={{}}>
+                        Enter product name
+                      </FormHelperText>
+                    </FormControl>
+
+                    {/* PRICE */}
+                    <FormControl
+                      sx={{
+                        width: "90%",
+                        marginY: "15px",
+                      }}
+                    >
+                      <InputLabel
+                        htmlFor="username"
+                        color="grey"
+                        sx={{
+                          fontSize: "20px",
+                        }}
+                      >
+                        {product.price}
+                      </InputLabel>
+                      <Input
+                        id="price"
+                        color="grey"
+                        type="number"
+                        step="any"
+                        aria-describedby="my-helper-text"
+                        sx={{
+                          fontSize: "20px",
+                          marginLeft: "15px",
+                        }}
+                        //   value={username}
+                        onChange={(e) => setPrice(e.target.value)}
+                      />
+                      <FormHelperText id="my-helper-text" sx={{}}>
+                        Enter product name
+                      </FormHelperText>
+                    </FormControl>
+
+                    {/* FEATURE */}
+                    <FormControl
+                      sx={{
+                        width: "90%",
+                        marginY: "15px",
+                      }}
+                    >
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={product.featured === 1 ? true : false}
+                            onChange={(e) =>
+                              setFeatured(e.target.checked ? 1 : 0)
+                            }
+                          />
+                        }
+                        label="Feature"
+                      />
+                      <FormHelperText id="my-helper-text" sx={{}}>
+                        Select product is feature
+                      </FormHelperText>
+                    </FormControl>
+                  </Box>
+
+                  {/* DESCRIPTION */}
+                  <FormControl
+                    sx={{
+                      width: "90%",
+                      marginY: "15px",
+                    }}
+                  >
+                    <InputLabel
+                      htmlFor="description"
+                      color="grey"
+                      sx={{
+                        fontSize: "20px",
+                      }}
+                    >
+                      {product.description}
+                    </InputLabel>
+                    <Input
+                      id="description"
+                      color="grey"
+                      type="text"
+                      aria-describedby="my-helper-text"
+                      sx={{
+                        fontSize: "20px",
+                        marginLeft: "15px",
+                      }}
+                      onChange={(e) => setDescription(e.target.value)}
+                    />
+                    <FormHelperText id="my-helper-text" sx={{}}>
+                      More information
+                    </FormHelperText>
+                  </FormControl>
+
+                  {/* CATEGORIES */}
+                  <FormControl
+                    sx={{ width: "90%", marginY: "15px", marginLeft: "20px" }}
+                  >
+                    <InputLabel id="demo-multiple-chip-label">
+                      Category
+                    </InputLabel>
+                    <Select
+                      labelId="demo-multiple-chip-label"
+                      id="demo-multiple-chip"
+                      multiple
+                      value={category}
+                      onChange={handleChange}
+                      input={
+                        <OutlinedInput id="select-multiple-chip" label="Chip" />
+                      }
+                      renderValue={(selected) => (
+                        <Box
+                          sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}
+                        >
+                          {selected.map((value) => (
+                            <Chip key={value} label={value} />
+                          ))}
+                        </Box>
+                      )}
+                      MenuProps={MenuProps}
+                    >
+                      {categories.map((name) => (
+                        <MenuItem
+                          key={name.id}
+                          value={name.name}
+                          style={getStyles(name.name, category, theme)}
+                        >
+                          {name.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
+                  {/* SHOW IMAGES */}
+                  <Grid>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: "20px",
+                        marginY: "20px",
+                      }}
+                    >
+                      {images && images.length > 0
+                        ? images.map((img, index) => (
+                            <img
+                              key={index} // Make sure to include a unique key for each element
+                              src={`http://localhost:8080/api/images/${img}`}
+                              alt={`Product ${index + 1}`}
+                              style={{
+                                width: "150px",
+                                objectFit: "cover",
+                                height: "150px",
+                              }}
+                            />
+                          ))
+                        : "You have no images yet"}
+                    </Box>
+                  </Grid>
+                  {/* END SHOW IMAGES */}
+
+                  {/* IMAGES */}
+                  <FormControl
+                    sx={{
+                      width: "90%",
+                      marginY: "15px",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: "100%",
+                        display: "inline-flex",
+                        justifyContent: "flex-start",
+                      }}
+                    >
+                      <input
+                        type="file"
+                        multiple
+                        id="image"
+                        style={{
+                          fontSize: "18px",
+                          marginLeft: "15px",
+                          textDecoration: "none",
+                          width: "100%",
+                          fontWeight: "200",
+                        }}
+                        onChange={(e) => {
+                          setFiles(e.target.files);
+                        }}
+                      />
+                    </Box>
+                    <FormHelperText id="my-helper-text" sx={{}}>
+                      Upload image here
+                    </FormHelperText>
+                    <Box
+                      component="img"
+                      src={""}
+                      sx={{
+                        width: "200px",
+                        height: "auto",
+                      }}
+                    ></Box>
+                  </FormControl>
+
+                  {/* Button group */}
+                  <Box
+                    sx={{
+                      display: "inline-flex",
+                      gap: "10px",
+                      marginTop: "20px",
+                    }}
+                  >
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="success"
+                      sx={{ padding: "10px 50px", borderRadius: 5 }}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      sx={{ padding: "10px 50px", borderRadius: 5 }}
+                    >
+                      <Link
+                        href="/"
+                        sx={{
+                          textDecoration: "none",
+                          color: "inherit",
+                        }}
+                      >
+                        Cancel
+                      </Link>
+                    </Button>
+                    {/* END BUTTON */}
+                  </Box>
+                </Box>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
       </Box>
+      <Footer />
     </div>
   );
 };

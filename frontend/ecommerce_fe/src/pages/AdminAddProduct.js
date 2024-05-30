@@ -16,7 +16,7 @@ import {
   Link,
   Box,
 } from "@mui/material";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import AdminTab from "../components/AdminTab";
 import { useCookies } from "react-cookie";
@@ -24,12 +24,14 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
+import Footer from "../components/Footer";
 
 const AdminAllProducts = () => {
   const [cookies] = useCookies(["token"], ["user"], ["userId"]);
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
 
+  // GET CURRENT CATEGORIES IN DATABASE FOR SELECTING
   const getCategory = async () => {
     try {
       const respone = await axios.get(`http://localhost:8080/api/categories`, {
@@ -43,6 +45,7 @@ const AdminAllProducts = () => {
     }
   };
 
+  // CHECK USER IS CORRECT OR NOT
   const checkUser = async () => {
     if (typeof cookies.token === "undefined" || cookies.user === "user") {
       navigate("/error");
@@ -55,7 +58,7 @@ const AdminAllProducts = () => {
     checkUser();
   }, []);
 
-  //   Categoriess
+  //  SETUP SELECTING OF CATEGORIES
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -86,16 +89,17 @@ const AdminAllProducts = () => {
     setCategory(typeof value === "string" ? value.split(",") : value);
   };
 
-  // ADD PRODUCT
+  // PREPARE FOR PRODUCTS
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [featured, setFeatured] = useState(1);
-  const [imageUrl, setImageUrl] = useState("");
-  const [file, setFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState([]);
+  const [file, setFiles] = useState(null);
 
-  // add product after image ok, but not cover exception
-  const addProduct = async (imageUrl) => {
+  // ADD PRODUCT WITH IMAGES
+  const addProduct = async (output) => {
+    console.log(output.data);
     try {
       const respone = await axios.post(
         `http://localhost:8080/api/products/create`,
@@ -104,7 +108,7 @@ const AdminAllProducts = () => {
           price: price,
           description: description,
           featured: featured,
-          image: imageUrl,
+          image: output.data,
           categories: category,
         },
         {
@@ -116,7 +120,7 @@ const AdminAllProducts = () => {
       );
       navigate("/admin", {
         state: {
-          message: "Create ok",
+          message: "Create product successfully",
         },
       });
     } catch (error) {
@@ -125,35 +129,40 @@ const AdminAllProducts = () => {
           message: "Create failed",
         },
       });
+      console.log(error);
     }
   };
 
-  // submit image ok
+  // SUBMIT IMAGES AND GET INFORMATION BEFORE ADD PRODUCT
   function handleSubmitImage(event) {
     event.preventDefault();
-    const url = "http://localhost:8080/api/upload";
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("fileName", file.name);
-    const config = {
-      headers: {
-        Authorization: "Bearer " + cookies.token,
-        "content-type": "multipart/form-data",
-      },
-    };
+    if (!file) {
+      return;
+    }
+
+    const form = new FormData();
+    for (let i = 0; i < file.length; i++) {
+      form.append(`file`, file[i]);
+      form.append(`fileName`, file[i].name);
+    }
     axios
-      .post(url, formData, config)
+      .post(`http://localhost:8080/api/upload`, form, {
+        headers: {
+          Authorization: "Bearer " + cookies.token,
+          "content-type": "multipart/form-data",
+        },
+      })
       .then((response) => {
-        setImageUrl(response.data.url);
+        addProduct(response);
+        setImageUrl(response.data);
       })
       .catch((error) => {
         navigate("/error", {
           state: {
-            message: "Upload image failed",
+            message: "Error when upload images",
           },
         });
       });
-    addProduct(imageUrl);
   }
 
   return (
@@ -330,6 +339,7 @@ const AdminAllProducts = () => {
                   More information
                 </FormHelperText>
               </FormControl>
+
               {/* Categories */}
               <FormControl
                 sx={{ width: "90%", marginY: "15px", marginLeft: "20px" }}
@@ -364,6 +374,7 @@ const AdminAllProducts = () => {
                   ))}
                 </Select>
               </FormControl>
+
               {/* Image */}
               <FormControl
                 sx={{
@@ -378,10 +389,11 @@ const AdminAllProducts = () => {
                     justifyContent: "flex-start",
                   }}
                 >
-                  <Input
+                  {/* <Input
                     id="image"
                     color="grey"
                     type="file"
+                    multiple
                     aria-describedby="my-helper-text"
                     sx={{
                       fontSize: "18px",
@@ -390,7 +402,24 @@ const AdminAllProducts = () => {
                       width: "100%",
                     }}
                     // value={file}
-                    onChange={(e) => setFile(e.target.files[0])}
+                    onChange={(e) => {
+                      setFiles(e.target.files[0]);
+                    }}
+                  /> */}
+                  <input
+                    type="file"
+                    multiple
+                    id="image"
+                    style={{
+                      fontSize: "18px",
+                      marginLeft: "15px",
+                      textDecoration: "none",
+                      width: "100%",
+                      fontWeight: "200",
+                    }}
+                    onChange={(e) => {
+                      setFiles(e.target.files);
+                    }}
                   />
                 </Box>
                 <FormHelperText id="my-helper-text" sx={{}}>
@@ -442,6 +471,7 @@ const AdminAllProducts = () => {
           </Grid>
         </Grid>
       </Box>
+      <Footer />
     </div>
   );
 };

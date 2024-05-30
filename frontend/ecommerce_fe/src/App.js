@@ -11,6 +11,7 @@ import AdminAddProduct from "./pages/AdminAddProduct.js";
 import AdminAddCategory from "./pages/AdminAddCategory.js";
 import AdminAllCategories from "./pages/AdminAllCategories.js";
 import Admin from "./pages/Admin.js";
+// import Image from '/Users/khanhdu/Desktop/NASH/ecommerce/BE_images'
 
 function App() {
   return (

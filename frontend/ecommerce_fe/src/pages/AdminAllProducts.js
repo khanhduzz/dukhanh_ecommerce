@@ -26,6 +26,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import AdminTab from "../components/AdminTab";
 import { useCookies } from "react-cookie";
+import Footer from "../components/Footer";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -49,18 +50,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const AdminAllProducts = () => {
-  // const [products, setProducts] = useState([]);
-
-  // const getData = async () => {
-  //   const response = await axios.get("http://localhost:8080/api/products");
-  //   console.log(response.data);
-  //   setProducts(response.data);
-  // };
-
-  // useEffect(() => {
-  //   getData();
-  // }, []);
-
   const navigate = useNavigate();
   // PAGINATION
   const [products, setProducts] = useState([]);
@@ -315,6 +304,7 @@ const AdminAllProducts = () => {
           </Box>
         )}
       </Box>
+      <Footer />
     </div>
   );
 };

@@ -25,6 +25,7 @@ function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const { state } = useLocation();
+  const [name, setName] = React.useState("");
 
   const navigate = useNavigate();
 
@@ -47,6 +48,7 @@ function ResponsiveAppBar() {
     ) {
       signOut();
     }
+    setName(cookies["user"]);
   }
 
   React.useEffect(() => {
@@ -84,22 +86,28 @@ function ResponsiveAppBar() {
     removeCookie("token");
     removeCookie("user");
     removeCookie("userId");
-    navigate("/signin", {
-      state: {
-        message: "Sign out successfully",
-      },
-    });
+    navigate(
+      "/signin"
+      // , {
+      //   state: {
+      //     message: "Sign out successfully",
+      //   },
+      // }
+    );
   };
 
   const signUp = () => {
     removeCookie("token");
     removeCookie("user");
     removeCookie("userId");
-    navigate("/signin", {
-      state: {
-        message: "Sign out successfully",
-      },
-    });
+    navigate(
+      "/signup"
+      // , {
+      //   state: {
+      //     message: "Sign out successfully",
+      //   },
+      // }
+    );
   };
 
   // This for nofication
@@ -131,7 +139,7 @@ function ResponsiveAppBar() {
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -202,7 +210,57 @@ function ResponsiveAppBar() {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                gap: "20px",
+                marginRight: "20px",
+                textTransform: "uppercase",
+              }}
+            >
+              <Button
+                href="/admin"
+                sx={{
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  textDecoration: "none",
+                  color: "#fff",
+                  display: `${cookies["user"] === "admin" ? "block" : "none"}`,
+                }}
+              >
+                ADMIN PAGE
+              </Button>
+              <Button
+                onClick={signUp}
+                sx={{
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  textDecoration: "none",
+                  color: "#fff",
+                  display: `${
+                    typeof cookies.token === "undefined" ? "block" : "none"
+                  }`,
+                }}
+              >
+                Sign up
+              </Button>
+              <Button
+                onClick={signOut}
+                sx={{
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  textDecoration: "none",
+                  color: "#fff",
+                  display: `${
+                    typeof cookies.token === "undefined" ? "none" : "block"
+                  }`,
+                }}
+              >
+                Sign out
+              </Button>
+            </Box>
+            {/* {pages.map((page) => (
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
@@ -210,7 +268,7 @@ function ResponsiveAppBar() {
               >
                 {page}
               </Button>
-            ))}
+            ))} */}
           </Box>
 
           <Box
@@ -263,6 +321,17 @@ function ResponsiveAppBar() {
               }}
             >
               Sign out
+            </Button>
+            <Button
+              sx={{
+                fontSize: "14px",
+                fontWeight: 500,
+                textDecoration: "none",
+                color: "#fff",
+                display: `${typeof name === "undefined" ? "none" : "block"}`,
+              }}
+            >
+              Hello, {name}
             </Button>
           </Box>
 

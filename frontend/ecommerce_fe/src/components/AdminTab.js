@@ -1,9 +1,34 @@
 /* eslint-disable react/jsx-no-undef */
 import "../App.css";
 import Grid from "@mui/material/Grid";
+import React, { useEffect } from "react";
 import { Button, Link } from "@mui/material";
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
 const AdminTab = (props) => {
+  const navigate = useNavigate();
+
+  const [cookies, setCookie, removeCookie] = useCookies(
+    ["token"],
+    ["user"],
+    ["userId"]
+  );
+
+  function checkUser() {
+    if (cookies["user"] !== "admin") {
+      navigate("/error", {
+        state: {
+          message: "You are not allow to access here",
+        },
+      });
+    }
+  }
+
+  useEffect(() => {
+    checkUser();
+  }, []);
+
   return (
     <Grid item xs={2} sx={{ marginTop: 1 }}>
       <Grid
@@ -44,7 +69,7 @@ const AdminTab = (props) => {
             Add new category
           </Button>
         </Grid>
-        <Grid xs={12}>
+        {/* <Grid xs={12}>
           <Button
             variant="outlined"
             color="success"
@@ -53,7 +78,7 @@ const AdminTab = (props) => {
           >
             add new role
           </Button>
-        </Grid>
+        </Grid> */}
         <Grid xs={12}>
           <Button
             variant={props.val === "allusers" ? "contained" : "outlined"}
@@ -108,7 +133,7 @@ const AdminTab = (props) => {
             </Link>
           </Button>
         </Grid>
-        <Grid xs={12}>
+        {/* <Grid xs={12}>
           <Button
             variant="outlined"
             color="success"
@@ -117,7 +142,7 @@ const AdminTab = (props) => {
           >
             Show all roles
           </Button>
-        </Grid>
+        </Grid> */}
       </Grid>
     </Grid>
   );
