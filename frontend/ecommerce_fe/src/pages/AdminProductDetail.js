@@ -155,7 +155,7 @@ const AdminProductDetail = () => {
 
   const updateProduct = async (output) => {
     try {
-      const respone = await axios.put(
+      await axios.put(
         `http://localhost:8080/api/products/update/${productId}`,
         {
           name: name,
@@ -323,15 +323,6 @@ const AdminProductDetail = () => {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            // defaultChecked={
-                            //   product.featured === 1 ? true : false
-                            // }
-
-                            // is
-                            // {...(product.featured === 1
-                            //   ? `checked`
-                            //   : `unchecked`)}
-
                             checked={featured === 1}
                             onChange={(e) =>
                               setFeatured(e.target.checked ? 1 : 0)
