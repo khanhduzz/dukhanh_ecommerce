@@ -19,12 +19,12 @@ import java.util.Set;
         name = "Book.category",
         attributeNodes = @NamedAttributeNode("categories")
 )
-public class Product {
+public class Product extends AuditEntity<Long>{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PRODUCT_ID")
-    private Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "PRODUCT_ID")
+//    private Long id;
     private String name;
     private double price;
     private String description;

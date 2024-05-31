@@ -11,13 +11,14 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @ToString
 @Table(name = "ROLES")
 public class Role {
 
     @Id
     @Column(name = "ROLE_NAME")
-    private String name;
+    String name;
 
     @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
     @EqualsAndHashCode.Exclude

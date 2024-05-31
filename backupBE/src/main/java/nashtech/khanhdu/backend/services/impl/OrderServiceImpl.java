@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
                 return ResponseEntity.ok(null);
             }
             order = new Order();
-            order.setId(0L);
+//            order.setId(0L);
             order.setUserOrder(userRepository
                     .findById(dto.userId())
                     .orElseThrow(()-> new UserExistException("User not found")));

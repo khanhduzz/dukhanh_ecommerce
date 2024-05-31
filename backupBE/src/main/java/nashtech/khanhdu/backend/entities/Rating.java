@@ -11,12 +11,12 @@ import lombok.*;
 @Entity
 @ToString
 @Table(name = "RATINGS")
-public class Rating {
+public class Rating extends AuditEntity<Long>{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "RATING_ID")
-    private Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "RATING_ID")
+//    private Long id;
     private double rate;
     private String user;
     private String product;

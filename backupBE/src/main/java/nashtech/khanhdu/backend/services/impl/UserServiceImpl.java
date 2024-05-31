@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ResponseEntity<User> updateUser(Long id, UserDto dto) {
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        dto.setId(id);
+//        dto.setId(id);
         var updateUser = userMapper.updateUser(user, dto);
         String encryptedPassword = passwordEncoder.encode(dto.getPassword());
         updateUser.setPassword(encryptedPassword);

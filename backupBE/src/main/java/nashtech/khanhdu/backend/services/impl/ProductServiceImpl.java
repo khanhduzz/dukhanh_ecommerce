@@ -65,9 +65,9 @@ public class ProductServiceImpl implements ProductService {
         if (productRepository.findByName(dto.getName()).isPresent()){
             throw new ProductAlreadyExistsException();
         }
-        if (dto.getId() == null) {
-            dto.setId(0L);
-        }
+//        if (dto.getId() == null) {
+//            dto.setId(0L);
+//        }
         Product product = productMapper.toEntity(dto);
         dto.getCategories()
                 .forEach(e -> {
@@ -83,7 +83,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ResponseEntity<Product> updateProduct(Long id, ProductDto dto) {
         Product product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
-        dto.setId(id);
+//        dto.setId(id);
         var updateProduct = productMapper.updateProduct(product, dto);
         updateProduct.setCategories(new HashSet<>());
         dto.getCategories()

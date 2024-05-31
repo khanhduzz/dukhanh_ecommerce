@@ -18,12 +18,12 @@ import java.util.Set;
 @Entity
 @ToString
 @Table(name = "USERS")
-public class User implements UserDetails {
+public class User extends AuditEntity<Long> implements UserDetails {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "USER_ID")
-    private Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "USER_ID")
+//    private Long id;
     private String username;
     @JsonIgnore
     private String password;

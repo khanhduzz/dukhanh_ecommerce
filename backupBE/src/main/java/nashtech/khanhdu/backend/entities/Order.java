@@ -11,12 +11,12 @@ import lombok.*;
 @Entity
 @ToString
 @Table(name = "ORDERS")
-public class Order {
+public class Order extends AuditEntity<Long>{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ORDER_ID")
-    private Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "ORDER_ID")
+//    private Long id;
     private int quantity;
     private String user;
     private String product;

@@ -3,6 +3,7 @@ package nashtech.khanhdu.backend.dto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import nashtech.khanhdu.backend.entities.AuditEntity;
 
 import java.util.List;
 import java.util.Set;
@@ -10,9 +11,9 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-public class ProductDto {
+public class ProductDto extends AuditEntity<Long> {
 
-    private Long id;
+//    private Long id;
     private String name;
     private double price;
     private String description;

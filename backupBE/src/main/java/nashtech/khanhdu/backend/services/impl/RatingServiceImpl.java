@@ -34,7 +34,7 @@ public class RatingServiceImpl implements RatingService {
         Rating rating = ratingRepository.findByUserNameAndProductName(dto.userId(), dto.productId());
         if (rating == null) {
             rating = new Rating();
-            rating.setId(0L);
+//            rating.setId(0L);
             rating.setUserRating(
                 userRepository.findById(dto.userId())
                     .orElseThrow(() -> new UserExistException("User not found"))
