@@ -5,6 +5,7 @@ import nashtech.khanhdu.backend.dto.SortedDto;
 import nashtech.khanhdu.backend.entities.Category;
 import nashtech.khanhdu.backend.entities.Product;
 import nashtech.khanhdu.backend.exceptions.CategoryNotFoundException;
+import nashtech.khanhdu.backend.exceptions.ProductAlreadyExistsException;
 import nashtech.khanhdu.backend.exceptions.ProductNotFoundException;
 import nashtech.khanhdu.backend.exceptions.SearchingContentIsNotValid;
 import nashtech.khanhdu.backend.mapper.ProductMapper;
@@ -29,8 +30,6 @@ import java.util.regex.Pattern;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private final String mess = "Product not found";
-
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
     private final CategoryService categoryService;
@@ -53,7 +52,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto getProduct(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException(mess));
+                .orElseThrow(ProductNotFoundException::new);
         ProductDto dto = productMapper.toDto(product);
         dto.setCategories(new HashSet<>());
         product.getCategories().forEach(category -> dto.getCategories().add(category.getName()));
@@ -64,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ResponseEntity<Product> createProduct(ProductDto dto) {
         if (productRepository.findByName(dto.getName()).isPresent()){
-            throw new ProductNotFoundException("Product already exists");
+            throw new ProductAlreadyExistsException();
         }
         if (dto.getId() == null) {
             dto.setId(0L);
@@ -83,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ResponseEntity<Product> updateProduct(Long id, ProductDto dto) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(mess));
+        Product product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
         dto.setId(id);
         var updateProduct = productMapper.updateProduct(product, dto);
         updateProduct.setCategories(new HashSet<>());
@@ -101,7 +100,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ResponseEntity<String> deleteProduct(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException(mess));
+                .orElseThrow(ProductNotFoundException::new);
         product.getOrders().forEach(orderService::deleteOrder);
         product.getOrders().clear();
         product.getRatings().forEach(ratingService::deleteRating);

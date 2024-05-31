@@ -28,6 +28,7 @@ public class User implements UserDetails {
     @JsonIgnore
     private String password;
     private String email;
+    private String image;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @EqualsAndHashCode.Exclude

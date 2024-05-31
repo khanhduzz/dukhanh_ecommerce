@@ -19,7 +19,7 @@ public class Role {
     @Column(name = "ROLE_NAME")
     private String name;
 
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
     @EqualsAndHashCode.Exclude
     @JsonIgnore
     @ToString.Exclude

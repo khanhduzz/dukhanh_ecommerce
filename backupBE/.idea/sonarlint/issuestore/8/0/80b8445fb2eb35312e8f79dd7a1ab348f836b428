@@ -1,7 +1,7 @@
 
-=
-java:S1948("'Make "roles" transient or serializable.(ŠÙº­
-?
-java:S1948,")Make "ratings" transient or serializable.(ÙùÓä
->
-java:S19480"(Make "orders" transient or serializable.(µüÕï
+c
+java:S1948)"'Make "roles" transient or serializable.(ŠÙº­J$abe4f37b-f3c9-4531-8d72-23821557d072
+e
+java:S1948-")Make "ratings" transient or serializable.(ÙùÓäJ$36e87f7c-b2e2-4a35-8de3-b4a885e68be2
+d
+java:S19481"(Make "orders" transient or serializable.(µüÕïJ$6c364fb1-f445-466c-9155-fe5ddc4bde52

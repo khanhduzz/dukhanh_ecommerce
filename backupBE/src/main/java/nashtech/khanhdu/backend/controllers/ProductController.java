@@ -1,11 +1,16 @@
 package nashtech.khanhdu.backend.controllers;
 
 import jakarta.validation.Valid;
+import nashtech.khanhdu.backend.dto.ErrorResponse;
 import nashtech.khanhdu.backend.dto.ProductDto;
 import nashtech.khanhdu.backend.dto.SortedDto;
 import nashtech.khanhdu.backend.entities.Product;
+import nashtech.khanhdu.backend.exceptions.CategoryNotFoundException;
+import nashtech.khanhdu.backend.exceptions.ProductAlreadyExistsException;
+import nashtech.khanhdu.backend.exceptions.ProductNotFoundException;
 import nashtech.khanhdu.backend.services.ProductService;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +26,32 @@ public class ProductController {
 
     public ProductController(ProductService productService) {
         this.productService = productService;
+    }
+
+    @ExceptionHandler({ProductNotFoundException.class})
+    protected ResponseEntity<ErrorResponse> handleProductNotFoundException (
+            ProductNotFoundException exception) {
+        var error = ErrorResponse.builder().code(HttpStatus.NOT_FOUND.value())
+                .message("Product not found").build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler({ProductAlreadyExistsException.class})
+    protected ResponseEntity<ErrorResponse> handleProductAlreadyExistException (
+            ProductAlreadyExistsException exception
+    ) {
+        var error = ErrorResponse.builder().code(HttpStatus.NOT_ACCEPTABLE.value())
+                .message("Product already exists").build();
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(error);
+    }
+
+    @ExceptionHandler({CategoryNotFoundException.class})
+    protected ResponseEntity<ErrorResponse> handleCategoryNotFoundException (
+            CategoryNotFoundException exception
+    ) {
+        var error = ErrorResponse.builder().code(HttpStatus.NOT_FOUND.value())
+                .message("Category not found").build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
     @GetMapping()

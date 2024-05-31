@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -17,6 +18,6 @@ public class ProductDto {
     private String description;
     private double rating;
     private int featured;
-    private String image;
+    private List<String> image;
     private Set<String> categories;
 }

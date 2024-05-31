@@ -23,7 +23,7 @@ public class Category {
     private String name;
     private String description;
 
-    @ManyToMany(mappedBy = "categories", cascade = {CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "categories", cascade = {CascadeType.REFRESH})
     @ToString.Exclude
     @JsonIgnore
     Set<Product> products;

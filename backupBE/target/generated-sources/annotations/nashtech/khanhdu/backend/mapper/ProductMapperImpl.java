@@ -1,5 +1,7 @@
 package nashtech.khanhdu.backend.mapper;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.processing.Generated;
 import nashtech.khanhdu.backend.dto.ProductDto;
 import nashtech.khanhdu.backend.entities.Product;
@@ -7,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-05-24T22:23:24+0700",
+    date = "2024-05-30T16:29:20+0700",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.3 (Oracle Corporation)"
 )
 @Component
@@ -27,6 +29,10 @@ public class ProductMapperImpl implements ProductMapper {
         productDto.setDescription( product.getDescription() );
         productDto.setRating( product.getRating() );
         productDto.setFeatured( product.getFeatured() );
+        List<String> list = product.getImage();
+        if ( list != null ) {
+            productDto.setImage( new ArrayList<String>( list ) );
+        }
 
         return productDto;
     }
@@ -45,6 +51,10 @@ public class ProductMapperImpl implements ProductMapper {
         product.setDescription( dto.getDescription() );
         product.setRating( dto.getRating() );
         product.setFeatured( dto.getFeatured() );
+        List<String> list = dto.getImage();
+        if ( list != null ) {
+            product.setImage( new ArrayList<String>( list ) );
+        }
 
         return product;
     }
@@ -61,6 +71,22 @@ public class ProductMapperImpl implements ProductMapper {
         product.setDescription( dto.getDescription() );
         product.setRating( dto.getRating() );
         product.setFeatured( dto.getFeatured() );
+        if ( product.getImage() != null ) {
+            List<String> list = dto.getImage();
+            if ( list != null ) {
+                product.getImage().clear();
+                product.getImage().addAll( list );
+            }
+            else {
+                product.setImage( null );
+            }
+        }
+        else {
+            List<String> list = dto.getImage();
+            if ( list != null ) {
+                product.setImage( new ArrayList<String>( list ) );
+            }
+        }
 
         return product;
     }

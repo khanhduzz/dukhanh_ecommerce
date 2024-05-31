@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -14,6 +15,10 @@ import java.util.Set;
 @Entity
 @ToString
 @Table(name = "PRODUCTS")
+@NamedEntityGraph (
+        name = "Book.category",
+        attributeNodes = @NamedAttributeNode("categories")
+)
 public class Product {
 
     @Id
@@ -25,7 +30,7 @@ public class Product {
     private String description;
     private double rating;
     private int featured;
-    private String image;
+    private List<String> image;
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

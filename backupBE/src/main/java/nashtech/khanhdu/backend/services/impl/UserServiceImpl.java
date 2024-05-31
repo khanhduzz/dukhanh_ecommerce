@@ -2,8 +2,10 @@ package nashtech.khanhdu.backend.services.impl;
 
 import nashtech.khanhdu.backend.dto.SignUpDto;
 import nashtech.khanhdu.backend.dto.UserDto;
+import nashtech.khanhdu.backend.entities.Role;
 import nashtech.khanhdu.backend.entities.User;
 import nashtech.khanhdu.backend.exceptions.UserExistException;
+import nashtech.khanhdu.backend.exceptions.UserNotFoundException;
 import nashtech.khanhdu.backend.mapper.UserMapper;
 import nashtech.khanhdu.backend.repositories.RoleRepository;
 import nashtech.khanhdu.backend.repositories.UserRepository;
@@ -17,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -44,7 +47,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername (String username) throws UsernameNotFoundException {
         return userRepository.findUserByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
     }
 
     @Override
@@ -55,7 +58,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ResponseEntity<User> updateUser(Long id, UserDto dto) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserExistException("User not found"));
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         dto.setId(id);
         var updateUser = userMapper.updateUser(user, dto);
         String encryptedPassword = passwordEncoder.encode(dto.getPassword());
@@ -68,7 +71,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ResponseEntity<String> deleteUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(()->new UserExistException("User not found"));
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         user.getOrders().forEach(orderService::deleteOrder);
         user.getOrders().clear();
         user.getRatings().forEach(ratingService::deleteRating);
@@ -84,7 +87,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(()->new UserExistException("User not found"));
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
     @Transactional
@@ -104,7 +107,11 @@ public class UserServiceImpl implements UserService {
         newUser.setPassword(encryptedPassword);
         newUser.setUsername(data.username());
         newUser.setEmail(data.email());
-        if ( !data.roles().isEmpty() ) {
+        if (data.roles() == null) {
+            List<Role> role = roleRepository.findById("ROLE_USER").stream().toList();
+            newUser.setRoles(new HashSet<>(role));
+        }
+        else {
             var userRoles = roleRepository.findAllById(data.roles());
             if ( userRoles.size() != data.roles().size() ) {
                 throw new UserExistException("Role not found");
