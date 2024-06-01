@@ -29,6 +29,8 @@ public class User extends AuditEntity<Long> implements UserDetails {
     private String password;
     private String email;
     private String image;
+    private String firstName;
+    private String lastName;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @EqualsAndHashCode.Exclude

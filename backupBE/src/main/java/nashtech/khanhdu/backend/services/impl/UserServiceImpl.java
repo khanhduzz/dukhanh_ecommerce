@@ -107,6 +107,8 @@ public class UserServiceImpl implements UserService {
         newUser.setPassword(encryptedPassword);
         newUser.setUsername(data.username());
         newUser.setEmail(data.email());
+        newUser.setFirstName(data.firstName());
+        newUser.setLastName(data.lastName());
         if (data.roles() == null) {
             List<Role> role = roleRepository.findById("ROLE_USER").stream().toList();
             newUser.setRoles(new HashSet<>(role));

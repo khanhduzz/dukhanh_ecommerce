@@ -18,5 +18,7 @@ public class UserDto extends AuditEntity<Long> {
     private String password;
     private String email;
     private String image;
+    private String firstName;
+    private String lastName;
     private Set<String> roles;
 }

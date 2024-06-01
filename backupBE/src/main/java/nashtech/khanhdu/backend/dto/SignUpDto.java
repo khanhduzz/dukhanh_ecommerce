@@ -4,5 +4,5 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.Set;
 
-public record SignUpDto(String username, String password, Set<String> roles, @NotNull String email) {
+public record SignUpDto(String username, String password, Set<String> roles, @NotNull String email, String firstName, String lastName) {
 }
