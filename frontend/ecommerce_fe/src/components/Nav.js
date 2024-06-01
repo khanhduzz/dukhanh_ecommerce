@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Typography, Box, Hidden } from "@mui/material";
+import { Typography, Box, Hidden, Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { Link as RouterLink } from "react-router-dom";
 
 const Nav = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -21,8 +22,8 @@ const Nav = () => {
   const maxHeight = 150; // Maximum height of the nav bar
   const dynamicHeight = Math.max(minHeight, maxHeight - scrollY);
 
-  const maxFontSize = 3; // Maximum font size in rem
-  const minFontSize = 2.5; // Minimum font size in rem
+  const maxFontSize = 2.5; // Maximum font size in rem
+  const minFontSize = 2; // Minimum font size in rem
   const titleFontSize = Math.max(minFontSize, maxFontSize - scrollY * 0.01);
 
   const maxLinkFontSize = 1.5; // Maximum font size in em
@@ -39,11 +40,13 @@ const Nav = () => {
     // <div className="App">
     <Box
       sx={{
-        position: "sticky",
+        position: "fixed",
+        boxSizing: "border-box",
+        width: "100%",
         top: 0,
         zIndex: 2,
         height: `${dynamicHeight}px`,
-        transition: "height 0.2s ease-out", // Smooth transition
+        transition: "height 0.2s ease-out, font-size 0.2s ease-out", // Smooth transition
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
@@ -51,12 +54,16 @@ const Nav = () => {
         padding: "10px",
         justifyContent: "space-between",
         opacity: "0.9",
-        marginX: "40px",
+        // marginX: "40px",
       }}
     >
       <Typography
         variant="h4"
+        component={RouterLink}
+        to="/"
         sx={{
+          textDecoration: "none",
+          color: "#000",
           fontSize: `${titleFontSize}rem`,
           fontWeight: "700",
           transition: "font-size 0.2s ease-out", // Smooth transition for font size
@@ -72,20 +79,70 @@ const Nav = () => {
             fontFamily: "IBM Plex Serif",
             display: "flex",
             flexDirection: "row",
-            gap: "4em",
+            gap: "3em",
             fontSize: `${linkFontSize}em`,
             fontWeight: "400",
             textTransform: "uppercase",
             transition: "font-size 0.2s ease-out",
           }}
         >
-          <Box>what's on</Box>
-          <Box>collection</Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Button
+              component={RouterLink}
+              to="/admin"
+              sx={{
+                textDecoration: "none",
+                color: "#000",
+              }}
+            >
+              what's on
+            </Button>
+          </Box>
+          <Box>
+            <Button
+              component={RouterLink}
+              to="/products"
+              sx={{
+                textDecoration: "none",
+                color: "#000",
+              }}
+            >
+              collection
+            </Button>
+          </Box>
           <Box>sign in</Box>
           <Box>sign up</Box>
           <Box>sign out</Box>
-          <Box>about us</Box>
-          <Box>cart</Box>
+          <Box>
+            <Button
+              component={RouterLink}
+              to="/about"
+              sx={{
+                textDecoration: "none",
+                color: "#000",
+              }}
+            >
+              about us
+            </Button>
+          </Box>
+          <Box>
+            <Button
+              component={RouterLink}
+              to="/cart"
+              sx={{
+                textDecoration: "none",
+                color: "#000",
+              }}
+            >
+              cart
+            </Button>
+          </Box>
         </Box>
       </Hidden>
     </Box>

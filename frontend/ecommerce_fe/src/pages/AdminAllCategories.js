@@ -190,12 +190,12 @@ const AdminAllCategories = () => {
       <Navbar />
       <Box>
         <Typography
-          variant="h1"
+          variant="h2"
           sx={{
             display: "flex",
             justifyContent: "center",
             color: "secondary.main",
-            marginY: 5,
+            marginY: 2,
           }}
         >
           All Categories

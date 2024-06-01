@@ -42,6 +42,8 @@ const AdminAddUser = () => {
 
   // PREPARE FOR PRODUCTS
   const [username, setUsername] = useState("");
+  const [firstName, setFirstname] = useState("");
+  const [lastName, setLastname] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   //   const [file, setFiles] = useState(null);
@@ -55,6 +57,8 @@ const AdminAddUser = () => {
         {
           username: username,
           password: password,
+          firstName: firstName,
+          lastName: lastName,
           email: email,
         },
         {
@@ -75,7 +79,6 @@ const AdminAddUser = () => {
           message: "Create user failed, username or email is already exists",
         },
       });
-      console.log(error);
     }
   };
 
@@ -84,12 +87,12 @@ const AdminAddUser = () => {
       <Navbar />
       <Box>
         <Typography
-          variant="h1"
+          variant="h2"
           sx={{
             display: "flex",
             justifyContent: "center",
             color: "secondary.main",
-            marginY: 5,
+            marginY: 2,
           }}
         >
           Add new users
@@ -118,7 +121,7 @@ const AdminAddUser = () => {
                 marginX: "20px",
               }}
             >
-              <Typography
+              {/* <Typography
                 variant="h4"
                 sx={{
                   display: "flex",
@@ -127,8 +130,8 @@ const AdminAddUser = () => {
                 }}
               >
                 User information
-              </Typography>
-              {/* Name + Price */}
+              </Typography> */}
+              {/* Name */}
               <Box
                 sx={{
                   display: "inline-flex",
@@ -138,7 +141,7 @@ const AdminAddUser = () => {
                 {/* Name */}
                 <FormControl
                   sx={{
-                    width: "90%",
+                    width: "100%",
                     marginY: "15px",
                   }}
                 >
@@ -167,11 +170,17 @@ const AdminAddUser = () => {
                     Enter username
                   </FormHelperText>
                 </FormControl>
-
+              </Box>
+              <Box
+                sx={{
+                  display: "inline-flex",
+                  width: "90%",
+                }}
+              >
                 {/* PASSWORD */}
                 <FormControl
                   sx={{
-                    width: "90%",
+                    width: "100%",
                     marginY: "15px",
                   }}
                 >
@@ -200,11 +209,89 @@ const AdminAddUser = () => {
                     Enter user password
                   </FormHelperText>
                 </FormControl>
-
-                {/* Email */}
+              </Box>
+              <Box
+                sx={{
+                  display: "inline-flex",
+                  width: "90%",
+                }}
+              >
+                {/* First Name */}
                 <FormControl
                   sx={{
                     width: "90%",
+                    marginY: "15px",
+                  }}
+                >
+                  <InputLabel
+                    htmlFor="username"
+                    color="grey"
+                    sx={{
+                      fontSize: "20px",
+                    }}
+                  >
+                    First Name
+                  </InputLabel>
+                  <Input
+                    id="name"
+                    color="grey"
+                    type="text"
+                    aria-describedby="my-helper-text"
+                    sx={{
+                      fontSize: "20px",
+                      marginLeft: "15px",
+                    }}
+                    value={firstName}
+                    onChange={(e) => setFirstname(e.target.value)}
+                  />
+                  <FormHelperText id="my-helper-text" sx={{}}>
+                    Enter username
+                  </FormHelperText>
+                </FormControl>
+
+                {/* Last Name */}
+                <FormControl
+                  sx={{
+                    width: "90%",
+                    marginY: "15px",
+                  }}
+                >
+                  <InputLabel
+                    htmlFor="username"
+                    color="grey"
+                    sx={{
+                      fontSize: "20px",
+                    }}
+                  >
+                    Last Name
+                  </InputLabel>
+                  <Input
+                    id="price"
+                    color="grey"
+                    type="text"
+                    aria-describedby="my-helper-text"
+                    sx={{
+                      fontSize: "20px",
+                      marginLeft: "15px",
+                    }}
+                    value={lastName}
+                    onChange={(e) => setLastname(e.target.value)}
+                  />
+                  <FormHelperText id="my-helper-text" sx={{}}>
+                    Enter user password
+                  </FormHelperText>
+                </FormControl>
+              </Box>
+              <Box
+                sx={{
+                  display: "inline-flex",
+                  width: "90%",
+                }}
+              >
+                {/* Email */}
+                <FormControl
+                  sx={{
+                    width: "100%",
                     marginY: "15px",
                   }}
                 >

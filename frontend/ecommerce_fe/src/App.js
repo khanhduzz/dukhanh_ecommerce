@@ -13,6 +13,10 @@ import AdminAddUser from "./pages/AdminAddUser.js";
 import AdminAddCategory from "./pages/AdminAddCategory.js";
 import AdminAllCategories from "./pages/AdminAllCategories.js";
 import Admin from "./pages/Admin.js";
+import ProductsAll from "./pages/ProductsAll.js";
+import ProductDetail from "./pages/ProductDetail.js";
+import AboutUs from "./pages/AboutUs.js";
+import CartPage from "./pages/CartPage.js";
 
 import { createTheme } from "@mui/material";
 import { ThemeProvider } from "@emotion/react";
@@ -60,6 +64,10 @@ function App() {
             <Route path="/signin" element={<UserSignIn />} />
             <Route path="/signup" element={<UserSignUp />} />
             <Route path="/error" element={<Error />} />
+            <Route path="/products" element={<ProductsAll />} />
+            <Route path="/products/detail" element={<ProductDetail />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/about" element={<AboutUs />} />
           </Routes>
         </BrowserRouter>
       </div>

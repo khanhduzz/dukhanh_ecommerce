@@ -77,12 +77,12 @@ const AdminAddCategory = () => {
       <Navbar />
       <Box>
         <Typography
-          variant="h1"
+          variant="h2"
           sx={{
             display: "flex",
             justifyContent: "center",
             color: "secondary.main",
-            marginY: 5,
+            marginY: 2,
           }}
         >
           Add new category
@@ -111,7 +111,7 @@ const AdminAddCategory = () => {
                 marginX: "20px",
               }}
             >
-              <Typography
+              {/* <Typography
                 variant="h4"
                 sx={{
                   display: "flex",
@@ -120,7 +120,7 @@ const AdminAddCategory = () => {
                 }}
               >
                 Category information
-              </Typography>
+              </Typography> */}
               {/* Name */}
               <FormControl
                 sx={{

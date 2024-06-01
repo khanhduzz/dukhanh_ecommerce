@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import "../App.css";
 import Navbar from "../components/Navbar";
 import Grid from "@mui/material/Grid";
-import { Button } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import axios from "axios";
 import Typography from "@mui/material/Typography";
 import {
@@ -60,6 +60,8 @@ const AdminUserDetail = () => {
 
   // PREPARE FOR USER
   const [username, setUsername] = useState("");
+  const [firstName, setFirstname] = useState("");
+  const [lastName, setLastname] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [image, setImage] = useState("");
@@ -67,15 +69,17 @@ const AdminUserDetail = () => {
 
   // ADD USER WITH IMAGES (FOR LATER)
   const updateUser = async (output) => {
-    console.log(output.data[0]);
+    console.log(output);
     try {
       const respone = await axios.put(
         `http://localhost:8080/api/users/${userId}`,
         {
           username: username,
           password: password,
+          firstName: firstName,
+          lastName: lastName,
           email: email,
-          image: output.data[0],
+          image: output,
         },
         {
           headers: {
@@ -119,9 +123,13 @@ const AdminUserDetail = () => {
         },
       })
       .then((response) => {
-        console.log(response);
-        updateUser(response);
-        setImage(response.data[0]);
+        // console.log(response);
+        if (typeof response.data !== "undefined") {
+          updateUser(response.data[0]);
+          setImage(response.data[0]);
+        } else {
+          updateUser(image);
+        }
       })
       .catch((error) => {
         navigate("/error", {
@@ -173,7 +181,7 @@ const AdminUserDetail = () => {
                     marginX: "20px",
                   }}
                 >
-                  <Typography
+                  {/* <Typography
                     variant="h4"
                     sx={{
                       display: "flex",
@@ -182,7 +190,7 @@ const AdminUserDetail = () => {
                     }}
                   >
                     User information
-                  </Typography>
+                  </Typography> */}
                   {/* Name + Password */}
                   <Box
                     sx={{
@@ -288,6 +296,78 @@ const AdminUserDetail = () => {
                   More information
                 </FormHelperText>
               </FormControl> */}
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "inline-flex",
+                      width: "90%",
+                    }}
+                  >
+                    {/* First Name */}
+                    <FormControl
+                      sx={{
+                        width: "90%",
+                        marginY: "15px",
+                      }}
+                    >
+                      <InputLabel
+                        htmlFor="username"
+                        color="grey"
+                        sx={{
+                          fontSize: "20px",
+                        }}
+                      >
+                        {user.firstName}
+                      </InputLabel>
+                      <Input
+                        id="name"
+                        color="grey"
+                        type="text"
+                        aria-describedby="my-helper-text"
+                        sx={{
+                          fontSize: "20px",
+                          marginLeft: "15px",
+                        }}
+                        defaultValue={user.firstName}
+                        onChange={(e) => setFirstname(e.target.value)}
+                      />
+                      <FormHelperText id="my-helper-text" sx={{}}>
+                        Enter First Name
+                      </FormHelperText>
+                    </FormControl>
+
+                    {/* Last name */}
+                    <FormControl
+                      sx={{
+                        width: "90%",
+                        marginY: "15px",
+                      }}
+                    >
+                      <InputLabel
+                        htmlFor="username"
+                        color="grey"
+                        sx={{
+                          fontSize: "20px",
+                        }}
+                      >
+                        {user.lastName}
+                      </InputLabel>
+                      <Input
+                        id="password"
+                        color="grey"
+                        type="text"
+                        aria-describedby="my-helper-text"
+                        sx={{
+                          fontSize: "20px",
+                          marginLeft: "15px",
+                        }}
+                        defaultValue={user.lastName}
+                        onChange={(e) => setLastname(e.target.value)}
+                      />
+                      <FormHelperText id="my-helper-text" sx={{}}>
+                        Enter password
+                      </FormHelperText>
+                    </FormControl>
                   </Box>
 
                   {/* EMAIL */}

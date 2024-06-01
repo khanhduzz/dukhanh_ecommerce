@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import "../App.css";
 import Navbar from "../components/Navbar";
-import { styled } from "@mui/material/styles";
+import { hexToRgb, styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import { Button, Hidden } from "@mui/material";
@@ -139,12 +139,12 @@ const AdminAllProducts = () => {
       <Navbar />
       <Box>
         <Typography
-          variant="h1"
+          variant="h2"
           sx={{
             display: "flex",
             justifyContent: "center",
             color: "secondary.main",
-            marginY: 5,
+            marginY: 2,
           }}
         >
           All products
@@ -169,9 +169,16 @@ const AdminAllProducts = () => {
                     <StyledTableCell>Product</StyledTableCell>
                     <StyledTableCell align="center">Price</StyledTableCell>
                     <StyledTableCell align="center">Rating</StyledTableCell>
-                    <StyledTableCell align="center">
+                    <StyledTableCell align="center">Featured</StyledTableCell>
+                    <StyledTableCell
+                      align="center"
+                      sx={{
+                        width: "300px",
+                      }}
+                    >
                       Description
                     </StyledTableCell>
+                    <StyledTableCell align="center">Image</StyledTableCell>
                     <StyledTableCell align="center">Manage</StyledTableCell>
                   </TableRow>
                 </TableHead>
@@ -179,7 +186,13 @@ const AdminAllProducts = () => {
                   {products.map((product) => {
                     return (
                       <StyledTableRow key={product.name}>
-                        <StyledTableCell component="th" scope="row">
+                        <StyledTableCell
+                          component="th"
+                          scope="row"
+                          sx={{
+                            minWidth: "100px",
+                          }}
+                        >
                           {product.name}
                         </StyledTableCell>
                         <StyledTableCell align="right">
@@ -188,36 +201,69 @@ const AdminAllProducts = () => {
                         <StyledTableCell align="center">
                           {product.rating}
                         </StyledTableCell>
-                        <StyledTableCell align="left">
-                          {product.description}
+                        <StyledTableCell align="center">
+                          {product.featured}
                         </StyledTableCell>
                         <StyledTableCell
-                          align="center"
+                          align="left"
                           sx={{
-                            display: "inline-flex",
-                            flexWrap: "wrap",
-                            gap: 1,
-                            alignItems: "center",
-                            justifyContent: "center",
+                            width: "300px",
+                            height: "100px",
+                            overflow: "auto",
                           }}
                         >
-                          <Button
-                            variant="outlined"
-                            color="success"
-                            sx={{ p: 0.3, borderRadius: 5, marginRight: 1 }}
-                            onClick={() => productDetail(product.id)}
+                          {product.description.substring(0, 40)}...
+                        </StyledTableCell>
+                        <StyledTableCell
+                          align="left"
+                          sx={{
+                            Width: "150px",
+                            Height: "100px",
+                            overflow: "auto",
+                          }}
+                        >
+                          <img
+                            src={
+                              product.image
+                                ? `http://localhost:8080/api/images/${product.image[0]}`
+                                : ""
+                            }
+                            alt={product.image ? "" : "No image"}
+                            style={{
+                              width: "150px",
+                              height: "100px",
+                              objectFit: "cover",
+                            }}
+                          />
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          <Box
+                            sx={{
+                              display: "flex",
+                              gap: 1,
+                            }}
                           >
-                            Detail
-                          </Button>
-                          <Button
-                            variant="outlined"
-                            color="error"
-                            sx={{ p: 0.3, borderRadius: 5 }}
-                            value={product.id}
-                            onClick={(event) => deleteProduct(event)}
-                          >
-                            Delete
-                          </Button>
+                            <Button
+                              variant="outlined"
+                              color="success"
+                              sx={{
+                                p: 0.3,
+                                borderRadius: 5,
+                              }}
+                              onClick={() => productDetail(product.id)}
+                            >
+                              Detail
+                            </Button>
+                            <Button
+                              variant="outlined"
+                              color="error"
+                              sx={{ p: 0.3, borderRadius: 5 }}
+                              value={product.id}
+                              onClick={(event) => deleteProduct(event)}
+                            >
+                              Delete
+                            </Button>
+                          </Box>
                         </StyledTableCell>
                       </StyledTableRow>
                     );
@@ -252,6 +298,7 @@ const AdminAllProducts = () => {
               >
                 <MenuItem value={"name"}>Name</MenuItem>
                 <MenuItem value={"price"}>Price</MenuItem>
+                <MenuItem value={"featured"}>Featured</MenuItem>
               </Select>
             </FormControl>
             <FormControl

@@ -141,12 +141,12 @@ const AdminAllUsers = () => {
       <Navbar />
       <Box>
         <Typography
-          variant="h1"
+          variant="h2"
           sx={{
             display: "flex",
             justifyContent: "center",
             color: "secondary.main",
-            marginY: 5,
+            marginY: 2,
           }}
         >
           All users
@@ -169,9 +169,11 @@ const AdminAllUsers = () => {
                 <TableHead>
                   <TableRow>
                     <StyledTableCell>Username</StyledTableCell>
+                    <StyledTableCell align="center">First Name</StyledTableCell>
+                    <StyledTableCell align="center">Last Name</StyledTableCell>
                     <StyledTableCell align="center">Email</StyledTableCell>
                     <StyledTableCell align="center">Role</StyledTableCell>
-                    <StyledTableCell align="center"></StyledTableCell>
+                    <StyledTableCell align="center">Avatar</StyledTableCell>
                     <StyledTableCell align="center">Manage</StyledTableCell>
                   </TableRow>
                 </TableHead>
@@ -183,12 +185,36 @@ const AdminAllUsers = () => {
                           {user.username}
                         </StyledTableCell>
                         <StyledTableCell align="center">
+                          {user.firstName}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {user.lastName}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
                           {user.email}
                         </StyledTableCell>
                         <StyledTableCell align="center">
                           {user.authorities[0].authority.substring(5)}
+                          {user.authorities[1] &&
+                          typeof user.authorities[1].authority !== "undefined"
+                            ? ", " + user.authorities[1].authority.substring(5)
+                            : ""}
                         </StyledTableCell>
-                        <StyledTableCell align="left"></StyledTableCell>
+                        <StyledTableCell align="center">
+                          <img
+                            src={
+                              user.image
+                                ? `http://localhost:8080/api/images/${user.image}`
+                                : ""
+                            }
+                            alt={user.image ? "" : "No image"}
+                            style={{
+                              width: "100px",
+                              height: "100px",
+                              objectFit: "cover",
+                            }}
+                          />
+                        </StyledTableCell>
                         <StyledTableCell align="right">
                           {/* <Button
                             variant="outlined"
@@ -203,8 +229,6 @@ const AdminAllUsers = () => {
                             sx={{ p: 0.3, borderRadius: 5, marginRight: 1 }}
                           >
                             <Link
-                              // to={{ "/admin/product/": `${product.id}` }}
-                              // params={{ productId: `${product.id}` }}
                               onClick={() => userDetail(user.id)}
                               sx={{
                                 textDecoration: "none",

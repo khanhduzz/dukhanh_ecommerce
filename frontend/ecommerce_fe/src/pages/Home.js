@@ -1,9 +1,11 @@
-import React, { useEffect, Image } from "react";
+import React, { useEffect, Image, useState } from "react";
 import { useCookies } from "react-cookie";
-import Navbar from "../components/Navbar";
 import Nav from "../components/Nav";
 import home from "../static/home.jpeg";
-// import SectionDivider from "../components/SectionDivider";
+import Card from "../components/Card";
+import Card1 from "../components/Card1";
+import SignUpForm from "../components/SignUpForm";
+import Paragraph from "../components/Paragraph";
 import ProductCarousel from "../components/ProductCarousel";
 import {
   Paper,
@@ -13,6 +15,8 @@ import {
   useTheme,
   MobileStepper,
 } from "@mui/material";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [cookies, setCookie, removeCookie] = useCookies(
@@ -21,17 +25,33 @@ const Home = () => {
     ["userId"]
   );
 
-  const products = [
-    "https://ik.imagekit.io/theartling/prod/original_images/convergence.jpg?tr=w-950",
-    "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-    "https://t3.ftcdn.net/jpg/02/73/22/74/360_F_273227473_N0WRQuX3uZCJJxlHKYZF44uaJAkh2xLG.jpg",
-    "https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcGR2YW5nb2doLXNudmdyb2IuanBn.jpg",
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmux6GIrnnfLTzHX1lpRAl2TS5wH19PcYbopUtDs9Z0BLhKq2Nr9kbLSJcKp9BBkP6vFA&usqp=CAU",
-  ];
+  // GET ALL PRODUCTS
+  const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
+
+  function getProducts() {
+    axios
+      .get(`http://localhost:8080/api/products`)
+      .then((response) => {
+        setProducts(response.data);
+        console.log(response);
+      })
+      .catch((error) => {
+        navigate("/error", {
+          state: {
+            message: "Error when loading product",
+          },
+        });
+      });
+  }
+
+  useEffect(() => {
+    getProducts();
+  }, []);
 
   return (
     <div className="App">
-      <Nav />
+      <Nav />;
       <Box
         sx={{
           display: "flex",
@@ -40,6 +60,7 @@ const Home = () => {
           justifyContent: "space-between",
           width: "100%",
           height: "70vh",
+          marginTop: "20vh",
         }}
       >
         <Box
@@ -100,15 +121,85 @@ const Home = () => {
             height: "200px",
           }}
         ></Box>
+
+        {/* feature product */}
         <Box
+          className="sectionProduct"
           sx={{
-            height: "60vh",
+            height: "auto",
             width: "100%",
             backgroundColor: "#DBDFDF",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            paddingY: "40px",
           }}
         >
-          <Typography variant="h2">Feature Products</Typography>
+          <Typography
+            variant="h2"
+            sx={{
+              fontWeight: "500",
+              marginBottom: "40px",
+            }}
+          >
+            Feature Products
+          </Typography>
           <ProductCarousel products={products} />
+        </Box>
+
+        {/* list product */}
+        <Box
+          sx={{
+            height: "auto",
+            width: "100%",
+            backgroundColor: "#fff",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-around",
+            margin: "60px 40px",
+          }}
+        >
+          <Typography
+            variant="h2"
+            sx={{
+              fontWeight: "500",
+              marginBottom: "40px",
+            }}
+          >
+            Discover More
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              justifyContent: "space-around",
+              alignItems: "center",
+              gap: "20px",
+            }}
+          >
+            {products.map((product, index) => (
+              <Card1 product={product} />
+            ))}
+          </Box>
+        </Box>
+
+        {/* Sign up */}
+        <Box
+          sx={{
+            height: "auto",
+            width: "100%",
+            backgroundColor: "#DBDFDF",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            marginY: "40px",
+            padding: "40px",
+          }}
+        >
+          <SignUpForm />
+          <Paragraph />
         </Box>
       </Box>
     </div>

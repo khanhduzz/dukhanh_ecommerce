@@ -45,13 +45,22 @@ const AdminProductDetail = () => {
       });
       setCategories(respone.data);
     } catch (error) {
-      window.location.replace("/error");
+      navigate(-1, {
+        state: {
+          message:
+            "Error when getting information, check your connection or login again",
+        },
+      });
     }
   };
 
   const checkUser = async () => {
     if (typeof cookies.token === "undefined" || cookies.user === "user") {
-      navigate("/error");
+      navigate("/signin", {
+        state: {
+          message: "Do not change cookie information, please login again",
+        },
+      });
     } else {
       getCategory();
     }
@@ -89,23 +98,42 @@ const AdminProductDetail = () => {
   };
 
   // GET PRODUCT INFORMATION
-  function getProduct() {
-    axios
-      .get(`http://localhost:8080/api/products/${productId}`)
-      .then((response) => {
-        console.log(response);
-        setProduct(response.data);
-        setImages(response.data.image);
-        setFeatured(response.data.featured);
-        setCategory(response.data.categories);
-      })
-      .catch((error) => {
-        navigate("/error", {
-          state: {
-            message: "Could not find product",
-          },
-        });
+  // function getProduct() {
+  //   axios
+  //     .get(`http://localhost:8080/api/products/${productId}`)
+  //     .then((response) => {
+  //       console.log(response);
+  //       setPreProduct(response.data);
+  //       setImages(response.data.image);
+  //       setFeatured(response.data.featured);
+  //       setCategory(response.data.categories);
+  //     })
+  //     .catch((error) => {
+  //       navigate("/error", {
+  //         state: {
+  //           message: "Could not find product",
+  //         },
+  //       });
+  //     });
+  // }
+
+  async function getProduct() {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/products/${productId}`
+      );
+      console.log(response);
+      setProduct(response.data);
+      setImages(response.data.image);
+      setFeatured(response.data.featured);
+      setCategory(response.data.categories);
+    } catch (error) {
+      navigate("/error", {
+        state: {
+          message: "Could not find product",
+        },
       });
+    }
   }
 
   useEffect(() => {
@@ -192,12 +220,12 @@ const AdminProductDetail = () => {
       <Navbar />
       <Box>
         <Typography
-          variant="h1"
+          variant="h2"
           sx={{
             display: "flex",
             justifyContent: "center",
             color: "secondary.main",
-            marginY: 5,
+            marginY: 2,
           }}
         >
           {product.name}
@@ -228,7 +256,7 @@ const AdminProductDetail = () => {
                     marginX: "20px",
                   }}
                 >
-                  <Typography
+                  {/* <Typography
                     variant="h4"
                     sx={{
                       display: "flex",
@@ -237,7 +265,7 @@ const AdminProductDetail = () => {
                     }}
                   >
                     Edit Product information
-                  </Typography>
+                  </Typography> */}
 
                   {/* NAME + PRICE */}
                   <Box
@@ -309,7 +337,7 @@ const AdminProductDetail = () => {
                         onChange={(e) => setPrice(e.target.value)}
                       />
                       <FormHelperText id="my-helper-text" sx={{}}>
-                        Enter product name
+                        Enter product price
                       </FormHelperText>
                     </FormControl>
 
@@ -430,7 +458,7 @@ const AdminProductDetail = () => {
                               style={{
                                 width: "150px",
                                 objectFit: "cover",
-                                height: "150px",
+                                height: "100px",
                               }}
                             />
                           ))
@@ -502,9 +530,12 @@ const AdminProductDetail = () => {
                       variant="contained"
                       color="error"
                       sx={{ padding: "10px 50px", borderRadius: 5 }}
+                      onClick={() => {
+                        navigate(-1);
+                      }}
                     >
                       <Link
-                        href="/admin"
+                        // href="/admin"
                         sx={{
                           textDecoration: "none",
                           color: "inherit",

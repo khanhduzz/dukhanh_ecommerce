@@ -86,16 +86,15 @@ const AdminTab = (props) => {
             color="success"
             fullWidth
             sx={{ p: 1.5, borderRadius: 2 }}
+            href="/admin/allusers"
           >
             <Link
-              href="/admin/allusers"
               sx={{
                 textDecoration: "none",
                 color: "inherit",
               }}
-            >
-              Show all users
-            </Link>
+            ></Link>
+            Show all users
           </Button>
         </Grid>
         <Grid xs={12}>
@@ -104,16 +103,15 @@ const AdminTab = (props) => {
             color="success"
             fullWidth
             sx={{ p: 1.5, borderRadius: 2 }}
+            href="/admin/allproducts"
           >
             <Link
-              href="/admin/allproducts"
               sx={{
                 textDecoration: "none",
                 color: "inherit",
               }}
-            >
-              Show all products
-            </Link>
+            ></Link>
+            Show all products
           </Button>
         </Grid>
         <Grid xs={12}>
@@ -122,16 +120,15 @@ const AdminTab = (props) => {
             color="success"
             fullWidth
             sx={{ p: 1.5, borderRadius: 2 }}
+            href="/admin/allcategories"
           >
             <Link
-              href="/admin/allcategories"
               sx={{
                 textDecoration: "none",
                 color: "inherit",
               }}
-            >
-              Show all categories
-            </Link>
+            ></Link>
+            Show all categories
           </Button>
         </Grid>
         {/* <Grid xs={12}>

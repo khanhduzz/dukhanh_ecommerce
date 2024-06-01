@@ -121,7 +121,7 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar position="static" color="secondary">
+    <AppBar position="static" color="success">
       <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
         <Alert
           onClose={handleClose}
@@ -232,18 +232,15 @@ function ResponsiveAppBar() {
                 ADMIN PAGE
               </Button>
               <Button
-                onClick={signUp}
+                href="/"
                 sx={{
                   fontSize: "14px",
                   fontWeight: 500,
                   textDecoration: "none",
                   color: "#fff",
-                  display: `${
-                    typeof cookies.token === "undefined" ? "block" : "none"
-                  }`,
                 }}
               >
-                Sign up
+                HOME page
               </Button>
               <Button
                 onClick={signOut}
@@ -253,7 +250,7 @@ function ResponsiveAppBar() {
                   textDecoration: "none",
                   color: "#fff",
                   display: `${
-                    typeof cookies.token === "undefined" ? "none" : "block"
+                    typeof cookies.token === "undefined" ? "none" : "none"
                   }`,
                 }}
               >
@@ -345,7 +342,7 @@ function ResponsiveAppBar() {
           >
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="AdminD" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu

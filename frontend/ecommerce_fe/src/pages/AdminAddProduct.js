@@ -124,12 +124,13 @@ const AdminAllProducts = () => {
         },
       });
     } catch (error) {
-      navigate("/error", {
+      console.log(error.response.data.message);
+      navigate("/admin", {
         state: {
-          message: "Create failed",
+          message: error.response.data.message,
         },
       });
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -137,6 +138,7 @@ const AdminAllProducts = () => {
   function handleSubmitImage(event) {
     event.preventDefault();
     if (!file) {
+      addProduct(imageUrl);
       return;
     }
 
@@ -170,12 +172,12 @@ const AdminAllProducts = () => {
       <Navbar />
       <Box>
         <Typography
-          variant="h1"
+          variant="h2"
           sx={{
             display: "flex",
             justifyContent: "center",
             color: "secondary.main",
-            marginY: 5,
+            marginY: 2,
           }}
         >
           Add new product
@@ -204,7 +206,7 @@ const AdminAllProducts = () => {
                 marginX: "20px",
               }}
             >
-              <Typography
+              {/* <Typography
                 variant="h4"
                 sx={{
                   display: "flex",
@@ -213,7 +215,7 @@ const AdminAllProducts = () => {
                 }}
               >
                 Product information
-              </Typography>
+              </Typography> */}
               {/* Name + Price */}
               <Box
                 sx={{
