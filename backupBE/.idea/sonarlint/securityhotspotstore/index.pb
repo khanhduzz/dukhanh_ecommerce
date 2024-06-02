@@ -97,3 +97,5 @@ h
 8src/main/java/nashtech/khanhdu/backend/dto/OrderDto.java,d/2/d2594169974fe44d0a90162c99f8771b489bcaf7
 z
 Jsrc/main/java/nashtech/khanhdu/backend/services/impl/OrderServiceImpl.java,5/a/5a9d3e63edbe7ecc258ab0d23d7f7ea1bdfd85cd
+z
+Jsrc/main/java/nashtech/khanhdu/backend/services/ProductSpecifications.java,c/9/c91e8cc94e4b94ed0327686418aee5bc508aa87a

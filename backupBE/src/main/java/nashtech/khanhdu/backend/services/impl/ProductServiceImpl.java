@@ -10,14 +10,12 @@ import nashtech.khanhdu.backend.exceptions.ProductNotFoundException;
 import nashtech.khanhdu.backend.exceptions.SearchingContentIsNotValid;
 import nashtech.khanhdu.backend.mapper.ProductMapper;
 import nashtech.khanhdu.backend.repositories.ProductRepository;
-import nashtech.khanhdu.backend.services.CategoryService;
-import nashtech.khanhdu.backend.services.OrderService;
-import nashtech.khanhdu.backend.services.ProductService;
-import nashtech.khanhdu.backend.services.RatingService;
+import nashtech.khanhdu.backend.services.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -156,6 +154,33 @@ public class ProductServiceImpl implements ProductService {
             sorted = PageRequest.of(page1,number1, Sort.by(sortedBy).descending());
         }
         return productRepository.findAll(sorted);
+    }
+
+    @Override
+    public Page<Product> findProducts(String name, Integer feature, Double minPrice, Double maxPrice, Pageable pageable) {
+//        return productRepository.findAll(
+//                Specification.where(ProductSpecifications.hasName(name))
+//                        .and(ProductSpecifications.isFeatured(feature))
+//                        .and(ProductSpecifications.hasPriceAbove(higherPrice))
+//                        .and(ProductSpecifications.hasPriceBelow(lowerPrice)),
+//                pageable
+//        );
+        Specification<Product> spec = Specification.where(null);
+
+        if (name != null && !name.isEmpty()) {
+            spec = spec.and(ProductSpecifications.hasName(name));
+        }
+        if (feature != null) {
+            spec = spec.and(ProductSpecifications.isFeatured(feature));
+        }
+        if (minPrice != null) {
+            spec = spec.and(ProductSpecifications.hasPriceAbove(minPrice));
+        }
+        if (maxPrice != null) {
+            spec = spec.and(ProductSpecifications.hasPriceBelow(maxPrice));
+        }
+
+        return productRepository.findAll(spec, pageable);
     }
 
 

@@ -1,21 +1,21 @@
 package nashtech.khanhdu.backend;
 
-import nashtech.khanhdu.backend.dto.SignUpDto;
-import nashtech.khanhdu.backend.entities.Role;
-import nashtech.khanhdu.backend.repositories.RoleRepository;
-import nashtech.khanhdu.backend.services.UserService;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
+//import nashtech.khanhdu.backend.dto.SignUpDto;
+//import nashtech.khanhdu.backend.entities.Role;
+//import nashtech.khanhdu.backend.repositories.RoleRepository;
+//import nashtech.khanhdu.backend.services.UserService;
+//import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.boot.CommandLineRunner;
+//import org.springframework.context.annotation.Bean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+//import java.util.HashSet;
+//import java.util.List;
+//import java.util.Set;
 
 @SpringBootApplication
 @EnableJpaAuditing

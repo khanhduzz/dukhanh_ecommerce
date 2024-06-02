@@ -9,12 +9,17 @@ import nashtech.khanhdu.backend.exceptions.CategoryNotFoundException;
 import nashtech.khanhdu.backend.exceptions.ProductAlreadyExistsException;
 import nashtech.khanhdu.backend.exceptions.ProductNotFoundException;
 import nashtech.khanhdu.backend.services.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -109,5 +114,41 @@ public class ProductController {
                                                    @PathVariable("sortedBy") String sortedBy,
                                                    @PathVariable("direction") Integer direction) {
         return productService.getAllProductsSortedParam(page, number, sortedBy, direction);
+    }
+
+    @GetMapping("/all")
+//    public ResponseEntity<Page<Product>> getProducts(
+//            @RequestParam(required = false) String name,
+//            @RequestParam(required = false) Integer featured,
+//            @RequestParam(required = false) Double minPrice,
+//            @RequestParam(required = false) Double maxPrice,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "5") int size,
+//            @RequestParam(defaultValue = "asc") String sort
+//    ) {
+//
+//        Sort orders = Sort.by(Sort.Direction.ASC, "id");
+//
+//        Page<Product> products = productService.findProducts(name, featured, minPrice, maxPrice, PageRequest.of(page, size, orders));
+//        return new ResponseEntity<>(products, HttpStatus.OK);
+//    }
+
+    public ResponseEntity<Page<Product>> getProducts(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Integer featured,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(required = false, value = "sort", defaultValue = "asc") String sort
+    ) {
+
+        Sort orders = Sort.by(sort.equalsIgnoreCase("desc")
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC,
+                "price");
+
+        Page<Product> products = productService.findProducts(name, featured, minPrice, maxPrice, PageRequest.of(page, size, orders));
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 }

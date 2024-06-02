@@ -1,22 +1,4 @@
 
-X	java:S125"<This block of commented-out lines of code should be removed.(ùß–´8“üŞêü1
-e
-java:S1128"CRemove this unused import 'nashtech.khanhdu.backend.dto.SignUpDto'.(¶Ìÿÿÿÿÿ8–üŞêü1
-`
-java:S1128"CRemove this unused import 'nashtech.khanhdu.backend.entities.Role'.(ùÃà«8—üŞêü1
-s
-java:S1128"QRemove this unused import 'nashtech.khanhdu.backend.repositories.RoleRepository'.(Á¯¢€ıÿÿÿÿ8—üŞêü1
-f
-java:S1128"JRemove this unused import 'nashtech.khanhdu.backend.services.UserService'.(òËË 8—üŞêü1
-l
-java:S1128"ORemove this unused import 'org.springframework.beans.factory.annotation.Value'.(ìø›8—üŞêü1
-d
-java:S1128"GRemove this unused import 'org.springframework.boot.CommandLineRunner'.(È—ÿÅ8—üŞêü1
-e
-java:S1128"HRemove this unused import 'org.springframework.context.annotation.Bean'.(‚î‰Ş8—üŞêü1
-J
-java:S1128".Remove this unused import 'java.util.HashSet'.(Ê‚êX8—üŞêü1
-M
-java:S1128"+Remove this unused import 'java.util.List'.(Õë±Äøÿÿÿÿ8—üŞêü1
-L
-java:S1128"*Remove this unused import 'java.util.Set'.(ö²„¤şÿÿÿÿ8—üŞêü1
+ƒ	java:S125"<This block of commented-out lines of code should be removed.(øø¬ÿÿÿÿÿ8ÚˆÏı1J$95e28df4-5101-40a2-b5c8-bb6be588be63
+ƒ	java:S125"<This block of commented-out lines of code should be removed.(´íÌ©ıÿÿÿÿ8à£Ïı1J$98dec9df-5ae7-4457-9c2a-48546682486b
+~	java:S125"<This block of commented-out lines of code should be removed.(ùß–´8“üŞêü1J$cbcd6505-5ce8-426f-b011-6e1b3b303841
