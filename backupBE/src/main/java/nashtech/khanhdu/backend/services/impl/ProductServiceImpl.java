@@ -157,7 +157,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> findProducts(String name, Integer feature, Double minPrice, Double maxPrice, Pageable pageable) {
+    public Page<Product> findProducts(String name, Integer feature, Double minPrice, Double maxPrice, String category, Pageable pageable) {
 //        return productRepository.findAll(
 //                Specification.where(ProductSpecifications.hasName(name))
 //                        .and(ProductSpecifications.isFeatured(feature))
@@ -178,6 +178,9 @@ public class ProductServiceImpl implements ProductService {
         }
         if (maxPrice != null) {
             spec = spec.and(ProductSpecifications.hasPriceBelow(maxPrice));
+        }
+        if (category != null && !category.isEmpty()) {
+            spec = spec.and(ProductSpecifications.hasCategory(category));
         }
 
         return productRepository.findAll(spec, pageable);

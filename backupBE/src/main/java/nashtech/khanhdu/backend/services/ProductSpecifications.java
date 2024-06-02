@@ -1,5 +1,7 @@
 package nashtech.khanhdu.backend.services;
 
+import jakarta.persistence.criteria.Join;
+import nashtech.khanhdu.backend.entities.Category;
 import nashtech.khanhdu.backend.entities.Product;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -19,5 +21,12 @@ public class ProductSpecifications {
 
     public static Specification<Product> hasPriceBelow (Double maxPrice) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.lessThanOrEqualTo(root.get("price"), maxPrice);
+    }
+
+    public static Specification<Product> hasCategory(String category) {
+        return (root, query, criteriaBuilder) -> {
+            Join<Product, Category> categoriesJoin = root.join("categories");
+            return criteriaBuilder.equal(categoriesJoin.get("name"), category);
+        };
     }
 }

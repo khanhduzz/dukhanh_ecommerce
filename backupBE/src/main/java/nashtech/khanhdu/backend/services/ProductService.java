@@ -30,5 +30,5 @@ public interface ProductService {
 
     Page<Product> getAllProductsSortedParam(Integer page, Integer number, String sortedBy, Integer direction);
 
-    Page<Product> findProducts (String name, Integer feature, Double higherPrice, Double lowerPrice, Pageable pageable) ;
+    Page<Product> findProducts (String name, Integer feature, Double higherPrice, Double lowerPrice, String category, Pageable pageable) ;
 }

@@ -73,6 +73,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{userId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public User getUserById(@PathVariable("userId") Long userId) {
         return userService.getUserById(userId);
     }

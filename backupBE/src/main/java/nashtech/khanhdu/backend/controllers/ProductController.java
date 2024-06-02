@@ -59,10 +59,10 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    @GetMapping()
-    public List<Product> getAllProducts () {
-        return productService.getAllProducts();
-    }
+//    @GetMapping()
+//    public List<Product> getAllProducts () {
+//        return productService.getAllProducts();
+//    }
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
@@ -116,7 +116,7 @@ public class ProductController {
         return productService.getAllProductsSortedParam(page, number, sortedBy, direction);
     }
 
-    @GetMapping("/all")
+    @GetMapping()
 //    public ResponseEntity<Page<Product>> getProducts(
 //            @RequestParam(required = false) String name,
 //            @RequestParam(required = false) Integer featured,
@@ -135,11 +135,12 @@ public class ProductController {
 
     public ResponseEntity<Page<Product>> getProducts(
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) Integer featured,
+            @RequestParam(required = false) Integer feature,
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) String category,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false, value = "sort", defaultValue = "asc") String sort
     ) {
 
@@ -148,7 +149,7 @@ public class ProductController {
                 : Sort.Direction.ASC,
                 "price");
 
-        Page<Product> products = productService.findProducts(name, featured, minPrice, maxPrice, PageRequest.of(page, size, orders));
+        Page<Product> products = productService.findProducts(name, feature, minPrice, maxPrice, category, PageRequest.of(page, size, orders));
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 }
