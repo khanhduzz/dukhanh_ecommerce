@@ -1,15 +1,61 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Typography, Box, Hidden, Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Link as RouterLink } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { dark } from "@mui/material/styles/createPalette";
 
-const Nav = () => {
+const Nav = ({}) => {
   const [scrollY, setScrollY] = useState(0);
+  const [cookies, setCookie] = useCookies(["token"]);
+  const navigate = useNavigate();
 
   const handleScroll = () => {
     setScrollY(window.scrollY);
   };
+
+  // // GET USER INFOR
+  // const getUserInformation = async () => {
+  //   if (typeof cookies.token === "undefined") {
+  //     return;
+  //   }
+  //   const response = await axios
+  //     .get(`http://localhost:8080/api/me`, {
+  //       headers: {
+  //         Authorization: "Bearer " + cookies.token,
+  //       },
+  //     })
+  //     .catch((error) => {
+  //       navigate("/error", {
+  //         state: {
+  //           message: "Error",
+  //         },
+  //       });
+  //     });
+  //   let info = response.data.split(" ");
+  //   let res = info[1].trim();
+  //   getUser(res);
+  // };
+
+  // const getUser = async (res) => {
+  //   const response = await axios
+  //     .get(`http://localhost:8080/api/users/${res}`, {
+  //       headers: {
+  //         Authorization: "Bearer " + cookies.token,
+  //       },
+  //     })
+  //     .catch((error) => {
+  //       navigate("/error", {
+  //         state: {
+  //           message: "Error",
+  //         },
+  //       });
+  //     });
+  //   sendData(response);
+  // };
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -54,7 +100,7 @@ const Nav = () => {
         padding: "10px",
         justifyContent: "space-between",
         opacity: "0.9",
-        // marginX: "40px",
+        // marginX: "20px",
       }}
     >
       <Typography
@@ -116,9 +162,6 @@ const Nav = () => {
               collection
             </Button>
           </Box>
-          <Box>sign in</Box>
-          <Box>sign up</Box>
-          <Box>sign out</Box>
           <Box>
             <Button
               component={RouterLink}
@@ -131,7 +174,67 @@ const Nav = () => {
               about us
             </Button>
           </Box>
-          <Box>
+          <Box
+            sx={{
+              display: `${
+                typeof cookies["token"] !== "undefined" ? "none" : "block"
+              }`,
+            }}
+          >
+            <Button
+              component={RouterLink}
+              to="/signin"
+              sx={{
+                textDecoration: "none",
+                color: "#000",
+              }}
+            >
+              sign in
+            </Button>
+          </Box>
+          <Box
+            sx={{
+              display: `${
+                typeof cookies["token"] !== "undefined" ? "none" : "block"
+              }`,
+            }}
+          >
+            <Button
+              component={RouterLink}
+              to="/signup"
+              sx={{
+                textDecoration: "none",
+                color: "#000",
+              }}
+            >
+              sign up
+            </Button>
+          </Box>
+          <Box
+            sx={{
+              display: `${
+                typeof cookies["token"] === "undefined" ? "none" : "block"
+              }`,
+            }}
+          >
+            <Button
+              component={RouterLink}
+              to="/signin"
+              sx={{
+                textDecoration: "none",
+                color: "#000",
+              }}
+            >
+              sign out
+            </Button>
+          </Box>
+          <Box
+            sx={{
+              display: `${
+                typeof cookies["token"] === "undefined" ? "none" : "block"
+              }`,
+            }}
+          >
             <Button
               component={RouterLink}
               to="/cart"

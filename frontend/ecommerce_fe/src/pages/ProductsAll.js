@@ -9,13 +9,15 @@ import { useNavigate } from "react-router-dom";
 const ProductPage = () => {
   // GET ALL PRODUCTS
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   function getProducts() {
     axios
       .get(`http://localhost:8080/api/products`)
       .then((response) => {
-        setProducts(response.data);
+        setProducts(response.data.content);
       })
       .catch((error) => {
         navigate("/error", {
@@ -26,9 +28,27 @@ const ProductPage = () => {
       });
   }
 
+  // GET CATEGORIES
+  function getCategories() {
+    axios
+      .get(`http://localhost:8080/api/categories`)
+      .then((response) => {
+        setCategories(response.data);
+      })
+      .catch((error) => {
+        navigate("/error", {
+          state: {
+            message: "Error when seaching category",
+          },
+        });
+      });
+  }
+
   useEffect(() => {
     getProducts();
+    getCategories();
   }, []);
+
   return (
     <div className="App">
       <Nav />
@@ -44,12 +64,12 @@ const ProductPage = () => {
         justifyContent="space-between"
       >
         <Grid item xs={2}>
-          <SearchForm />
+          <SearchForm categories={categories} />
         </Grid>
         <Grid item xs={9}>
           <Grid container spacing={2} gap={4} justifyContent="center">
             {products.map((product, index) => (
-              <Card1 product={product} />
+              <Card1 key={product.id} product={product} user={user} />
             ))}
           </Grid>
         </Grid>

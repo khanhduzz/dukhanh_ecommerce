@@ -8,6 +8,8 @@ import {
   Button,
   Grid,
   Typography,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 
 const SearchForm = ({ categories, onSearch }) => {
@@ -16,6 +18,7 @@ const SearchForm = ({ categories, onSearch }) => {
     selectedCategory: "",
     minPrice: "",
     maxPrice: "",
+    feature: 0,
   });
 
   const handleChange = (e) => {
@@ -61,10 +64,16 @@ const SearchForm = ({ categories, onSearch }) => {
           sm={6}
           md={3}
           sx={{
-            width: "95%",
+            width: "100%",
           }}
         >
-          <FormControl variant="outlined" fullWidth style={{ width: "100%" }}>
+          <FormControl
+            variant="outlined"
+            xs={12}
+            sm={6}
+            md={3}
+            style={{ width: "100%" }}
+          >
             <InputLabel>Select Category</InputLabel>
             <Select
               name="selectedCategory"
@@ -73,11 +82,11 @@ const SearchForm = ({ categories, onSearch }) => {
               label="Select Category"
             >
               <MenuItem value="">Select Categories</MenuItem>
-              {/* {categories.map((category) => (
+              {categories.map((category) => (
                 <MenuItem key={category.id} value={category.id}>
                   {category.name}
                 </MenuItem>
-              ))} */}
+              ))}
             </Select>
           </FormControl>
         </Grid>
@@ -103,6 +112,18 @@ const SearchForm = ({ categories, onSearch }) => {
             inputProps={{ step: "0.01", min: "0" }}
             // value={searchFilters.maxPrice}
             // onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                name="feature"
+                checked={searchFilters.feature === 1}
+                onChange={handleChange}
+              />
+            }
+            label="Feature product"
           />
         </Grid>
         <Grid item xs={12}>

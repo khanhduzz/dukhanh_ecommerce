@@ -14,7 +14,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Rating from "@mui/material/Rating";
 import { Button, Box, Chip } from "@mui/material";
 
-export default function ProductItemCard({ product }) {
+export default function ProductItemCard({ product, user }) {
   const [expanded, setExpanded] = React.useState(false);
   const [rating, setRating] = React.useState(4); // Default rating value
   const [isFavorite, setIsFavorite] = React.useState(false);
@@ -109,10 +109,24 @@ export default function ProductItemCard({ product }) {
         <Rating
           name="product-rating"
           defaultValue={product.rating}
+          disabled={!user}
           onChange={(event, newValue) => {
-            setRating(newValue);
+            if (user) {
+              setRating(newValue);
+            }
           }}
         />
+        <Button
+          variant="contained"
+          color="error"
+          onClick={() => (window.location.href = "/product-detail")}
+          sx={{
+            marginLeft: "auto",
+            display: `${user !== null ? "block" : "none"}`,
+          }}
+        >
+          Cart
+        </Button>
         <Button
           variant="outlined"
           color="success"

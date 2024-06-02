@@ -27,14 +27,36 @@ const Home = () => {
 
   // GET ALL PRODUCTS
   const [products, setProducts] = useState([]);
+  const [featureProducts, setFeatureProducts] = useState([]);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   function getProducts() {
     axios
       .get(`http://localhost:8080/api/products`)
       .then((response) => {
-        setProducts(response.data);
-        console.log(response);
+        setProducts(response.data.content);
+        // console.log(response);
+      })
+      .catch((error) => {
+        navigate("/error", {
+          state: {
+            message: "Error when loading product",
+          },
+        });
+      });
+  }
+
+  function getFeatures() {
+    axios
+      .get(`http://localhost:8080/api/products`, {
+        params: {
+          featured: 1,
+        },
+      })
+      .then((response) => {
+        setFeatureProducts(response.data.content);
+        // console.log(response);
       })
       .catch((error) => {
         navigate("/error", {
@@ -47,6 +69,7 @@ const Home = () => {
 
   useEffect(() => {
     getProducts();
+    getFeatures();
   }, []);
 
   return (
@@ -144,7 +167,7 @@ const Home = () => {
           >
             Feature Products
           </Typography>
-          <ProductCarousel products={products} />
+          <ProductCarousel products={featureProducts} />
         </Box>
 
         {/* list product */}
@@ -179,7 +202,7 @@ const Home = () => {
             }}
           >
             {products.map((product, index) => (
-              <Card1 product={product} />
+              <Card1 key={product.id} product={product} user={user} />
             ))}
           </Box>
         </Box>
