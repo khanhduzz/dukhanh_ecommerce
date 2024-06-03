@@ -4,14 +4,17 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { CookiesProvider } from "react-cookie";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <CookiesProvider>
-      <App />
-    </CookiesProvider>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <CookiesProvider>
+    <App />
+    <ToastContainer />
+  </CookiesProvider>
+  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

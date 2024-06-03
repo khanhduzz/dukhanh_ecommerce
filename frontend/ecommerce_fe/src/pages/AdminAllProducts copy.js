@@ -14,7 +14,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
 import Typography from "@mui/material/Typography";
-import SearchForm from "../components/SearchForm";
 import {
   Pagination,
   CircularProgress,
@@ -55,61 +54,45 @@ const AdminAllProducts = () => {
   // PAGINATION
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [categories, setCategories] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+  const [sortedBy, setSortedBy] = useState("name"); // Sorting field
+  const [direction, setDirection] = useState(-1); // Sorting direction
 
-  // GET CATEGORIES
-  function getCategories() {
-    axios
-      .get(`http://localhost:8080/api/categories`)
-      .then((response) => {
-        setCategories(response.data);
-      })
-      .catch((error) => {
-        navigate("/error", {
-          state: {
-            message: "Error when seaching category",
-          },
-        });
-      });
-  }
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      console.log("it run");
+      const getData = async () => {
+        const response = await axios.get(
+          `http://localhost:8080/api/products/page/${page}/4/${sortedBy}/${direction}`
+        );
+        console.log(response.data.content);
+        setProducts(response.data.content);
+        setTotalPages(response.data.totalPages);
+      };
+      getData();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [page, sortedBy, direction]);
 
   const handlePageChange = (event, value) => {
     setPage(value - 1);
   };
 
-  // GET PRODUCT WITH FILTER
-  function getFilterProducts(filtersToSubmit) {
-    setLoading(true);
-    axios
-      .get(`http://localhost:8080/api/products`, {
-        params: { ...filtersToSubmit, page: page },
-      })
-      .then((response) => {
-        setProducts(response.data.content);
-        setTotalPages(response.data.totalPages);
-        console.log(response);
-      })
-      .catch((error) => {
-        navigate("/", {
-          state: {
-            message: "Error when filter product",
-          },
-        });
-      });
-    setLoading(false);
-  }
+  const handleSortChange = (event) => {
+    setSortedBy(event.target.value);
+  };
 
-  useEffect(() => {
-    getCategories();
-    getFilterProducts();
-  }, [page]);
-
-  function handleSeach(filtersToSubmit) {
-    getFilterProducts(filtersToSubmit);
-  }
-
+  const handleDirectionChange = (event) => {
+    setDirection(event.target.value);
+  };
   // END PAGING
 
   // GO TO PRODUCT DETAIL
@@ -178,7 +161,7 @@ const AdminAllProducts = () => {
       >
         <Grid container spacing={2} columns={16}>
           <AdminTab val="allproducts" />
-          <Grid item xs={14}>
+          <Grid item xs={12}>
             <TableContainer sx={{ borderRadius: 2, maxHeight: "60vh" }}>
               <Table sx={{ minWidth: 700 }} aria-label="customized table">
                 <TableHead>
@@ -213,10 +196,7 @@ const AdminAllProducts = () => {
                           {product.name}
                         </StyledTableCell>
                         <StyledTableCell align="right">
-                          {new Intl.NumberFormat("en-US", {
-                            style: "currency",
-                            currency: "USD",
-                          }).format(product.price)}
+                          {product.price * 1000} VND
                         </StyledTableCell>
                         <StyledTableCell align="center">
                           {product.rating}
@@ -292,13 +272,58 @@ const AdminAllProducts = () => {
               </Table>
             </TableContainer>
           </Grid>
-          {/* <Grid item xs={2} sx={{ marginTop: "20px" }}>
-            <Grid container>
-              <Grid item xs={4}>
-                <SearchForm categories={categories} onSearch={handleSeach} />
-              </Grid>
-            </Grid>
-          </Grid> */}
+          <Grid xs={2} sx={{ marginTop: "20px" }}>
+            <FormControl
+              sx={{
+                marginBottom: 3,
+                width: "120px",
+                marginLeft: 2,
+              }}
+              color="success"
+            >
+              <InputLabel
+                color="success"
+                sx={{
+                  fontSize: "16px",
+                }}
+              >
+                Sort By
+              </InputLabel>
+              <Select
+                value={sortedBy}
+                onChange={handleSortChange}
+                sx={{
+                  marginTop: "10px",
+                }}
+              >
+                <MenuItem value={"name"}>Name</MenuItem>
+                <MenuItem value={"price"}>Price</MenuItem>
+                <MenuItem value={"featured"}>Featured</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl
+              sx={{ marginBottom: 3, width: "120px", marginLeft: 2 }}
+            >
+              <InputLabel
+                color="success"
+                sx={{
+                  fontSize: "16px",
+                }}
+              >
+                Direction
+              </InputLabel>
+              <Select
+                value={direction}
+                onChange={handleDirectionChange}
+                sx={{
+                  marginTop: "10px",
+                }}
+              >
+                <MenuItem value={-1}>Ascending</MenuItem>
+                <MenuItem value={1}>Descending</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
           {/* <FormControl
               sx={{ marginBottom: 3, width: "120px", marginLeft: 2 }}
             >
@@ -322,14 +347,6 @@ const AdminAllProducts = () => {
               </Select>
             </FormControl> */}
         </Grid>
-        <Box
-          sx={{
-            width: "100px",
-            marginLeft: "2rem",
-          }}
-        >
-          <SearchForm categories={categories} onSearch={handleSeach} />
-        </Box>
       </Box>
       <Box
         sx={{

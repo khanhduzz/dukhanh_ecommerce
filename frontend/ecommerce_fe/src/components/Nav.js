@@ -1,18 +1,22 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Typography, Box, Hidden, Button } from "@mui/material";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
+import {
+  useMediaQuery,
+  Typography,
+  Box,
+  Hidden,
+  Button,
+  Badge,
+} from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { dark } from "@mui/material/styles/createPalette";
+import axios from "axios";
 
-const Nav = ({}) => {
+const Nav = ({ user }) => {
   const [scrollY, setScrollY] = useState(0);
-  const [cookies, setCookie] = useCookies(["token"]);
+  const [cookies] = useCookies(["token"]);
   const navigate = useNavigate();
-
   const handleScroll = () => {
     setScrollY(window.scrollY);
   };
@@ -81,6 +85,26 @@ const Nav = ({}) => {
 
   const theme = useTheme();
   const isMediumScreen = useMediaQuery(theme.breakpoints.down("xl"));
+
+  function signOut() {
+    const res = axios
+      .post(
+        "http://localhost:8080/api/auth/logout",
+        {},
+        {
+          headers: {
+            Authorization: "Bearer " + cookies.token,
+          },
+        }
+      )
+      .then(() => {
+        navigate("/signin", {
+          state: {
+            message: "Log out successfully",
+          },
+        });
+      });
+  }
 
   return (
     // <div className="App">
@@ -219,7 +243,7 @@ const Nav = ({}) => {
           >
             <Button
               component={RouterLink}
-              to="/signin"
+              onClick={() => signOut()}
               sx={{
                 textDecoration: "none",
                 color: "#000",
@@ -235,16 +259,32 @@ const Nav = ({}) => {
               }`,
             }}
           >
-            <Button
-              component={RouterLink}
-              to="/cart"
-              sx={{
-                textDecoration: "none",
-                color: "#000",
-              }}
-            >
-              cart
-            </Button>
+            {user && user.orders && user.orders.length > 0 ? (
+              <Badge badgeContent={user.orders.length} color="primary">
+                <Button
+                  variant="outlined"
+                  component={RouterLink}
+                  to="/cart"
+                  sx={{
+                    textDecoration: "none",
+                    color: "#000",
+                  }}
+                >
+                  Cart
+                </Button>
+              </Badge>
+            ) : (
+              <Button
+                component={RouterLink}
+                to="/cart"
+                sx={{
+                  textDecoration: "none",
+                  color: "#000",
+                }}
+              >
+                Cart
+              </Button>
+            )}
           </Box>
         </Box>
       </Hidden>

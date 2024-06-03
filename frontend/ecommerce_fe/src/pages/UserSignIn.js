@@ -55,7 +55,7 @@ const UserSignIn = () => {
           getUser(response.data.access_token);
         } else {
           removeCookie("token");
-          navigate("/signin", {
+          navigate("/", {
             state: {
               message: "Login failed",
             },
@@ -124,6 +124,9 @@ const UserSignIn = () => {
   };
 
   React.useEffect(() => {
+    removeCookie("token");
+    removeCookie("user");
+    removeCookie("userId");
     setOpen(state === null ? false : true);
   }, []);
 

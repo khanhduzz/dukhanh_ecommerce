@@ -16,6 +16,7 @@ import { useCookies } from "react-cookie";
 import { useLocation, useNavigate } from "react-router-dom";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import axios from "axios";
 
 const pages = ["Products", "Users", "Admin Page"];
 const settings = ["Profile", "Logout"];
@@ -29,11 +30,7 @@ function ResponsiveAppBar() {
 
   const navigate = useNavigate();
 
-  const [cookies, setCookie, removeCookie] = useCookies(
-    ["token"],
-    ["user"],
-    ["userId"]
-  );
+  const [cookies] = useCookies(["token"], ["user"], ["userId"]);
 
   function checkUser() {
     if (
@@ -71,10 +68,27 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
-  const signOut = () => {
-    removeCookie("token");
-    removeCookie("user");
-    removeCookie("userId");
+  function signOut() {
+    const res = axios
+      .post(
+        "http://localhost:8080/api/auth/logout",
+        {},
+        {
+          headers: {
+            Authorization: "Bearer " + cookies.token,
+          },
+        }
+      )
+      .then(() => {
+        navigate("/signin", {
+          state: {
+            message: "Log out successfully",
+          },
+        });
+      });
+  }
+
+  const signIn = () => {
     navigate("/signin", {
       state: {
         message: "Sign out successfully",
@@ -82,32 +96,12 @@ function ResponsiveAppBar() {
     });
   };
 
-  const signIn = () => {
-    removeCookie("token");
-    removeCookie("user");
-    removeCookie("userId");
-    navigate(
-      "/signin"
-      // , {
-      //   state: {
-      //     message: "Sign out successfully",
-      //   },
-      // }
-    );
-  };
-
   const signUp = () => {
-    removeCookie("token");
-    removeCookie("user");
-    removeCookie("userId");
-    navigate(
-      "/signup"
-      // , {
-      //   state: {
-      //     message: "Sign out successfully",
-      //   },
-      // }
-    );
+    navigate("/signup", {
+      state: {
+        message: "Sign out successfully",
+      },
+    });
   };
 
   // This for nofication

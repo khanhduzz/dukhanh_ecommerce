@@ -5,28 +5,53 @@ import React, { useEffect } from "react";
 import { Button, Link } from "@mui/material";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const AdminTab = (props) => {
   const navigate = useNavigate();
 
-  const [cookies, setCookie, removeCookie] = useCookies(
-    ["token"],
-    ["user"],
-    ["userId"]
-  );
+  const [cookies] = useCookies(["token"], ["user"], ["userId"]);
 
-  function checkUser() {
-    if (cookies["user"] !== "admin") {
-      navigate("/error", {
+  // function checkUser() {
+  //   if (cookies["user"] !== "admin") {
+  //     navigate("/error", {
+  //       state: {
+  //         message: "You are not allow to access here",
+  //       },
+  //     });
+  //   }
+  // }
+  // GET USER INFOR
+  const getUserInformation = async () => {
+    if (typeof cookies.token === "undefined") {
+      return;
+    }
+    const response = await axios
+      .get(`http://localhost:8080/api/me`, {
+        headers: {
+          Authorization: "Bearer " + cookies.token,
+        },
+      })
+      .catch((error) => {
+        navigate("/signin", {
+          state: {
+            message: "Do not change the cookies",
+          },
+        });
+      });
+    let info = response.data.split(" ");
+    let res = info[0].trim();
+    if (res !== "admin") {
+      navigate("/", {
         state: {
-          message: "You are not allow to access here",
+          message: "You are not allowed",
         },
       });
     }
-  }
+  };
 
   useEffect(() => {
-    checkUser();
+    getUserInformation();
   }, []);
 
   return (

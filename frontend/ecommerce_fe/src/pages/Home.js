@@ -1,42 +1,28 @@
-import React, { useEffect, Image, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import Nav from "../components/Nav";
 import home from "../static/home.jpeg";
-import Card from "../components/Card";
 import Card1 from "../components/Card1";
 import SignUpForm from "../components/SignUpForm";
 import Paragraph from "../components/Paragraph";
 import ProductCarousel from "../components/ProductCarousel";
-import {
-  Paper,
-  Box,
-  Typography,
-  Button,
-  useTheme,
-  MobileStepper,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const [cookies, setCookie, removeCookie] = useCookies(
-    ["token"],
-    ["user"],
-    ["userId"]
-  );
-
-  // GET ALL PRODUCTS
+  const [cookies] = useCookies(["token"], ["user"], ["userId"]);
   const [products, setProducts] = useState([]);
   const [featureProducts, setFeatureProducts] = useState([]);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
   const navigate = useNavigate();
 
+  // GET ALL PRODUCTS
   function getProducts() {
     axios
       .get(`http://localhost:8080/api/products`)
       .then((response) => {
         setProducts(response.data.content);
-        // console.log(response);
       })
       .catch((error) => {
         navigate("/error", {
@@ -56,7 +42,6 @@ const Home = () => {
       })
       .then((response) => {
         setFeatureProducts(response.data.content);
-        // console.log(response);
       })
       .catch((error) => {
         navigate("/error", {
@@ -67,14 +52,41 @@ const Home = () => {
       });
   }
 
+  // GET USER INFOR
+  const getUserInformation = async () => {
+    if (typeof cookies.token === "undefined") {
+      return;
+    }
+    const response = await axios
+      .get(`http://localhost:8080/api/me`, {
+        headers: {
+          Authorization: "Bearer " + cookies.token,
+        },
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    let info = response.data.split(" ");
+    let res = info[1].trim();
+
+    const re = await axios.get(`http://localhost:8080/api/users/${res}`, {
+      headers: {
+        Authorization: "Bearer " + cookies.token,
+      },
+    });
+    const { data } = re;
+    setUser({ ...data });
+  };
+
   useEffect(() => {
+    getUserInformation();
     getProducts();
     getFeatures();
   }, []);
 
   return (
     <div className="App">
-      <Nav />;
+      <Nav user={user} />;
       <Box
         sx={{
           display: "flex",

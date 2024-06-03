@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import {
   styled,
   Grid,
-  Slider,
   Typography,
   Paper,
   IconButton,
+  CardMedia,
 } from "@mui/material";
 import Nav from "../components/Nav";
+import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+import { useCookies } from "react-cookie";
 import StarIcon from "@mui/icons-material/Star";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
@@ -19,15 +22,75 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const product = {
-  name: "Product 1",
-  price: 19.99,
-  description: "High-quality product for everyday",
-  rating: 5,
-  like: 3,
-};
-
 const ProductPage = () => {
+  const navigate = useNavigate();
+  const [user, setUser] = useState([]);
+  const [product, setProduct] = useState([]);
+  const [cookies] = useCookies(["token"]);
+  let { productId } = useParams();
+
+  // GET USER INFOR
+  const getUserInformation = async () => {
+    if (typeof cookies.token === "undefined") {
+      return;
+    }
+    const response = await axios
+      .get(`http://localhost:8080/api/me`, {
+        headers: {
+          Authorization: "Bearer " + cookies.token,
+        },
+      })
+      .catch((error) => {
+        navigate("/signin", {
+          state: {
+            message: "Do not change the cookies",
+          },
+        });
+      });
+    let info = response.data.split(" ");
+    let res = info[1].trim();
+    getUser(res);
+  };
+
+  const getUser = async (res) => {
+    const response = await axios
+      .get(`http://localhost:8080/api/users/${res}`, {
+        headers: {
+          Authorization: "Bearer " + cookies.token,
+        },
+      })
+      .catch((error) => {
+        navigate("/error", {
+          state: {
+            message: "Error",
+          },
+        });
+      });
+    // console.log(response.data);
+    setUser(response.data);
+  };
+
+  async function getProduct() {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/products/${productId}`
+      );
+      console.log(response);
+      setProduct(response.data);
+    } catch (error) {
+      navigate("/error", {
+        state: {
+          message: "Could not find product",
+        },
+      });
+    }
+  }
+
+  useEffect(() => {
+    getProduct();
+    getUserInformation();
+  }, []);
+
   return (
     <div className="App">
       <Nav />
@@ -126,15 +189,30 @@ const ProductPage = () => {
           >
             <Grid item xs={6}>
               <Item>
-                <img
-                  alt=""
-                  src="https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YXJ0fGVufDB8fDB8fHww"
+                <CardMedia
+                  component="img"
+                  image={
+                    product.image && product.image.length > 0
+                      ? `http://localhost:8080/api/images/${product.image[0]}`
+                      : `http://localhost:8080/api/images/${product.image}`
+                  }
+                  // image={`http://localhost:8080/api/images/${product.image[0]}`}
+                  alt={product.name}
                   style={{
                     width: "35vw",
                     height: "auto",
                     objectFit: "cover",
                   }}
                 />
+                {/* <img
+                  alt=""
+                  src={`http://localhost:8080/api/images/${product.image}`}
+                  style={{
+                    width: "35vw",
+                    height: "auto",
+                    objectFit: "cover",
+                  }}
+                /> */}
               </Item>
             </Grid>
             <Grid item xs={6} paddingLeft={5}>

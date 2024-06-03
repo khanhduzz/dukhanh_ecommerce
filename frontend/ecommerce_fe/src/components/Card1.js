@@ -1,5 +1,4 @@
 import * as React from "react";
-import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
@@ -13,15 +12,74 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Rating from "@mui/material/Rating";
 import { Button, Box, Chip } from "@mui/material";
+import { useCookies } from "react-cookie";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function ProductItemCard({ product, user }) {
-  const [expanded, setExpanded] = React.useState(false);
-  const [rating, setRating] = React.useState(4); // Default rating value
+  const [rating, setRating] = React.useState(0);
   const [isFavorite, setIsFavorite] = React.useState(false);
+  const [cookies] = useCookies(["token"]);
+  const navigate = useNavigate();
 
   const handleFavoriteClick = () => {
     setIsFavorite(!isFavorite);
   };
+
+  const productDetail = (event) => {
+    navigate(`/products/detail/${event.target.value}`);
+  };
+
+  // RATING FUNCTION
+  function userRating(event, rate) {
+    axios
+      .post(
+        `http://localhost:8080/api/ratings`,
+        {
+          userId: user.id,
+          productId: product.id,
+          rate: rate,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + cookies.token,
+          },
+        }
+      )
+      .then((respone) => {
+        console.log(respone);
+        toast.success("Rating product successfully!");
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("Some thing went wrong!");
+      });
+  }
+
+  // ADD TO CART
+  function addToCart() {
+    axios
+      .post(
+        `http://localhost:8080/api/orders`,
+        {
+          userId: user.id,
+          productId: product.id,
+          quantity: 1,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + cookies.token,
+          },
+        }
+      )
+      .then((respone) => {
+        toast.success("Item added to cart successfully!");
+      })
+      .catch((error) => {
+        toast.error("Some thing went wrong!");
+      });
+  }
 
   return (
     <Card sx={{ maxWidth: 345, minWidth: 345 }}>
@@ -113,13 +171,15 @@ export default function ProductItemCard({ product, user }) {
           onChange={(event, newValue) => {
             if (user) {
               setRating(newValue);
+              userRating(event, newValue);
             }
           }}
         />
         <Button
           variant="contained"
           color="error"
-          onClick={() => (window.location.href = "/product-detail")}
+          value={product.id}
+          onClick={() => addToCart()}
           sx={{
             marginLeft: "auto",
             display: `${user !== null ? "block" : "none"}`,
@@ -130,7 +190,7 @@ export default function ProductItemCard({ product, user }) {
         <Button
           variant="outlined"
           color="success"
-          onClick={() => (window.location.href = "/product-detail")}
+          onClick={() => productDetail()}
           sx={{ marginLeft: "auto" }}
         >
           Details

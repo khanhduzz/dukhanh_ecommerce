@@ -8,17 +8,15 @@ import {
   Button,
   Grid,
   Typography,
-  FormControlLabel,
-  Checkbox,
 } from "@mui/material";
 
 const SearchForm = ({ categories, onSearch }) => {
   const [searchFilters, setSearchFilters] = useState({
-    searchTerm: "",
-    selectedCategory: "",
+    name: "",
+    category: "",
     minPrice: "",
     maxPrice: "",
-    feature: 0,
+    feature: "",
   });
 
   const handleChange = (e) => {
@@ -31,7 +29,13 @@ const SearchForm = ({ categories, onSearch }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSearch(searchFilters);
+
+    // Create a new object without empty values
+    const filtersToSubmit = Object.fromEntries(
+      Object.entries(searchFilters).filter(([key, value]) => value !== "")
+    );
+
+    onSearch(filtersToSubmit);
   };
 
   return (
@@ -43,18 +47,26 @@ const SearchForm = ({ categories, onSearch }) => {
         sx={{
           display: "flex",
           flexDirection: "column",
-          width: "15vw",
+          width: "10vw",
           gap: "20px",
         }}
       >
         <Typography variant="h5">Find your product</Typography>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          md={3}
+          sx={{
+            width: "100%",
+          }}
+        >
           <TextField
-            name="searchTerm"
+            name="name"
             label="Search by Name"
             variant="outlined"
             fullWidth
-            value={searchFilters.searchTerm}
+            value={searchFilters.name}
             onChange={handleChange}
           />
         </Grid>
@@ -76,21 +88,28 @@ const SearchForm = ({ categories, onSearch }) => {
           >
             <InputLabel>Select Category</InputLabel>
             <Select
-              name="selectedCategory"
-              // value={searchFilters.selectedCategory}
-              // onChange={handleChange}
+              name="category"
+              value={searchFilters.category}
+              onChange={handleChange}
               label="Select Category"
             >
               <MenuItem value="">Select Categories</MenuItem>
               {categories.map((category) => (
-                <MenuItem key={category.id} value={category.id}>
+                <MenuItem key={category.id} value={category.name}>
                   {category.name}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={6} sm={3}>
+        <Grid
+          item
+          xs={6}
+          sm={3}
+          sx={{
+            width: "100%",
+          }}
+        >
           <TextField
             name="minPrice"
             label="Min Price"
@@ -98,11 +117,18 @@ const SearchForm = ({ categories, onSearch }) => {
             fullWidth
             type="number"
             inputProps={{ step: "0.01", min: "0" }}
-            // value={searchFilters.minPrice}
-            // onChange={handleChange}
+            value={searchFilters.minPrice}
+            onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={6} sm={3}>
+        <Grid
+          item
+          xs={6}
+          sm={3}
+          sx={{
+            width: "100%",
+          }}
+        >
           <TextField
             name="maxPrice"
             label="Max Price"
@@ -110,21 +136,37 @@ const SearchForm = ({ categories, onSearch }) => {
             fullWidth
             type="number"
             inputProps={{ step: "0.01", min: "0" }}
-            // value={searchFilters.maxPrice}
-            // onChange={handleChange}
+            value={searchFilters.maxPrice}
+            onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={6} sm={3}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                name="feature"
-                checked={searchFilters.feature === 1}
-                onChange={handleChange}
-              />
-            }
-            label="Feature product"
-          />
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          md={3}
+          sx={{
+            width: "100%",
+          }}
+        >
+          <FormControl
+            variant="outlined"
+            xs={12}
+            sm={6}
+            md={3}
+            style={{ width: "100%" }}
+          >
+            <InputLabel>Select Feature</InputLabel>
+            <Select
+              name="feature"
+              value={searchFilters.feature}
+              onChange={handleChange}
+              label="Feature Product"
+            >
+              <MenuItem value="">All products</MenuItem>
+              <MenuItem value={1}>Feature products</MenuItem>
+            </Select>
+          </FormControl>
         </Grid>
         <Grid item xs={12}>
           <Button type="submit" variant="contained" color="primary">

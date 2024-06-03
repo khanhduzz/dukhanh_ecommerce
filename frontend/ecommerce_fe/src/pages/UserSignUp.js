@@ -18,11 +18,7 @@ import Alert from "@mui/material/Alert";
 import { useLocation } from "react-router-dom";
 
 const UserSignUp = () => {
-  const [cookies, setCookie, removeCookie] = useCookies(
-    ["token"],
-    ["user"],
-    ["userId"]
-  );
+  const [removeCookie] = useCookies(["token"], ["user"], ["userId"]);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -103,6 +99,9 @@ const UserSignUp = () => {
   };
 
   React.useEffect(() => {
+    removeCookie("token");
+    removeCookie("user");
+    removeCookie("userId");
     setOpen(state === null ? false : true);
   }, []);
 
@@ -158,6 +157,7 @@ const UserSignUp = () => {
           border: "2px solid #fff",
           borderRadius: "15px",
           padding: "20px",
+          marginTop: "10vh",
         }}
       >
         <Typography
