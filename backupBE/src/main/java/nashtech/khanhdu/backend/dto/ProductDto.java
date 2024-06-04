@@ -13,7 +13,7 @@ import java.util.Set;
 @ToString
 public class ProductDto extends AuditEntity<Long> {
 
-//    private Long id;
+    private Long id;
     private String name;
     private double price;
     private String description;

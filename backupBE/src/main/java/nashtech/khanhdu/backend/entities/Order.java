@@ -20,6 +20,8 @@ public class Order extends AuditEntity<Long>{
     private int quantity;
     private String user;
     private String product;
+    private double price;
+    private Long prodId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "USER_ID")

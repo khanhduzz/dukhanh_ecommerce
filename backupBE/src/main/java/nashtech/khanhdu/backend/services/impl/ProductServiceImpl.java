@@ -43,11 +43,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
-
-    @Override
     public ProductDto getProduct(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(ProductNotFoundException::new);
@@ -63,15 +58,12 @@ public class ProductServiceImpl implements ProductService {
         if (productRepository.findByName(dto.getName()).isPresent()){
             throw new ProductAlreadyExistsException();
         }
-//        if (dto.getId() == null) {
-//            dto.setId(0L);
-//        }
         Product product = productMapper.toEntity(dto);
         dto.getCategories()
                 .forEach(e -> {
-                      Category category = categoryService.findByNameEquals(e);
-                      if (category == null) throw new CategoryNotFoundException("Category not found");
-                      product.getCategories().add(category);
+                    Category category = categoryService.findByNameEquals(e);
+                    if (category == null) throw new CategoryNotFoundException("Category not found");
+                    product.getCategories().add(category);
                 });
         productRepository.save(product);
         return ResponseEntity.ok(product);
@@ -81,7 +73,6 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ResponseEntity<Product> updateProduct(Long id, ProductDto dto) {
         Product product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
-//        dto.setId(id);
         var updateProduct = productMapper.updateProduct(product, dto);
         updateProduct.setCategories(new HashSet<>());
         dto.getCategories()
@@ -108,63 +99,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> findProductByName(String name) {
-        Pattern pattern = Pattern.compile("[a-zA-Z0-9]*");
-        Matcher matcher = pattern.matcher(name);
-        if (!matcher.matches()) {
-            throw new SearchingContentIsNotValid("Searching is not valid");
-        }
-        return productRepository.findByNameContaining(name);
-    }
-
-    @Override
-    public List<Product> findProductByCategory(String categoryName) {
-        return productRepository.findAllByCategoryName(categoryName);
-    }
-
-    @Override
-    public List<Product> findFeaturedProduct() {
-        return productRepository.findAllByFeaturedEquals(1);
-    }
-
-    @Override
-    public Page<Product> getAllProductSortedBy(SortedDto dto) {
-        int page = dto.page() == null ? 0 : dto.page();
-        int number = dto.number() == null ? 20 : dto.number();
-        String type = dto.sortedBy();
-        int direction = dto.direction() == null ? 1 : dto.direction();
-        Pageable sorted;
-        if (direction == -1) {
-            sorted = PageRequest.of(page,number, Sort.by(type).ascending());
-        } else {
-            sorted = PageRequest.of(page,number, Sort.by(type).descending());
-        }
-        return productRepository.findAll(sorted);
-    }
-
-    @Override
-    public Page<Product> getAllProductsSortedParam(Integer page, Integer number, String sortedBy, Integer direction) {
-        int page1 = (page == null) ? 0 : page;
-        int number1 = number == null ? 20 : number;
-        int direction1 = direction == null ? 1 : direction;
-        Pageable sorted;
-        if (direction1 == -1) {
-            sorted = PageRequest.of(page1,number1, Sort.by(sortedBy).ascending());
-        } else {
-            sorted = PageRequest.of(page1,number1, Sort.by(sortedBy).descending());
-        }
-        return productRepository.findAll(sorted);
-    }
-
-    @Override
     public Page<Product> findProducts(String name, Integer feature, Double minPrice, Double maxPrice, String category, Pageable pageable) {
-//        return productRepository.findAll(
-//                Specification.where(ProductSpecifications.hasName(name))
-//                        .and(ProductSpecifications.isFeatured(feature))
-//                        .and(ProductSpecifications.hasPriceAbove(higherPrice))
-//                        .and(ProductSpecifications.hasPriceBelow(lowerPrice)),
-//                pageable
-//        );
         Specification<Product> spec = Specification.where(null);
 
         if (name != null && !name.isEmpty()) {
@@ -186,5 +121,57 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll(spec, pageable);
     }
 
+//    @Override
+//    public List<Product> getAllProducts() {
+//        return productRepository.findAll();
+//    }
 
+//    @Override
+//    public List<Product> findProductByName(String name) {
+//        Pattern pattern = Pattern.compile("[a-zA-Z0-9]*");
+//        Matcher matcher = pattern.matcher(name);
+//        if (!matcher.matches()) {
+//            throw new SearchingContentIsNotValid("Searching is not valid");
+//        }
+//        return productRepository.findByNameContaining(name);
+//    }
+
+//    @Override
+//    public List<Product> findProductByCategory(String categoryName) {
+//        return productRepository.findAllByCategoryName(categoryName);
+//    }
+
+//    @Override
+//    public List<Product> findFeaturedProduct() {
+//        return productRepository.findAllByFeaturedEquals(1);
+//    }
+
+//    @Override
+//    public Page<Product> getAllProductSortedBy(SortedDto dto) {
+//        int page = dto.page() == null ? 0 : dto.page();
+//        int number = dto.number() == null ? 20 : dto.number();
+//        String type = dto.sortedBy();
+//        int direction = dto.direction() == null ? 1 : dto.direction();
+//        Pageable sorted;
+//        if (direction == -1) {
+//            sorted = PageRequest.of(page,number, Sort.by(type).ascending());
+//        } else {
+//            sorted = PageRequest.of(page,number, Sort.by(type).descending());
+//        }
+//        return productRepository.findAll(sorted);
+//    }
+
+//    @Override
+//    public Page<Product> getAllProductsSortedParam(Integer page, Integer number, String sortedBy, Integer direction) {
+//        int page1 = (page == null) ? 0 : page;
+//        int number1 = number == null ? 20 : number;
+//        int direction1 = direction == null ? 1 : direction;
+//        Pageable sorted;
+//        if (direction1 == -1) {
+//            sorted = PageRequest.of(page1,number1, Sort.by(sortedBy).ascending());
+//        } else {
+//            sorted = PageRequest.of(page1,number1, Sort.by(sortedBy).descending());
+//        }
+//        return productRepository.findAll(sorted);
+//    }
 }

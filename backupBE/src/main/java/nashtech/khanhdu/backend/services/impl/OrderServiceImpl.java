@@ -38,7 +38,6 @@ public class OrderServiceImpl implements OrderService {
                 return ResponseEntity.ok(null);
             }
             order = new Order();
-//            order.setId(0L);
             order.setUserOrder(userRepository
                     .findById(dto.userId())
                     .orElseThrow(()-> new UserExistException("User not found")));
@@ -55,6 +54,8 @@ public class OrderServiceImpl implements OrderService {
         order.setQuantity(dto.quantity());
         order.setUser(order.getUserOrder().getUsername());
         order.setProduct(order.getProductOrder().getName());
+        order.setPrice(order.getProductOrder().getPrice());
+        order.setProdId(order.getProductOrder().getId());
         orderRepository.save(order);
         return ResponseEntity.ok(order);
     }

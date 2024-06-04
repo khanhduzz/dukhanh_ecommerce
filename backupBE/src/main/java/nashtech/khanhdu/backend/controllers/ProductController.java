@@ -56,11 +56,6 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-//    @GetMapping()
-//    public List<Product> getAllProducts () {
-//        return productService.getAllProducts();
-//    }
-
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Product> createProduct (@Valid @RequestBody ProductDto dto) {
@@ -85,51 +80,7 @@ public class ProductController {
         return productService.deleteProduct(productId);
     }
 
-    @GetMapping("/category/{categoryName}")
-    public List<Product> findProductByCategory(@PathVariable("categoryName") String categoryName) {
-        return productService.findProductByCategory(categoryName);
-    }
-
-    @GetMapping("/search/{productName}")
-    public List<Product> findProductByName(@PathVariable("productName") String productName) {
-        return productService.findProductByName(productName);
-    }
-
-    @GetMapping("/feature")
-    public List<Product> findFeaturedProduct() {
-        return productService.findFeaturedProduct();
-    }
-
-    @GetMapping("/page")
-    public Page<Product> getAllProductSortedBy(@RequestBody SortedDto dto) {
-        return productService.getAllProductSortedBy(dto);
-    }
-
-    @GetMapping("/page/{page}/{number}/{sortedBy}/{direction}")
-    public Page<Product> getAllProductsSortedParam(@PathVariable("page") Integer page,
-                                                   @PathVariable("number") Integer number,
-                                                   @PathVariable("sortedBy") String sortedBy,
-                                                   @PathVariable("direction") Integer direction) {
-        return productService.getAllProductsSortedParam(page, number, sortedBy, direction);
-    }
-
     @GetMapping()
-//    public ResponseEntity<Page<Product>> getProducts(
-//            @RequestParam(required = false) String name,
-//            @RequestParam(required = false) Integer featured,
-//            @RequestParam(required = false) Double minPrice,
-//            @RequestParam(required = false) Double maxPrice,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "5") int size,
-//            @RequestParam(defaultValue = "asc") String sort
-//    ) {
-//
-//        Sort orders = Sort.by(Sort.Direction.ASC, "id");
-//
-//        Page<Product> products = productService.findProducts(name, featured, minPrice, maxPrice, PageRequest.of(page, size, orders));
-//        return new ResponseEntity<>(products, HttpStatus.OK);
-//    }
-
     public ResponseEntity<Page<Product>> getProducts(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Integer feature,
@@ -142,11 +93,44 @@ public class ProductController {
     ) {
 
         Sort orders = Sort.by(sort.equalsIgnoreCase("desc")
-                ? Sort.Direction.DESC
-                : Sort.Direction.ASC,
+                        ? Sort.Direction.DESC
+                        : Sort.Direction.ASC,
                 "price");
 
         Page<Product> products = productService.findProducts(name, feature, minPrice, maxPrice, category, PageRequest.of(page, size, orders));
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
+
+    //    @GetMapping()
+//    public List<Product> getAllProducts () {
+//        return productService.getAllProducts();
+//    }
+
+//    @GetMapping("/category/{categoryName}")
+//    public List<Product> findProductByCategory(@PathVariable("categoryName") String categoryName) {
+//        return productService.findProductByCategory(categoryName);
+//    }
+
+//    @GetMapping("/search/{productName}")
+//    public List<Product> findProductByName(@PathVariable("productName") String productName) {
+//        return productService.findProductByName(productName);
+//    }
+
+//    @GetMapping("/feature")
+//    public List<Product> findFeaturedProduct() {
+//        return productService.findFeaturedProduct();
+//    }
+
+//    @GetMapping("/page")
+//    public Page<Product> getAllProductSortedBy(@RequestBody SortedDto dto) {
+//        return productService.getAllProductSortedBy(dto);
+//    }
+
+//    @GetMapping("/page/{page}/{number}/{sortedBy}/{direction}")
+//    public Page<Product> getAllProductsSortedParam(@PathVariable("page") Integer page,
+//                                                   @PathVariable("number") Integer number,
+//                                                   @PathVariable("sortedBy") String sortedBy,
+//                                                   @PathVariable("direction") Integer direction) {
+//        return productService.getAllProductsSortedParam(page, number, sortedBy, direction);
+//    }
 }
