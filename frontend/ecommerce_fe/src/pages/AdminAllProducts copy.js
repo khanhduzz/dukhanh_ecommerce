@@ -98,7 +98,7 @@ const AdminAllProducts = () => {
   // GO TO PRODUCT DETAIL
   const productDetail = (productId) => {
     const link = "/admin/product/";
-    console.log(productId);
+    // console.log(productId);
     navigate(link + productId);
   };
 

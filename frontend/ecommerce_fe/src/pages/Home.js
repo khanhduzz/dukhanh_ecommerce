@@ -20,7 +20,9 @@ const Home = () => {
   // GET ALL PRODUCTS
   function getProducts() {
     axios
-      .get(`http://localhost:8080/api/products`)
+      .get(`http://localhost:8080/api/products`, {
+        params: { size: 9 },
+      })
       .then((response) => {
         setProducts(response.data.content);
       })
@@ -37,11 +39,12 @@ const Home = () => {
     axios
       .get(`http://localhost:8080/api/products`, {
         params: {
-          featured: 1,
+          feature: 1,
         },
       })
       .then((response) => {
         setFeatureProducts(response.data.content);
+        console.log(response.data.content);
       })
       .catch((error) => {
         navigate("/error", {
@@ -76,6 +79,7 @@ const Home = () => {
     });
     const { data } = re;
     setUser({ ...data });
+    console.log(data);
   };
 
   useEffect(() => {
@@ -233,7 +237,7 @@ const Home = () => {
             padding: "40px",
           }}
         >
-          <SignUpForm />
+          {/* <SignUpForm /> */}
           <Paragraph />
         </Box>
       </Box>

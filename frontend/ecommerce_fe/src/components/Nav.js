@@ -158,6 +158,29 @@ const Nav = ({ user }) => {
         >
           <Box
             sx={{
+              justifyContent: "center",
+              alignItems: "center",
+              display: `${
+                typeof cookies["token"] !== "undefined" &&
+                cookies["user"] === "admin"
+                  ? "block"
+                  : "none"
+              }`,
+            }}
+          >
+            <Button
+              component={RouterLink}
+              to="/admin"
+              sx={{
+                textDecoration: "none",
+                color: "#000",
+              }}
+            >
+              Admin's page
+            </Button>
+          </Box>
+          <Box
+            sx={{
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
@@ -165,7 +188,7 @@ const Nav = ({ user }) => {
           >
             <Button
               component={RouterLink}
-              to="/admin"
+              to="/about"
               sx={{
                 textDecoration: "none",
                 color: "#000",

@@ -44,7 +44,7 @@ const ProductPage = () => {
     setLoading(true);
     axios
       .get(`http://localhost:8080/api/products`, {
-        params: { ...filtersToSubmit, page: page },
+        params: { ...filtersToSubmit, page: page, size: 9 },
       })
       .then((response) => {
         setProducts(response.data.content);
@@ -124,6 +124,7 @@ const ProductPage = () => {
     });
     const { data } = re;
     setUser({ ...data });
+    // console.log(user);
   };
 
   useEffect(() => {

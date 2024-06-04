@@ -5,14 +5,21 @@ import {
   Typography,
   Paper,
   IconButton,
-  CardMedia,
+  CardActions,
+  Rating,
+  Button,
+  CardContent,
+  Box,
+  Chip,
 } from "@mui/material";
 import Nav from "../components/Nav";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import StarIcon from "@mui/icons-material/Star";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import ImageGallery from "../components/ImageGallery";
+import { toast } from "react-toastify";
+import StarIcon from "@mui/icons-material/Star";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -25,7 +32,7 @@ const Item = styled(Paper)(({ theme }) => ({
 const ProductPage = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState([]);
-  const [product, setProduct] = useState([]);
+  const [product, setProduct] = useState({});
   const [cookies] = useCookies(["token"]);
   let { productId } = useParams();
 
@@ -75,8 +82,10 @@ const ProductPage = () => {
       const response = await axios.get(
         `http://localhost:8080/api/products/${productId}`
       );
-      console.log(response);
-      setProduct(response.data);
+      // setProduct(response.data);
+      // console.log(product.image);
+      const { data } = response;
+      setProduct({ ...data });
     } catch (error) {
       navigate("/error", {
         state: {
@@ -86,6 +95,64 @@ const ProductPage = () => {
     }
   }
 
+  // HANDLE RATING, FAVORITE
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [rating, setRating] = useState(0);
+
+  const handleFavoriteClick = () => {
+    setIsFavorite(!isFavorite);
+  };
+
+  // RATING FUNCTION
+  function userRating(event, rate) {
+    axios
+      .post(
+        `http://localhost:8080/api/ratings`,
+        {
+          userId: user.id,
+          productId: productId,
+          rate: rate,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + cookies.token,
+          },
+        }
+      )
+      .then((respone) => {
+        // console.log(respone);
+        toast.success("Rating product successfully!");
+      })
+      .catch((error) => {
+        // console.log(error);
+        toast.error("Some thing went wrong!");
+      });
+  }
+
+  // ADD TO CART
+  function addToCart() {
+    axios
+      .post(
+        `http://localhost:8080/api/orders`,
+        {
+          userId: user.id,
+          productId: productId,
+          quantity: 1,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + cookies.token,
+          },
+        }
+      )
+      .then((respone) => {
+        toast.success("Item added to cart successfully!");
+      })
+      .catch((error) => {
+        toast.error("Some thing went wrong!");
+      });
+  }
+
   useEffect(() => {
     getProduct();
     getUserInformation();
@@ -93,7 +160,7 @@ const ProductPage = () => {
 
   return (
     <div className="App">
-      <Nav />
+      <Nav user={user} />
       <Typography
         variant="h2"
         sx={{
@@ -189,33 +256,34 @@ const ProductPage = () => {
           >
             <Grid item xs={6}>
               <Item>
-                <CardMedia
-                  component="img"
-                  image={
-                    product.image && product.image.length > 0
-                      ? `http://localhost:8080/api/images/${product.image[0]}`
-                      : `http://localhost:8080/api/images/${product.image}`
-                  }
-                  // image={`http://localhost:8080/api/images/${product.image[0]}`}
-                  alt={product.name}
-                  style={{
-                    width: "35vw",
-                    height: "auto",
-                    objectFit: "cover",
-                  }}
-                />
-                {/* <img
-                  alt=""
-                  src={`http://localhost:8080/api/images/${product.image}`}
-                  style={{
-                    width: "35vw",
-                    height: "auto",
-                    objectFit: "cover",
-                  }}
-                /> */}
+                <ImageGallery image={product.image} />
               </Item>
             </Grid>
-            <Grid item xs={6} paddingLeft={5}>
+            <Grid item xs={6} paddingLeft={5} fullWidth>
+              <CardContent
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  gap: 1,
+                }}
+              >
+                {product.categories && product.categories.length > 0 ? (
+                  product.categories.map((category, index) => (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Chip label={category} color="error" variant="outlined" />
+                    </Box>
+                  ))
+                ) : (
+                  <span>No categories</span>
+                )}
+              </CardContent>
+
               <Grid container spacing={2} alignItems="flex-start">
                 <Grid item>
                   <Typography variant="h2" gutterBottom>
@@ -227,18 +295,55 @@ const ProductPage = () => {
                   <Typography variant="subtitle" gutterBottom>
                     {product.description}
                   </Typography>
-                  <div>
-                    {Array.from({ length: product.rating }, (_, i) => (
-                      <StarIcon key={i} color="primary" />
-                    ))}
-                  </div>
-                  <div>
-                    {Array.from({ length: product.like }, (_, i) => (
-                      <IconButton key={i} aria-label="like" color="secondary">
-                        <FavoriteIcon />
-                      </IconButton>
-                    ))}
-                  </div>
+                  <CardActions disableSpacing>
+                    <IconButton
+                      aria-label="add to favorites"
+                      onClick={handleFavoriteClick}
+                      color={isFavorite ? "secondary" : "default"}
+                    >
+                      <FavoriteIcon />
+                    </IconButton>
+                    <Rating
+                      name="product-rating"
+                      defaultValue={product.rating}
+                      disabled={!user}
+                      onChange={(event, newValue) => {
+                        if (user) {
+                          setRating(newValue);
+                          userRating(event, newValue);
+                        }
+                      }}
+                    />
+                    {/* <select
+                      name="product-rating"
+                      value={rating}
+                      disabled={!user}
+                      onchange={(event, newValue) => {
+                        if (user) {
+                          setRating(newValue);
+                          userRating(event, newValue);
+                        }
+                      }}
+                    >
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                    </select> */}
+                    <Button
+                      variant="contained"
+                      color="error"
+                      value={product.id}
+                      onClick={() => addToCart()}
+                      sx={{
+                        marginLeft: "auto",
+                        display: `${user !== null ? "block" : "none"}`,
+                      }}
+                    >
+                      Add To Cart
+                    </Button>
+                  </CardActions>
                 </Grid>
               </Grid>
             </Grid>

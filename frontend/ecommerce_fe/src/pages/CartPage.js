@@ -16,6 +16,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const CartPage = () => {
   const [items, setItems] = useState([]);
@@ -23,16 +24,49 @@ const CartPage = () => {
   const [cookies] = useCookies(["token"]);
   const navigate = useNavigate();
 
-  const handleRemoveItem = (index) => {
+  // ADD TO CART
+  function addToCart(index, data) {
+    // console.log(user.id);
+    // console.log(items[`${data}`].prodId);
+    // console.log(data);
+    axios
+      .post(
+        `http://localhost:8080/api/orders`,
+        {
+          userId: user.id,
+          productId: items[`${index}`].prodId,
+          quantity: data,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + cookies.token,
+          },
+        }
+      )
+      .then((respone) => {
+        if (data === 0) {
+          toast.success("Removed item!");
+        } else {
+          toast.success("Add item!");
+        }
+      })
+      .catch((error) => {
+        toast.error("Some thing went wrong!");
+      });
+  }
+
+  const handleRemoveItem = (event, index) => {
     const updatedItems = [...items];
     updatedItems.splice(index, 1);
     setItems(updatedItems);
+    addToCart(index, 0);
   };
 
   const handleQuantityChange = (index, quantity) => {
     const updatedItems = [...items];
     updatedItems[index].quantity = quantity;
     setItems(updatedItems);
+    addToCart(index, quantity);
   };
 
   const calculateTotalPrice = () => {
@@ -55,39 +89,26 @@ const CartPage = () => {
         },
       })
       .catch((error) => {
-        navigate("/signin", {
-          state: {
-            message: "Do not change the cookies",
-          },
-        });
+        console.log(error);
       });
     let info = response.data.split(" ");
     let res = info[1].trim();
-    getUser(res);
-  };
 
-  const getUser = async (res) => {
-    const response = await axios
-      .get(`http://localhost:8080/api/users/${res}`, {
-        headers: {
-          Authorization: "Bearer " + cookies.token,
-        },
-      })
-      .catch((error) => {
-        navigate("/error", {
-          state: {
-            message: "Error",
-          },
-        });
-      });
-    console.log(response.data);
-    setUser(response.data);
-    setItems(response.data.orders);
+    const re = await axios.get(`http://localhost:8080/api/users/${res}`, {
+      headers: {
+        Authorization: "Bearer " + cookies.token,
+      },
+    });
+    // const { data } = re.data;
+    // console.log(re.data);
+    setUser(re.data);
+    // console.log(user);
+    setItems(re.data.orders);
+    // console.log(items);
   };
 
   useEffect(() => {
     getUserInformation();
-    console.log(user);
   }, []);
 
   return (
@@ -97,7 +118,9 @@ const CartPage = () => {
         <Typography variant="h3" gutterBottom marginTop={20}>
           Cart
         </Typography>
-        {typeof user === "undefined" && user.orders.length === 0 ? (
+        {typeof user === "undefined" ||
+        typeof items === "undefined" ||
+        items.length === 0 ? (
           <Typography variant="h4" color="textSecondary">
             No items available.
           </Typography>
@@ -114,15 +137,15 @@ const CartPage = () => {
                     {" "}
                     {/* Adjust the width as needed */}
                     <Typography variant="h5" gutterBottom>
-                      {item.name}
+                      {item.product}
                     </Typography>
-                    {/* <Typography variant="body1">
+                    <Typography variant="body1">
                       Price:{" "}
                       {new Intl.NumberFormat("en-US", {
                         style: "currency",
                         currency: "USD",
                       }).format(item.price)}
-                    </Typography> */}
+                    </Typography>
                   </Grid>
                   <Grid item sx={{ width: "20%" }}>
                     {" "}
@@ -195,15 +218,16 @@ const CartPage = () => {
                   <Grid item sx={{ width: "10%" }}>
                     {" "}
                     {/* Adjust the width as needed */}
-                    {/* <Typography variant="body1">
+                    <Typography variant="body1">
                       Total Price: ${item.price * item.quantity}
-                    </Typography> */}
+                    </Typography>
                   </Grid>
                   <Grid item sx={{ width: "10%" }}>
                     {" "}
                     {/* Adjust the width as needed */}
                     <IconButton
-                      onClick={() => handleRemoveItem(index)}
+                      value={item.prodId}
+                      onClick={(event) => handleRemoveItem(event, index)}
                       color="secondary"
                     >
                       <CloseIcon />

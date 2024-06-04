@@ -13,8 +13,8 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Rating from "@mui/material/Rating";
 import { Button, Box, Chip } from "@mui/material";
 import { useCookies } from "react-cookie";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { toast } from "react-toastify";
 
 export default function ProductItemCard({ product, user }) {
@@ -22,13 +22,16 @@ export default function ProductItemCard({ product, user }) {
   const [isFavorite, setIsFavorite] = React.useState(false);
   const [cookies] = useCookies(["token"]);
   const navigate = useNavigate();
+  // const foundRating = user.ratings.find(
+  //   (rating) => rating.product === product.name
+  // );
 
   const handleFavoriteClick = () => {
     setIsFavorite(!isFavorite);
   };
 
-  const productDetail = (event) => {
-    navigate(`/products/detail/${event.target.value}`);
+  const productDetail = () => {
+    navigate(`/products/detail/${product.id}`);
   };
 
   // RATING FUNCTION
@@ -130,6 +133,29 @@ export default function ProductItemCard({ product, user }) {
             <Chip label="Origin" color="primary" />
           </Box>
         )}
+        <CardContent
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            gap: 1,
+          }}
+        >
+          {product.categories && product.categories.length > 0 ? (
+            product.categories.map((category, index) => (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <Chip label={category.name} color="error" variant="outlined" />
+              </Box>
+            ))
+          ) : (
+            <span>No categories available</span>
+          )}
+        </CardContent>
         <Typography
           variant="body2"
           color="text.secondary"
@@ -141,6 +167,7 @@ export default function ProductItemCard({ product, user }) {
           {product.description}
         </Typography>
       </CardContent>
+
       <CardContent>
         <Typography
           variant="h4"
@@ -167,7 +194,11 @@ export default function ProductItemCard({ product, user }) {
         <Rating
           name="product-rating"
           defaultValue={product.rating}
-          disabled={!user}
+          disabled={
+            !user ||
+            (user.ratings &&
+              user.ratings.find((rating) => rating.product === product.name))
+          }
           onChange={(event, newValue) => {
             if (user) {
               setRating(newValue);
@@ -180,6 +211,11 @@ export default function ProductItemCard({ product, user }) {
           color="error"
           value={product.id}
           onClick={() => addToCart()}
+          disabled={
+            !user ||
+            (user.orders &&
+              user.orders.find((order) => order.product === product.name))
+          }
           sx={{
             marginLeft: "auto",
             display: `${user !== null ? "block" : "none"}`,

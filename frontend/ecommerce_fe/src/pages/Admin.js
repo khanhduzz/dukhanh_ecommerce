@@ -13,9 +13,10 @@ const Admin = () => {
           variant="h1"
           sx={{
             display: "flex",
+            flexDirection: "column",
             justifyContent: "center",
+            alignItems: "center",
             color: "secondary.main",
-            marginY: 5,
           }}
         >
           Administrator
@@ -27,6 +28,7 @@ const Admin = () => {
           display: "inline-flex",
           justifyContent: "center",
           height: "auto",
+          marginTop: "4rem",
         }}
       >
         <AdminTab />
