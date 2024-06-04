@@ -34,15 +34,12 @@ public class RatingServiceImpl implements RatingService {
         Rating rating = ratingRepository.findByUserNameAndProductName(dto.userId(), dto.productId());
         if (rating == null) {
             rating = new Rating();
-//            rating.setId(0L);
             rating.setUserRating(
                 userRepository.findById(dto.userId())
-                    .orElseThrow(() -> new UserExistException("User not found"))
-            );
+                    .orElseThrow(() -> new UserExistException("User not found")));
             rating.setProductRating(
                     productRepository.findById(dto.productId())
-                        .orElseThrow(()->new ProductNotFoundException("Product not found"))
-            );
+                        .orElseThrow(()->new ProductNotFoundException("Product not found")));
         }
         rating.setRate(dto.rate());
         rating.setUser(rating.getUserRating().getUsername());

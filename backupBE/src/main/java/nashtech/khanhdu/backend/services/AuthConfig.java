@@ -5,6 +5,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import nashtech.khanhdu.backend.jwt.JwtAuthenticationFilter;
+import nashtech.khanhdu.backend.jwt.TokenBlacklistService;
 import nashtech.khanhdu.backend.jwt.TokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -29,8 +31,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class AuthConfig {
 
     @Bean
-    JwtAuthenticationFilter authFilter (TokenProvider tokenProvider, UserDetailsService userService) {
-        return new JwtAuthenticationFilter(tokenProvider, userService);
+    JwtAuthenticationFilter authFilter (TokenProvider tokenProvider, UserDetailsService userService, TokenBlacklistService tokenBlacklistService) {
+        return new JwtAuthenticationFilter(tokenProvider, userService, tokenBlacklistService);
     }
 
     @Bean
@@ -81,6 +83,8 @@ public class AuthConfig {
                 .requestMatchers(HttpMethod.PUT ,"api/products/*").hasRole("ADMIN")
                 .anyRequest().authenticated())
             .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+//                .logout(logout -> logout.logoutUrl("/auth/signout")
+//                        .addLogoutHandler(new SecurityContextLogoutHandler()))
             .build();
     }
 

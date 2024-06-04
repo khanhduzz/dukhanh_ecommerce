@@ -5,27 +5,27 @@ import nashtech.khanhdu.backend.dto.JwtToken;
 import nashtech.khanhdu.backend.dto.SignInDto;
 import nashtech.khanhdu.backend.entities.User;
 import nashtech.khanhdu.backend.jwt.TokenProvider;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import nashtech.khanhdu.backend.jwt.TokenBlacklistService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.http.HttpResponse;
-
 @RestController
 @CrossOrigin(origins = "http://localhost:3000/")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
+    private final TokenBlacklistService tokenBlacklistService;
     private final TokenProvider tokenProvider;
 
-    public AuthController (AuthenticationManager authenticationManager, TokenProvider tokenProvider) {
+    public AuthController (AuthenticationManager authenticationManager, TokenBlacklistService tokenBlacklistService, TokenProvider tokenProvider) {
         this.authenticationManager = authenticationManager;
+        this.tokenBlacklistService = tokenBlacklistService;
         this.tokenProvider = tokenProvider;
     }
 
@@ -46,6 +46,13 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/auth/logout")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
+        String jwtToken = token.substring(7);
+        tokenBlacklistService.addToBlacklist(jwtToken);
+        return ResponseEntity.ok("Logout successfully");
+    }
 
     @GetMapping("/me")
     ResponseEntity<String> me (Authentication authentication) {
