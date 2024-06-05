@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-06-04T11:03:55+0700",
+    date = "2024-06-05T11:40:27+0700",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.3 (Oracle Corporation)"
 )
 @Component
@@ -21,20 +21,20 @@ public class ProductMapperImpl implements ProductMapper {
             return null;
         }
 
-        ProductDto productDto = new ProductDto();
+        ProductDto.ProductDtoBuilder productDto = ProductDto.builder();
 
-        productDto.setId( product.getId() );
-        productDto.setName( product.getName() );
-        productDto.setPrice( product.getPrice() );
-        productDto.setDescription( product.getDescription() );
-        productDto.setRating( product.getRating() );
-        productDto.setFeatured( product.getFeatured() );
+        productDto.id( product.getId() );
+        productDto.name( product.getName() );
+        productDto.price( product.getPrice() );
+        productDto.description( product.getDescription() );
+        productDto.rating( product.getRating() );
+        productDto.featured( product.getFeatured() );
         List<String> list = product.getImage();
         if ( list != null ) {
-            productDto.setImage( new ArrayList<String>( list ) );
+            productDto.image( new ArrayList<String>( list ) );
         }
 
-        return productDto;
+        return productDto.build();
     }
 
     @Override
@@ -43,19 +43,19 @@ public class ProductMapperImpl implements ProductMapper {
             return null;
         }
 
-        Product product = new Product();
+        Product.ProductBuilder product = Product.builder();
 
-        product.setName( dto.getName() );
-        product.setPrice( dto.getPrice() );
-        product.setDescription( dto.getDescription() );
-        product.setRating( dto.getRating() );
-        product.setFeatured( dto.getFeatured() );
+        product.name( dto.getName() );
+        product.price( dto.getPrice() );
+        product.description( dto.getDescription() );
+        product.rating( dto.getRating() );
+        product.featured( dto.getFeatured() );
         List<String> list = dto.getImage();
         if ( list != null ) {
-            product.setImage( new ArrayList<String>( list ) );
+            product.image( new ArrayList<String>( list ) );
         }
 
-        return product;
+        return product.build();
     }
 
     @Override

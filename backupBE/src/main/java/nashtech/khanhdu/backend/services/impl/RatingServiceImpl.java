@@ -40,17 +40,17 @@ public class RatingServiceImpl implements RatingService {
             rating.setProductRating(
                     productRepository.findById(dto.productId())
                         .orElseThrow(()->new ProductNotFoundException("Product not found")));
+            rating.setRate(dto.rate());
+            rating.setUser(rating.getUserRating().getUsername());
+            rating.setProduct(rating.getProductRating().getName());
+            Product product = rating.getProductRating();
+            double newRate = (product.getRating() + dto.rate()) / (product.getRatings().size() + 1);
+            product.setRating(newRate);
+            productRepository.save(product);
+            ratingRepository.save(rating);
+            return ResponseEntity.ok(rating);
         }
-        rating.setRate(dto.rate());
-        rating.setUser(rating.getUserRating().getUsername());
-        rating.setProduct(rating.getProductRating().getName());
-        Product product = rating.getProductRating();
-        double newRate = (product.getRating() + dto.rate()) / (product.getRatings().size() + 1);
-        product.setRating(newRate);
-        productRepository.save(product);
-        ratingRepository.save(rating);
-
-        return ResponseEntity.ok(rating);
+        return ResponseEntity.badRequest().build();
     }
 
     @Override

@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface ProductService {
-//    List<Product> getAllProducts();
 
     ProductDto getProduct(Long id);
 
@@ -19,6 +18,10 @@ public interface ProductService {
     ResponseEntity<Product> updateProduct(Long id, ProductDto dto);
 
     ResponseEntity<String> deleteProduct(Long id);
+
+    Page<Product> findProducts (String name, Integer feature, Double higherPrice, Double lowerPrice, String category, Pageable pageable) ;
+
+//    List<Product> getAllProducts();
 
 //    List<Product> findProductByName(String name);
 
@@ -29,6 +32,4 @@ public interface ProductService {
 //    Page<Product> getAllProductSortedBy(SortedDto dto);
 
 //    Page<Product> getAllProductsSortedParam(Integer page, Integer number, String sortedBy, Integer direction);
-
-    Page<Product> findProducts (String name, Integer feature, Double higherPrice, Double lowerPrice, String category, Pageable pageable) ;
 }

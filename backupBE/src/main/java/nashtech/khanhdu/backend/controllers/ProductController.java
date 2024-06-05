@@ -3,7 +3,6 @@ package nashtech.khanhdu.backend.controllers;
 import jakarta.validation.Valid;
 import nashtech.khanhdu.backend.dto.ErrorResponse;
 import nashtech.khanhdu.backend.dto.ProductDto;
-import nashtech.khanhdu.backend.dto.SortedDto;
 import nashtech.khanhdu.backend.entities.Product;
 import nashtech.khanhdu.backend.exceptions.CategoryNotFoundException;
 import nashtech.khanhdu.backend.exceptions.ProductAlreadyExistsException;
@@ -16,8 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -102,7 +99,7 @@ public class ProductController {
     }
 
     //    @GetMapping()
-//    public List<Product> getAllProducts () {
+//    public List<Product> getAllProducts () {1
 //        return productService.getAllProducts();
 //    }
 

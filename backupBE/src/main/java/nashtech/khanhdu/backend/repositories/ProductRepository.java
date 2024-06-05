@@ -11,15 +11,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
-//    @EntityGraph("Book.category")
-//    List<Product> findAll();
-
     Optional<Product> findByName(String name);
-
-    List<Product> findByNameContaining(String name);
-
-    List<Product> findAllByFeaturedEquals(Integer featured);
-
-    @Query("SELECT p FROM Product p JOIN p.categories c WHERE c.name LIKE :name")
-    List<Product> findAllByCategoryName(@Param("name") String categoryName);
 }

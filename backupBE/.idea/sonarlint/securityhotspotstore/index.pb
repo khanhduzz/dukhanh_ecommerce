@@ -103,3 +103,13 @@ w
 Gsrc/main/java/nashtech/khanhdu/backend/controllers/OrderController.java,0/e/0e641a1074efe5964063413cde7f9a0a1dfafec9
 u
 Esrc/main/java/nashtech/khanhdu/backend/jwt/TokenBlacklistService.java,9/e/9e56924740a39c2b58f4217797603eb4dadbc0e7
+q
+Asrc/test/java/nashtech/khanhdu/backend/ProductControllerTest.java,7/3/730fca517369608d5a5cb698b320cbcbe730575c
+t
+Dsrc/main/java/nashtech/khanhdu/backend/services/CategoryService.java,c/c/cc6583e3de6465c5d75cf166c4f8609da7b7a8a0
+{
+Ksrc/main/java/nashtech/khanhdu/backend/repositories/CategoryRepository.java,6/0/60fab32e7ad198d128b81a94d8916fb24cd4b049
+r
+Bsrc/test/java/nashtech/khanhdu/backend/ProductServiceImplTest.java,f/4/f4908060eeccf6167dcfdd2e6278bc736a2997c3
+s
+Csrc/test/java/nashtech/khanhdu/backend/BackendApplicationTests.java,a/5/a5307495eb142275028ccbbb8da316736530014c

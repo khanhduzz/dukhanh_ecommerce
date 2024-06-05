@@ -14,6 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @ToString
+@Builder
 @Table(name = "PRODUCTS")
 @NamedEntityGraph (
         name = "Book.category",

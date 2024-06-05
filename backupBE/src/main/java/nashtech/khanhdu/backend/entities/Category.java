@@ -27,4 +27,8 @@ public class Category {
     @ToString.Exclude
     @JsonIgnore
     Set<Product> products;
+
+    public Category(String name) {
+        this.name = name;
+    }
 }
