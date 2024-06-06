@@ -2,12 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 import { Box, IconButton } from "@mui/material";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import { useNavigate } from "react-router-dom";
 
 const ProductCarousel = ({ products }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const itemsToShow = 3; // Number of items to show at once
   const autoMoveInterval = 3000; // Interval for automatic movement in milliseconds
   const autoMoveRef = useRef(null);
+  const navigate = useNavigate();
 
   const goToPrevSlide = () => {
     setCurrentIndex(
@@ -51,6 +53,11 @@ const ProductCarousel = ({ products }) => {
     startAutoMove();
   };
 
+  const productDetail = (event) => {
+    console.log(event);
+    navigate(`/products/detail/${event.target.id}`);
+  };
+
   return (
     <Box
       sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
@@ -69,10 +76,22 @@ const ProductCarousel = ({ products }) => {
       >
         <div
           className="carousel-track"
-          style={{ transform: `translateX(-${currentIndex * (400 + 10)}px)` }}
+          style={{
+            transform: `translateX(-${currentIndex * (400 + 10)}px)`,
+            transition: "transform 0.3s ease, box-shadow 0.3s ease",
+            "&:hover": {
+              transform: "scale(1.05)",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+            },
+            cursor: "pointer",
+          }}
         >
           {products.map((product, index) => (
-            <div key={index} className="carousel-item">
+            <div
+              key={index}
+              className="carousel-item"
+              // onClick={(event) => productDetail(event)}
+            >
               <img
                 src={`http://localhost:8080/api/images/${product.image[0]}`}
                 alt={`Product ${index + 1}`}
@@ -83,7 +102,12 @@ const ProductCarousel = ({ products }) => {
                   borderRadius: "10px",
                 }}
               />
-              <div className="product-details">
+              <div
+                className="product-details"
+                id={product.id}
+                style={{ cursor: "pointer" }}
+                onClick={(event) => productDetail(event)}
+              >
                 {/* <h3>{product.name}</h3>
                 <p>{product.description}</p> */}
                 <h3>{product.name}</h3>

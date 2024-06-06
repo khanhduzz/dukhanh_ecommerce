@@ -14,15 +14,9 @@ import {
   Link,
   Box,
 } from "@mui/material";
-import Textarea from "@mui/joy/Textarea";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "@mui/material/styles";
 import AdminTab from "../components/AdminTab";
 import { useCookies } from "react-cookie";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import Chip from "@mui/material/Chip";
 import Footer from "../components/Footer";
 
 const AdminAddUser = () => {
@@ -459,7 +453,7 @@ const AdminAddUser = () => {
           </Grid>
         </Grid>
       </Box>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };

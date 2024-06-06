@@ -167,9 +167,18 @@ const UserSignIn = () => {
             color: "secondary.main",
             marginBottom: 10,
             fontWeight: 300,
+            cursor: "pointer",
           }}
         >
-          Welcome to GAlLéRY
+          <Link
+            href="/"
+            style={{ textDecoration: "none" }}
+            sx={{
+              color: "secondary.main",
+            }}
+          >
+            Welcome to GAlLéRY
+          </Link>
         </Typography>
       </Box>
 

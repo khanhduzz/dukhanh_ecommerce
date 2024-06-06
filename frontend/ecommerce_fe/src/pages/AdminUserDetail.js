@@ -513,7 +513,7 @@ const AdminUserDetail = () => {
           </Grid>
         </Grid>
       </Box>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };

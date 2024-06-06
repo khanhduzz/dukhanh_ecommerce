@@ -13,8 +13,8 @@ const Footer = () => {
     <div className="App">
       <Box
         sx={{
-          position: "fixed",
-          bottom: "0vh",
+          position: "relative",
+          bottom: "",
           marginTop: "20px",
           width: "100%",
           height: "3rem",

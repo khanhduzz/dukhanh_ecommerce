@@ -19,12 +19,10 @@ import { toast } from "react-toastify";
 
 export default function ProductItemCard({ product, user }) {
   const [rating, setRating] = React.useState(0);
+  const [cart, setCart] = React.useState(false);
   const [isFavorite, setIsFavorite] = React.useState(false);
   const [cookies] = useCookies(["token"]);
   const navigate = useNavigate();
-  // const foundRating = user.ratings.find(
-  //   (rating) => rating.product === product.name
-  // );
 
   const handleFavoriteClick = () => {
     setIsFavorite(!isFavorite);
@@ -32,6 +30,10 @@ export default function ProductItemCard({ product, user }) {
 
   const productDetail = () => {
     navigate(`/products/detail/${product.id}`);
+  };
+
+  const setAddCart = () => {
+    setCart(!cart);
   };
 
   // RATING FUNCTION
@@ -51,12 +53,12 @@ export default function ProductItemCard({ product, user }) {
         }
       )
       .then((respone) => {
-        console.log(respone);
+        // console.log(respone);
         toast.success("Rating product successfully!");
       })
       .catch((error) => {
-        console.log(error);
-        toast.error("Some thing went wrong!");
+        // console.log(error);
+        toast.error("You have already rated this item!");
       });
   }
 
@@ -78,9 +80,10 @@ export default function ProductItemCard({ product, user }) {
       )
       .then((respone) => {
         toast.success("Item added to cart successfully!");
+        setAddCart();
       })
       .catch((error) => {
-        toast.error("Some thing went wrong!");
+        toast.error("You have already added this item!");
       });
   }
 
@@ -195,7 +198,9 @@ export default function ProductItemCard({ product, user }) {
           name="product-rating"
           defaultValue={product.rating}
           disabled={
-            !user ||
+            rating !== 0 ||
+            typeof Object.keys(user)[0] === "undefined" ||
+            cookies["user"] === "admin" ||
             (user.ratings &&
               user.ratings.find((rating) => rating.product === product.name))
           }
@@ -212,7 +217,9 @@ export default function ProductItemCard({ product, user }) {
           value={product.id}
           onClick={() => addToCart()}
           disabled={
-            !user ||
+            cart === true ||
+            typeof Object.keys(user)[0] === "undefined" ||
+            cookies["user"] === "admin" ||
             (user.orders &&
               user.orders.find((order) => order.product === product.name))
           }

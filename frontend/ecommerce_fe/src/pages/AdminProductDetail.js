@@ -43,7 +43,9 @@ const AdminProductDetail = () => {
           Authorization: "Bearer " + cookies.token,
         },
       });
+      // setCategories({ ...data });
       setCategories(respone.data);
+      // console.log(categories);
     } catch (error) {
       navigate(-1, {
         state: {
@@ -96,26 +98,6 @@ const AdminProductDetail = () => {
     } = event;
     setCategory(typeof value === "string" ? value.split(",") : value);
   };
-
-  // GET PRODUCT INFORMATION
-  // function getProduct() {
-  //   axios
-  //     .get(`http://localhost:8080/api/products/${productId}`)
-  //     .then((response) => {
-  //       console.log(response);
-  //       setPreProduct(response.data);
-  //       setImages(response.data.image);
-  //       setFeatured(response.data.featured);
-  //       setCategory(response.data.categories);
-  //     })
-  //     .catch((error) => {
-  //       navigate("/error", {
-  //         state: {
-  //           message: "Could not find product",
-  //         },
-  //       });
-  //     });
-  // }
 
   async function getProduct() {
     try {
@@ -435,6 +417,38 @@ const AdminProductDetail = () => {
                         </MenuItem>
                       ))}
                     </Select>
+                  </FormControl>
+
+                  <FormControl>
+                    <label
+                      htmlFor="username"
+                      color="grey"
+                      sx={{
+                        fontSize: "20px",
+                      }}
+                      style={{
+                        textAlign: "left",
+                      }}
+                    >
+                      Product name
+                    </label>
+                    <input
+                      id="name"
+                      color="grey"
+                      defaultValue={product.name}
+                      type="text"
+                      aria-describedby="my-helper-text"
+                      sx={{
+                        fontSize: "20px",
+                        marginLeft: "15px",
+                      }}
+                      style={{
+                        border: "none",
+                        padding: "10px 0",
+                        borderBottom: "1px solid gray",
+                      }}
+                      //   value={username}
+                    />
                   </FormControl>
 
                   {/* SHOW IMAGES */}

@@ -40,6 +40,7 @@ const AdminAllProducts = () => {
         },
       });
       setCategories(respone.data);
+      console.log(respone.data);
     } catch (error) {
       window.location.replace("/error");
     }
@@ -100,6 +101,7 @@ const AdminAllProducts = () => {
   // ADD PRODUCT WITH IMAGES
   const addProduct = async (output) => {
     console.log(output.data);
+    console.log(category);
     try {
       const respone = await axios.post(
         `http://localhost:8080/api/products/create`,
@@ -124,7 +126,7 @@ const AdminAllProducts = () => {
         },
       });
     } catch (error) {
-      console.log(error.response.data.message);
+      // console.log(error.response.data.message);
       navigate("/admin", {
         state: {
           message: error.response.data.message,
@@ -473,7 +475,7 @@ const AdminAllProducts = () => {
           </Grid>
         </Grid>
       </Box>
-      <Footer />
+      <Box>{/* <Footer /> */}</Box>
     </div>
   );
 };

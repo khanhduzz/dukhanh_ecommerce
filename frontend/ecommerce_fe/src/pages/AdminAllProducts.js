@@ -355,7 +355,7 @@ const AdminAllProducts = () => {
           </Box>
         )}
       </Box>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };

@@ -230,7 +230,7 @@ const AdminAddCategory = () => {
           </Grid>
         </Grid>
       </Box>
-      <Footer />
+      <Box>{/* <Footer /> */}</Box>
     </div>
   );
 };

@@ -372,7 +372,7 @@ const AdminAllProducts = () => {
           </Box>
         )}
       </Box>
-      <Footer />
+      <Box>{/* <Footer /> */}</Box>
     </div>
   );
 };

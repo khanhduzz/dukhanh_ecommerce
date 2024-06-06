@@ -19,7 +19,6 @@ import { useCookies } from "react-cookie";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ImageGallery from "../components/ImageGallery";
 import { toast } from "react-toastify";
-import StarIcon from "@mui/icons-material/Star";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -30,11 +29,17 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const ProductPage = () => {
+  const [cart, setCart] = React.useState(false);
+  const [rating, setRating] = useState(0);
   const navigate = useNavigate();
   const [user, setUser] = useState([]);
   const [product, setProduct] = useState({});
   const [cookies] = useCookies(["token"]);
   let { productId } = useParams();
+
+  const setAddCart = () => {
+    setCart(!cart);
+  };
 
   // GET USER INFOR
   const getUserInformation = async () => {
@@ -97,7 +102,6 @@ const ProductPage = () => {
 
   // HANDLE RATING, FAVORITE
   const [isFavorite, setIsFavorite] = useState(false);
-  const [rating, setRating] = useState(0);
 
   const handleFavoriteClick = () => {
     setIsFavorite(!isFavorite);
@@ -147,6 +151,7 @@ const ProductPage = () => {
       )
       .then((respone) => {
         toast.success("Item added to cart successfully!");
+        setAddCart();
       })
       .catch((error) => {
         toast.error("Some thing went wrong!");
@@ -305,8 +310,16 @@ const ProductPage = () => {
                     </IconButton>
                     <Rating
                       name="product-rating"
-                      defaultValue={product.rating}
-                      disabled={!user}
+                      defaultValue={rating}
+                      disabled={
+                        rating !== 0 ||
+                        typeof Object.keys(user)[0] === "undefined" ||
+                        cookies["user"] === "admin" ||
+                        (user.ratings &&
+                          user.ratings.find(
+                            (rating) => rating.product === product.name
+                          ))
+                      }
                       onChange={(event, newValue) => {
                         if (user) {
                           setRating(newValue);
@@ -314,26 +327,18 @@ const ProductPage = () => {
                         }
                       }}
                     />
-                    {/* <select
-                      name="product-rating"
-                      value={rating}
-                      disabled={!user}
-                      onchange={(event, newValue) => {
-                        if (user) {
-                          setRating(newValue);
-                          userRating(event, newValue);
-                        }
-                      }}
-                    >
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                    </select> */}
                     <Button
                       variant="contained"
                       color="error"
+                      disabled={
+                        cart === true ||
+                        typeof Object.keys(user)[0] === "undefined" ||
+                        cookies["user"] === "admin" ||
+                        (user.orders &&
+                          user.orders.find(
+                            (order) => order.product === product.name
+                          ))
+                      }
                       value={product.id}
                       onClick={() => addToCart()}
                       sx={{

@@ -120,6 +120,9 @@ const Home = () => {
               textAlign: "left",
               fontWeight: "800",
               fontSize: "128px",
+              "@media (min-width: 1700px)": {
+                fontSize: "170px",
+              },
             }}
           >
             Artist, Master
@@ -152,6 +155,11 @@ const Home = () => {
             boxShadow: "10px 10px 10px 15px rgba(0, 0, 0, 0.5)",
             margin: "0px 40px 40px 0px",
             borderRadius: "10px",
+            "@media (min-width: 1700px)": {
+              width: "65vw",
+              height: "110%",
+              transform: "translateY(-10%)",
+            },
           }}
         ></Box>
         <Box

@@ -409,7 +409,7 @@ const AdminAllCategories = () => {
           </Grid>
         </Grid>
       </Box>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };

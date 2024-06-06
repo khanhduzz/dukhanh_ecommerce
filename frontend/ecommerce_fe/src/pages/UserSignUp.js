@@ -18,7 +18,11 @@ import Alert from "@mui/material/Alert";
 import { useLocation } from "react-router-dom";
 
 const UserSignUp = () => {
-  const [removeCookie] = useCookies(["token"], ["user"], ["userId"]);
+  const [cookies, setCookie, removeCookie] = useCookies(
+    ["token"],
+    ["user"],
+    ["userId"]
+  );
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -129,7 +133,7 @@ const UserSignUp = () => {
       </Snackbar>
       <Box
         sx={{
-          position: "absolute",
+          position: "relative",
           top: "100px",
         }}
       >
@@ -141,9 +145,18 @@ const UserSignUp = () => {
             color: "secondary.main",
             marginBottom: 10,
             fontWeight: 300,
+            cursor: "pointer",
           }}
         >
-          Welcome to GAlLéRY
+          <Link
+            href="/"
+            sx={{
+              textDecoration: "none",
+              color: "secondary.main",
+            }}
+          >
+            Welcome to GAlLéRY
+          </Link>
         </Typography>
       </Box>
 

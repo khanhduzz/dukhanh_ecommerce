@@ -278,7 +278,10 @@ const Nav = ({ user }) => {
           <Box
             sx={{
               display: `${
-                typeof cookies["token"] === "undefined" ? "none" : "block"
+                typeof cookies["token"] === "undefined" ||
+                cookies["user"] === "admin"
+                  ? "none"
+                  : "block"
               }`,
             }}
           >
