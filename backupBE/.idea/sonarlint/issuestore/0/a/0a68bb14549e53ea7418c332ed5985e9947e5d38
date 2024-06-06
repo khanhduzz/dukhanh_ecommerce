@@ -1,7 +1,6 @@
 
-”
-java:S1192 "SDefine a constant instead of duplicating this literal "Category not found" 3 times.(Äà¬ÃûÿÿÿÿJ$01299a58-0c8c-419a-a765-24aa6c061a61
-p
-java:S2201@"/The return value of "orElseThrow" must be used.(™à‘ûúÿÿÿÿJ$5d8f4d58-fffc-4b13-adef-159bbc2cf14f
+j
+java:S22019"/The return value of "orElseThrow" must be used.(ÏãâfJ$42a692eb-5129-4b69-922f-c374b1cded6a
 m
-java:S1602I",Remove useless curly braces around statement(åßÿ©øÿÿÿÿJ$440e239c-41a1-4748-a6e5-4b02891e0610
+java:S1602B",Remove useless curly braces around statement(åßÿ©øÿÿÿÿJ$84af0177-29be-4c62-92c6-e90a4ccd5b55
+}	java:S125J"<This block of commented-out lines of code should be removed.(Ëö€n8ÅíÖÛş1J$b5157c3f-1abc-48bc-9bb3-beef5ab5aee7

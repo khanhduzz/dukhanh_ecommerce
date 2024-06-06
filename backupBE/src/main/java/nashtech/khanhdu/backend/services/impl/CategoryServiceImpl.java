@@ -2,6 +2,7 @@ package nashtech.khanhdu.backend.services.impl;
 
 import nashtech.khanhdu.backend.dto.CategoryDto;
 import nashtech.khanhdu.backend.entities.Category;
+import nashtech.khanhdu.backend.exceptions.CategoryExistedException;
 import nashtech.khanhdu.backend.exceptions.CategoryNotFoundException;
 import nashtech.khanhdu.backend.repositories.CategoryRepository;
 import nashtech.khanhdu.backend.services.CategoryService;
@@ -26,15 +27,6 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<Category> findByName(String name) {
-        List<Category> categories = categoryRepository.findByName(name);
-        if (categories.isEmpty()) {
-            throw new CategoryNotFoundException("Category not found");
-        }
-        return categories;
-    }
-
-    @Override
     public Category findByNameEquals(String name) {
         return categoryRepository.findByNameEquals(name);
     }
@@ -44,7 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
     public ResponseEntity<CategoryDto> createCategory(CategoryDto dto) {
         Category cate = categoryRepository.findByNameEquals(dto.name());
         if (cate != null) {
-            throw new CategoryNotFoundException("Category existed");
+            throw new CategoryExistedException("Category existed");
         }
         Category category = new Category();
         category.setId(0L);
@@ -61,7 +53,8 @@ public class CategoryServiceImpl implements CategoryService {
                     category.setName(dto.name());
                     category.setDescription(dto.description());
                     return categoryRepository.save(category);
-                }).orElseThrow(()->new CategoryNotFoundException("Category not found"));
+                })
+                .orElseThrow(()->new CategoryNotFoundException("Category not found"));
         return ResponseEntity.ok(dto);
     }
 
@@ -76,4 +69,13 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.delete(category);
         return ResponseEntity.ok("Delete successfully");
     }
+
+    //    @Override
+//    public List<Category> findByName(String name) {
+//        List<Category> categories = categoryRepository.findByName(name);
+//        if (categories.isEmpty()) {
+//            throw new CategoryNotFoundException("Category not found");
+//        }
+//        return categories;
+//    }
 }

@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDetails signUp (SignUpDto data) throws UserExistException {
         var userByName = userRepository.findOneByUsername(data.username());
-        if ( userByName.isPresent() ) {
+        if (userByName.isPresent()) {
             throw new UserExistException("Username already exists");
         }
 
@@ -111,10 +111,9 @@ public class UserServiceImpl implements UserService {
         if (data.roles() == null) {
             List<Role> role = roleRepository.findById("ROLE_USER").stream().toList();
             newUser.setRoles(new HashSet<>(role));
-        }
-        else {
+        } else {
             var userRoles = roleRepository.findAllById(data.roles());
-            if ( userRoles.size() != data.roles().size() ) {
+            if (userRoles.size() != data.roles().size()) {
                 throw new UserExistException("Role not found");
             }
             newUser.setRoles(new HashSet<>(userRoles));
@@ -122,6 +121,4 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.save(newUser);
     }
-
-
 }

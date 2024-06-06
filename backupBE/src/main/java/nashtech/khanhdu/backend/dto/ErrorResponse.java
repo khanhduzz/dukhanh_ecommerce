@@ -5,10 +5,8 @@ import lombok.Builder;
 import lombok.ToString;
 import lombok.Value;
 
-@Value
 @Builder
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@ToString
 public class ErrorResponse {
 
     Integer code;

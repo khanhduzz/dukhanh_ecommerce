@@ -97,37 +97,4 @@ public class ProductController {
         Page<Product> products = productService.findProducts(name, feature, minPrice, maxPrice, category, PageRequest.of(page, size, orders));
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
-
-    //    @GetMapping()
-//    public List<Product> getAllProducts () {1
-//        return productService.getAllProducts();
-//    }
-
-//    @GetMapping("/category/{categoryName}")
-//    public List<Product> findProductByCategory(@PathVariable("categoryName") String categoryName) {
-//        return productService.findProductByCategory(categoryName);
-//    }
-
-//    @GetMapping("/search/{productName}")
-//    public List<Product> findProductByName(@PathVariable("productName") String productName) {
-//        return productService.findProductByName(productName);
-//    }
-
-//    @GetMapping("/feature")
-//    public List<Product> findFeaturedProduct() {
-//        return productService.findFeaturedProduct();
-//    }
-
-//    @GetMapping("/page")
-//    public Page<Product> getAllProductSortedBy(@RequestBody SortedDto dto) {
-//        return productService.getAllProductSortedBy(dto);
-//    }
-
-//    @GetMapping("/page/{page}/{number}/{sortedBy}/{direction}")
-//    public Page<Product> getAllProductsSortedParam(@PathVariable("page") Integer page,
-//                                                   @PathVariable("number") Integer number,
-//                                                   @PathVariable("sortedBy") String sortedBy,
-//                                                   @PathVariable("direction") Integer direction) {
-//        return productService.getAllProductsSortedParam(page, number, sortedBy, direction);
-//    }
 }

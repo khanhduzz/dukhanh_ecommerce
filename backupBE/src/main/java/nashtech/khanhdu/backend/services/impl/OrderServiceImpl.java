@@ -2,6 +2,7 @@ package nashtech.khanhdu.backend.services.impl;
 
 import nashtech.khanhdu.backend.dto.OrderDto;
 import nashtech.khanhdu.backend.entities.Order;
+import nashtech.khanhdu.backend.exceptions.OrderNotFoundException;
 import nashtech.khanhdu.backend.exceptions.ProductNotFoundException;
 import nashtech.khanhdu.backend.exceptions.UserExistException;
 import nashtech.khanhdu.backend.repositories.OrderRepository;
@@ -33,23 +34,18 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public ResponseEntity<Order> createOrUpdateOrder(OrderDto dto) {
         Order order = orderRepository.findByUserNameAndProductName(dto.userId(), dto.productId());
+        if (dto.quantity() <= 0) {
+            orderRepository.delete(order);
+            return ResponseEntity.ok(null);
+        }
         if (order == null) {
-            if (dto.quantity() <= 0) {
-                return ResponseEntity.ok(null);
-            }
             order = new Order();
             order.setUserOrder(userRepository
                     .findById(dto.userId())
-                    .orElseThrow(()-> new UserExistException("User not found")));
+                    .orElseThrow(() -> new UserExistException("User not found")));
             order.setProductOrder(productRepository
                     .findById(dto.productId())
-                    .orElseThrow(()-> new ProductNotFoundException("Product not found")));
-        }
-        if (dto.quantity() <= 0) {
-            order.getUserOrder().getOrders().remove(order);
-            order.getProductOrder().getOrders().remove(order);
-            orderRepository.delete(order);
-            return ResponseEntity.ok(null);
+                    .orElseThrow(ProductNotFoundException::new));
         }
         order.setQuantity(dto.quantity());
         order.setUser(order.getUserOrder().getUsername());
@@ -61,12 +57,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ResponseEntity<String> finishOrder(Long userId) {
-        return null;
-    }
-
-    @Override
     public ResponseEntity<Order> deleteOrder(Order order) {
+        if (order == null) return ResponseEntity.ok(null);
+        Order o = orderRepository.findByUserNameAndProductName(
+                order.getUserOrder().getId(), order.getProductOrder().getId());
+        if (o == null) return ResponseEntity.ok(null);
+        order.getUserOrder().getOrders().remove(order);
+        order.getProductOrder().getOrders().remove(order);
         orderRepository.delete(order);
         return ResponseEntity.ok(order);
     }

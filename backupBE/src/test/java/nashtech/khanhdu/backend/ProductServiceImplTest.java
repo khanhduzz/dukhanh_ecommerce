@@ -10,18 +10,14 @@ import nashtech.khanhdu.backend.mapper.ProductMapper;
 import nashtech.khanhdu.backend.repositories.ProductRepository;
 import nashtech.khanhdu.backend.services.*;
 import nashtech.khanhdu.backend.services.impl.ProductServiceImpl;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.*;
@@ -32,7 +28,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ProductServiceImplTest {
+class ProductServiceImplTest {
 
     @Mock
     private ProductRepository productRepository;
@@ -54,7 +50,7 @@ public class ProductServiceImplTest {
 
 
     @Test
-    public void givenProductId_whenFindById_returnProductDtoSuccess() {
+    void givenProductId_whenFindById_returnProductDtoSuccess() {
         // given
         Long id = 1L;
         Product product = new Product();
@@ -76,7 +72,7 @@ public class ProductServiceImplTest {
     }
 
     @Test
-    public void givenProductDto_whenCreateProduct_returnProductCreatedSuccess() {
+    void givenProductDto_whenCreateProduct_returnProductCreatedSuccess() {
         // given
         Category category = new Category();
         category.setName("Paper");
@@ -101,7 +97,7 @@ public class ProductServiceImplTest {
     }
 
     @Test
-    public void givenProductDto_whenCreateProduct_returnProductNameAlreadyExisted() {
+    void givenProductDto_whenCreateProduct_returnProductNameAlreadyExisted() {
         // given
         Category category = new Category();
         category.setName("Paper");
@@ -123,7 +119,7 @@ public class ProductServiceImplTest {
     }
 
     @Test
-    public void givenProductDto_whenCreateProduct_returnCategoryNotExisted() {
+    void givenProductDto_whenCreateProduct_returnCategoryNotExisted() {
         // given
         Category category = new Category();
         category.setName("Paper");
@@ -147,7 +143,7 @@ public class ProductServiceImplTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    public void givenProductDto_whenUpdateProduct_returnProductUpdatedSuccess() {
+    void givenProductDto_whenUpdateProduct_returnProductUpdatedSuccess() {
         // given
         Category category = new Category();
         category.setName("Paper");
@@ -177,7 +173,7 @@ public class ProductServiceImplTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    public void givenProductDto_whenUpdateProduct_returnProductNotFoundException() {
+    void givenProductDto_whenUpdateProduct_returnProductNotFoundException() {
         // given
         Category category = new Category();
         category.setName("Paper");
@@ -205,7 +201,7 @@ public class ProductServiceImplTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    public void givenProductDto_whenUpdateProduct_returnCategoryNotFoundException() {
+    void givenProductDto_whenUpdateProduct_returnCategoryNotFoundException() {
         // given
         Category category = new Category();
         category.setName("Paper");
@@ -235,7 +231,7 @@ public class ProductServiceImplTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    public void givenProductId_whenDeleteProduct_returnProductDeletedSuccess() throws Exception {
+    void givenProductId_whenDeleteProduct_returnProductDeletedSuccess() throws Exception {
         // given
         Product product = new Product();
         when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
@@ -247,9 +243,9 @@ public class ProductServiceImplTest {
         Mockito.verify(productRepository, times(1)).delete(product);
     }
 
-    @Test
-    @Disabled
-    public void testFindProducts() {
-
-    }
+//    @Test
+//    @Disabled
+//    public void testFindProducts() {
+//
+//    }
 }

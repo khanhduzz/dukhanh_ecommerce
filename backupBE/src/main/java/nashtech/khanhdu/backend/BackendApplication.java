@@ -30,7 +30,7 @@ public class BackendApplication {
 //            UserService userService,
 //            RoleRepository roleRepository) {
 //        return args -> {
-//            var rolesDefault = List.of("ROLE_USER", "ROLE_ADMIN");
+//            var rolesDefault = List.of("ROLE_ADMIN");
 //            List<Role> roles = rolesDefault.stream()
 //                    .map(r -> Role.builder().name(r).build())
 //                    .map(roleRepository::save)

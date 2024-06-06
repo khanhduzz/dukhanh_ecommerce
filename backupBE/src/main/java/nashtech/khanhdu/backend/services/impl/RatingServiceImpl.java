@@ -39,7 +39,7 @@ public class RatingServiceImpl implements RatingService {
                     .orElseThrow(() -> new UserExistException("User not found")));
             rating.setProductRating(
                     productRepository.findById(dto.productId())
-                        .orElseThrow(()->new ProductNotFoundException("Product not found")));
+                        .orElseThrow(ProductNotFoundException::new));
             rating.setRate(dto.rate());
             rating.setUser(rating.getUserRating().getUsername());
             rating.setProduct(rating.getProductRating().getName());

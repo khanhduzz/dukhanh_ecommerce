@@ -21,15 +21,4 @@ public interface ProductService {
 
     Page<Product> findProducts (String name, Integer feature, Double higherPrice, Double lowerPrice, String category, Pageable pageable) ;
 
-//    List<Product> getAllProducts();
-
-//    List<Product> findProductByName(String name);
-
-//    List<Product> findProductByCategory(String categoryName);
-
-//    List<Product> findFeaturedProduct();
-
-//    Page<Product> getAllProductSortedBy(SortedDto dto);
-
-//    Page<Product> getAllProductsSortedParam(Integer page, Integer number, String sortedBy, Integer direction);
 }

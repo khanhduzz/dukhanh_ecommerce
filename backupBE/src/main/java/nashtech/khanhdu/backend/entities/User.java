@@ -16,6 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @ToString
 @Table(name = "USERS")
 public class User extends AuditEntity<Long> implements UserDetails {

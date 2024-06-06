@@ -49,11 +49,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ResponseEntity<Product> createProduct(ProductDto dto) {
-        if (productRepository.findByName(dto.getName()).isPresent()){
+        if (productRepository.findByName(dto.getName()).isPresent()) {
             throw new ProductAlreadyExistsException();
         }
         Product product = productMapper.toEntity(dto);
-        Set<Category> categorySet =  new HashSet<>();
+        Set<Category> categorySet = new HashSet<>();
         dto.getCategories()
                 .forEach(e -> {
                     Category category = categoryService.findByNameEquals(e);
@@ -70,7 +70,7 @@ public class ProductServiceImpl implements ProductService {
     public ResponseEntity<Product> updateProduct(Long id, ProductDto dto) {
         Product product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
         var updateProduct = productMapper.updateProduct(product, dto);
-        Set<Category> categorySet =  new HashSet<>();
+        Set<Category> categorySet = new HashSet<>();
         dto.getCategories()
                 .forEach(e -> {
                     Category category = categoryService.findByNameEquals(e);
@@ -117,58 +117,4 @@ public class ProductServiceImpl implements ProductService {
 
         return productRepository.findAll(spec, pageable);
     }
-
-//    @Override
-//    public List<Product> getAllProducts() {
-//        return productRepository.findAll();
-//    }
-
-//    @Override
-//    public List<Product> findProductByName(String name) {
-//        Pattern pattern = Pattern.compile("[a-zA-Z0-9]*");
-//        Matcher matcher = pattern.matcher(name);
-//        if (!matcher.matches()) {
-//            throw new SearchingContentIsNotValid("Searching is not valid");
-//        }
-//        return productRepository.findByNameContaining(name);
-//    }
-
-//    @Override
-//    public List<Product> findProductByCategory(String categoryName) {
-//        return productRepository.findAllByCategoryName(categoryName);
-//    }
-
-//    @Override
-//    public List<Product> findFeaturedProduct() {
-//        return productRepository.findAllByFeaturedEquals(1);
-//    }
-
-//    @Override
-//    public Page<Product> getAllProductSortedBy(SortedDto dto) {
-//        int page = dto.page() == null ? 0 : dto.page();
-//        int number = dto.number() == null ? 20 : dto.number();
-//        String type = dto.sortedBy();
-//        int direction = dto.direction() == null ? 1 : dto.direction();
-//        Pageable sorted;
-//        if (direction == -1) {
-//            sorted = PageRequest.of(page,number, Sort.by(type).ascending());
-//        } else {
-//            sorted = PageRequest.of(page,number, Sort.by(type).descending());
-//        }
-//        return productRepository.findAll(sorted);
-//    }
-
-//    @Override
-//    public Page<Product> getAllProductsSortedParam(Integer page, Integer number, String sortedBy, Integer direction) {
-//        int page1 = (page == null) ? 0 : page;
-//        int number1 = number == null ? 20 : number;
-//        int direction1 = direction == null ? 1 : direction;
-//        Pageable sorted;
-//        if (direction1 == -1) {
-//            sorted = PageRequest.of(page1,number1, Sort.by(sortedBy).ascending());
-//        } else {
-//            sorted = PageRequest.of(page1,number1, Sort.by(sortedBy).descending());
-//        }
-//        return productRepository.findAll(sorted);
-//    }
 }

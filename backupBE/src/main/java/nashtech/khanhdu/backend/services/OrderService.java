@@ -9,8 +9,6 @@ import java.util.List;
 public interface OrderService {
     ResponseEntity<Order> createOrUpdateOrder(OrderDto dto);
 
-    ResponseEntity<String> finishOrder(Long userId);
-
     ResponseEntity<Order> deleteOrder(Order order);
 
     List<Order> findAllByUserId(Long userId);

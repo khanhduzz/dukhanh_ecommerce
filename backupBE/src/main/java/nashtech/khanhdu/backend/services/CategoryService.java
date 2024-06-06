@@ -10,7 +10,7 @@ public interface CategoryService {
 
     List<Category> findAllCategories();
 
-    List<Category> findByName(String name);
+//    List<Category> findByName(String name);
 
     Category findByNameEquals(String name);
 
